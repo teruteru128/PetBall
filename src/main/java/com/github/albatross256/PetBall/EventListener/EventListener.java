@@ -140,7 +140,7 @@ public class EventListener implements Listener{
 				event.setCancelled(true);
 
 				//同時出し入れ対策2
-				Long currentTime = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().worldData.getTime();
+				Long currentTime = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().E.getTime();
 				if(Math.abs(nbttag.getLong(BallData.ENTITYBALL_TIMESTAMP_KEY) - currentTime) < 1) return;
 
 				entity = location.getWorld().spawnEntity(newLocation, eachBallData.getEntityType());
@@ -202,7 +202,7 @@ public class EventListener implements Listener{
 	private ItemStack getMetaItem(ItemStack item, String key, String value) {
 		NBTTagCompound nbttag = new NBTTagCompound();
 		nbttag.setString(key, value);
-		net.minecraft.server.v1_17_R1.ItemStack itemCopy = CraftItemStack.asNMSCopy(item);
+		net.minecraft.world.item.ItemStack itemCopy = CraftItemStack.asNMSCopy(item);
 		itemCopy.setTag(nbttag);
 		ItemStack entityBall = CraftItemStack.asBukkitCopy(itemCopy);
 		return entityBall;
@@ -213,7 +213,7 @@ public class EventListener implements Listener{
 		ItemMeta itemMeta = item.getItemMeta();
 		if(itemMeta == null) return false;
 
-		net.minecraft.server.v1_17_R1.ItemStack handItemCopy = CraftItemStack.asNMSCopy(item);
+		net.minecraft.world.item.ItemStack handItemCopy = CraftItemStack.asNMSCopy(item);
 		NBTTagCompound handItemNbttag = handItemCopy.getTag();
 		if(handItemNbttag != null && handItemNbttag.hasKey(BallData.ENTITYBALL_CONTENT_KEY)) return true;
 
@@ -224,7 +224,7 @@ public class EventListener implements Listener{
 		ItemMeta itemMeta = item.getItemMeta();
 		if(itemMeta == null) return false;
 
-		net.minecraft.server.v1_17_R1.ItemStack handItemCopy = CraftItemStack.asNMSCopy(item);
+		net.minecraft.world.item.ItemStack handItemCopy = CraftItemStack.asNMSCopy(item);
 		NBTTagCompound handItemNbttag = handItemCopy.getTag();
 		if(handItemNbttag != null && handItemNbttag.hasKey(BallData.ENTITYBALL_CONTENT_KEY) && handItemNbttag.getString(BallData.ENTITYBALL_CONTENT_KEY).equals(BallData.ENTITYBALL_CONTENT_EMPTY)) return true;
 
@@ -298,13 +298,14 @@ public class EventListener implements Listener{
 			((AbstractHorse)entity).getInventory().clear();
 		}
 
-		net.minecraft.server.v1_17_R1.Entity nmsEntity = ((CraftEntity) entity).getHandle();
+		net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity) entity).getHandle();
 		NBTTagCompound tag = new NBTTagCompound();
-		nmsEntity.a_(tag);
+		// FIXME: NBTタグを追加しているのか削除しているのかメソッド名からわからない
+		nmsEntity.d(tag);
 		event.setCancelled(true);
 
 		ItemStack item = new ItemStack(this.ballManager.getBallData(entity.getType()).getFilledBallMaterial(), 1);
-		net.minecraft.server.v1_17_R1.ItemStack itemCopy = CraftItemStack.asNMSCopy(item);
+		net.minecraft.world.item.ItemStack itemCopy = CraftItemStack.asNMSCopy(item);
 		NBTTagCompound nbttag = new NBTTagCompound();
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -325,7 +326,7 @@ public class EventListener implements Listener{
 		 * 出し入れ同時対策1
 		 */
 
-		Long time = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().worldData.getTime();
+		Long time = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().E.getTime();
 		nbttag.setLong(BallData.ENTITYBALL_TIMESTAMP_KEY, time);
 		//entity.getPersistentDataContainer().set(new NamespacedKey(this.plugin, BallData.ENTITYBALL_TIMESTAMP_KEY), PersistentDataType.LONG, entity.getWorld().getFullTime());
 

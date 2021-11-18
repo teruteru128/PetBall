@@ -31,7 +31,7 @@ public class BallRecipeManager {
 		ItemStack ball = new ItemStack(Material.ENDERMAN_SPAWN_EGG, 1);
 		NBTTagCompound nbttag = new NBTTagCompound();
 		nbttag.setString(BallData.ENTITYBALL_CONTENT_KEY, BallData.ENTITYBALL_CONTENT_EMPTY);
-		net.minecraft.server.v1_17_R3.ItemStack itemCopy = CraftItemStack.asNMSCopy(ball);
+		net.minecraft.world.item.ItemStack itemCopy = CraftItemStack.asNMSCopy(ball);
 		itemCopy.setTag(nbttag);
 		ball = CraftItemStack.asBukkitCopy(itemCopy);
 
