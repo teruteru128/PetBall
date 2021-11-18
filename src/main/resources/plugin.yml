@@ -1,0 +1,6 @@
+name: PetBall
+version: 4.3.0
+description: you can catch mob in the egg.
+author: albatross256
+main: com.github.albatross256.PetBall.Main
+api-version: 1.17
