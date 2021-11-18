@@ -1,43 +1,7 @@
 package com.github.albatross256.PetBall.LoreWriter.factory;
 
+import com.github.albatross256.PetBall.LoreWriter.*;
 import org.bukkit.entity.EntityType;
-
-import com.github.albatross256.PetBall.LoreWriter.BatLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.BeeLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.CatLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.ChickenLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.CodLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.CowLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.DolphinLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.DonkeyLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.FoxLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.HorseLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.IronGolemLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.LlamaLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.LoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.MuleLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.MushroomLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.OcelotLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.PandaLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.ParrotLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.PigLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.PiglinLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.PolarBearLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.PufferFishLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.RabbitLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.SalmonLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.SheepLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.SkeletonHorseLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.SnowmanLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.SquidLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.StriderLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.TraderLlamaLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.TropicalFishLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.TurtleLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.VillagerLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.WanderingTraderLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.WolfLoreWriter;
-import com.github.albatross256.PetBall.LoreWriter.ZombieHorseLoreWriter;
 
 public class LoreWriterFactory {
 
@@ -113,6 +77,12 @@ public class LoreWriterFactory {
 			return new PiglinLoreWriter();
 		case "STRIDER":
 			return new StriderLoreWriter();
+		case "AXOLOTL":
+			return new AxolotlLoreWriter();
+		case "GOAT":
+			return new GoatLoreWriter();
+		case "GLOW_SQUID":
+			return new GlowSquidLoreWriter();
 		}
 		return null;
 	}

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.bukkit.entity.EntityType;
 
+import com.github.albatross256.PetBall.BallData.AxolotlBallData;
 import com.github.albatross256.PetBall.BallData.BallData;
 import com.github.albatross256.PetBall.BallData.BatBallData;
 import com.github.albatross256.PetBall.BallData.BeeBallData;
@@ -15,6 +16,8 @@ import com.github.albatross256.PetBall.BallData.CowBallData;
 import com.github.albatross256.PetBall.BallData.DolphinBallData;
 import com.github.albatross256.PetBall.BallData.DonkeyBallData;
 import com.github.albatross256.PetBall.BallData.FoxBallData;
+import com.github.albatross256.PetBall.BallData.GlowSquidBallData;
+import com.github.albatross256.PetBall.BallData.GoatBallData;
 import com.github.albatross256.PetBall.BallData.HorseBallData;
 import com.github.albatross256.PetBall.BallData.IronGolemBallData;
 import com.github.albatross256.PetBall.BallData.LlamaBallData;
@@ -88,6 +91,9 @@ public class BallManager {
 				new TraderLlamaBallData(),
 				new PiglinBallData(),
 				new StriderBallData(),
+				new AxolotlBallData(),
+				new GoatBallData(),
+				new GlowSquidBallData(),
 		};
 
 		for(BallData ballData : ballDatas) {
