@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
@@ -22,7 +23,7 @@ public class VillagerLoreWriter extends LoreWriter {
 		String trade1;
 		String trade2;
 		lore.add("村人");
-		lore.add(getHealthMeter(((Villager)entity).getHealth(), ((Villager)entity).getMaxHealth()));
+		lore.add(getHealthMeter(((Villager)entity).getHealth(), ((Villager)entity).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
 		if(((Villager)entity).getRecipeCount() < 1) {
 			trade1 = "なし";
 		}else {

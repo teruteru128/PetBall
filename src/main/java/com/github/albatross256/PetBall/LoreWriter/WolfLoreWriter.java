@@ -3,6 +3,7 @@ package com.github.albatross256.PetBall.LoreWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Wolf;
 
@@ -14,7 +15,7 @@ public class WolfLoreWriter extends LoreWriter {
 		String owner = ((Wolf)entity).getOwner() == null ? "なし" : ((Wolf)entity).getOwner().getName();
 
 		lore.add("オオカミ");
-		lore.add(getHealthMeter(((Wolf)entity).getHealth(), ((Wolf)entity).getMaxHealth()));
+		lore.add(getHealthMeter(((Wolf)entity).getHealth(), ((Wolf)entity).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
 		lore.add("飼い主: " + owner);
 		return lore;
 	}

@@ -3,6 +3,7 @@ package com.github.albatross256.PetBall.LoreWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Fox;
 
@@ -13,7 +14,7 @@ public class FoxLoreWriter extends LoreWriter {
 		List<String> lore = new ArrayList<String>();
 		String age =  ((Fox)entity).isAdult() ? "大人" : "子供";
 		lore.add("キツネ");
-		lore.add(getHealthMeter(((Fox)entity).getHealth(), ((Fox)entity).getMaxHealth()));
+		lore.add(getHealthMeter(((Fox)entity).getHealth(), ((Fox)entity).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
 		lore.add(age);
 		return lore;
 	}

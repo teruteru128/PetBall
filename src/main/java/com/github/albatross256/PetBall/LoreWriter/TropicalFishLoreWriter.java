@@ -3,6 +3,7 @@ package com.github.albatross256.PetBall.LoreWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.TropicalFish;
 
@@ -18,7 +19,7 @@ public class TropicalFishLoreWriter extends LoreWriter {
 		lore.add("模様の色 : " + translateColorName(((TropicalFish)entity).getPatternColor().name()));
 		lore.add("形・模様の種類 : " + translatePatternName(((TropicalFish)entity).getPattern().name()));
 
-		lore.add(getHealthMeter(((TropicalFish)entity).getHealth(), ((TropicalFish)entity).getMaxHealth()));
+		lore.add(getHealthMeter(((TropicalFish)entity).getHealth(), ((TropicalFish)entity).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
 		return lore;
 	}
 
