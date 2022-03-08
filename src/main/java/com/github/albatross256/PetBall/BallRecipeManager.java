@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.github.albatross256.PetBall.BallData.BallData;
+
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftItemStack;
@@ -11,8 +13,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
-
-import com.github.albatross256.PetBall.BallData.BallData;
 
 import net.minecraft.nbt.NBTTagCompound;
 
