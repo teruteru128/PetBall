@@ -170,7 +170,7 @@ public class EventListener implements Listener{
 		ByteArrayInputStream bais = new ByteArrayInputStream(byteNbt);
 		try {
 			NBTTagCompound nbt = NBTCompressedStreamTools.a(bais);
-			// ((CraftEntity) entity).getHandle().load(nbt);
+			((CraftEntity) entity).getHandle().g(nbt);
 			// Entity.setPositionRotation(double, double, double, float, float) -> absMoveTo(double,double,double,float,float) -> a(double,double,double,float,float) ?
 			((EntityLiving)((CraftEntity) entity).getHandle()).a(newLocation.getX(), newLocation.getY(), newLocation.getZ(), 0, 0);
 		} catch (IOException e) {
