@@ -162,8 +162,7 @@ public class EventListener implements Listener{
 		if(entity == null) return;
 
 
-		/* 以下 NBTの解析及び埋め込み*/
-
+		/* 以下 NBTの解析及び埋め込み */
 		// net.minecraft.nbt.CompoundTag#getByteArray(String) -> getByteArray
 		byte[] byteNbt = nbttag.m(BallData.ENTITYBALL_NBT_KEY);
 
