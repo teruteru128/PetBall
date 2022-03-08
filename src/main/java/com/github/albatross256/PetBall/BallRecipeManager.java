@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -30,9 +30,9 @@ public class BallRecipeManager {
 	public void init() {
 		ItemStack ball = new ItemStack(Material.ENDERMAN_SPAWN_EGG, 1);
 		NBTTagCompound nbttag = new NBTTagCompound();
-		nbttag.setString(BallData.ENTITYBALL_CONTENT_KEY, BallData.ENTITYBALL_CONTENT_EMPTY);
+		nbttag.a(BallData.ENTITYBALL_CONTENT_KEY, BallData.ENTITYBALL_CONTENT_EMPTY);
 		net.minecraft.world.item.ItemStack itemCopy = CraftItemStack.asNMSCopy(ball);
-		itemCopy.setTag(nbttag);
+		itemCopy.c(nbttag);
 		ball = CraftItemStack.asBukkitCopy(itemCopy);
 
 		ItemMeta meta = ball.getItemMeta();
