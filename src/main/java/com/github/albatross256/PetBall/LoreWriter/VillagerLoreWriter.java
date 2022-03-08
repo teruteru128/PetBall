@@ -18,8 +18,6 @@ public class VillagerLoreWriter extends LoreWriter {
 
 		//String pro = ((Villager)entity).getCareer().name();
 
-		String profession = ((Villager)entity).getProfession().name();
-
 		String trade1;
 		String trade2;
 		lore.add("村人");
@@ -35,7 +33,7 @@ public class VillagerLoreWriter extends LoreWriter {
 			trade2 = this.getRecipeText(((Villager)entity).getRecipe(1));
 		}
 
-		profession = this.translateCareerName(profession);
+		String profession = this.translateCareerName(((Villager)entity).getProfession());
 		lore.add("職業: " + profession);
 		lore.add("交易1: " + trade1);
 		lore.add("交易2: " + trade2);
@@ -57,38 +55,38 @@ public class VillagerLoreWriter extends LoreWriter {
 	}
 
 
-	private String translateCareerName(String eName) {
+	private String translateCareerName(Villager.Profession eName) {
 		switch(eName) {
-		case "FARMER":
+		case FARMER:
 			return "農民";
-		case "FISHERMAN":
+		case FISHERMAN:
 			return "釣り人";
-		case "SHEPHERD":
+		case SHEPHERD:
 			return "羊飼い";
-		case "FLETCHER":
+		case FLETCHER:
 			return "矢師";
-		case "LIBRARIAN":
+		case LIBRARIAN:
 			return "司書";
-		case "CARTOGRAPHER":
+		case CARTOGRAPHER:
 			return "製図家";
-		case "CLERIC":
+		case CLERIC:
 			return "聖職者";
-		case "ARMORER":
+		case ARMORER:
 			return "防具鍛冶";
-		case "WEAPON_SMITH":
+		case WEAPONSMITH:
 			return "武器鍛冶";
-		case "TOOL_SMITH":
+		case TOOLSMITH:
 			return "道具鍛冶";
-		case "BUTCHER":
+		case BUTCHER:
 			return "肉屋";
-		case "LEATHERWORKER":
+		case LEATHERWORKER:
 			return "革細工師";
-		case "NITWIT":
+		case NITWIT:
 			return "無職";
-		case "MASON":
+		case MASON:
 			return "石工職人";
 		default:
-			return eName;
+			return eName.name();
 		}
 	}
 }
