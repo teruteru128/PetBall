@@ -3,6 +3,7 @@ package com.github.albatross256.PetBall.LoreWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.DyeColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.TropicalFish;
@@ -15,9 +16,9 @@ public class TropicalFishLoreWriter extends LoreWriter {
 	public List<String> generateLore(Entity entity) {
 		List<String> lore = new ArrayList<String>();
 		lore.add("熱帯魚" + ((TropicalFish)entity).getName().toString());
-		lore.add("肌の色 : " + translateColorName(((TropicalFish)entity).getBodyColor().name()));
-		lore.add("模様の色 : " + translateColorName(((TropicalFish)entity).getPatternColor().name()));
-		lore.add("形・模様の種類 : " + translatePatternName(((TropicalFish)entity).getPattern().name()));
+		lore.add("肌の色 : " + translateColorName(((TropicalFish)entity).getBodyColor()));
+		lore.add("模様の色 : " + translateColorName(((TropicalFish)entity).getPatternColor()));
+		lore.add("形・模様の種類 : " + translatePatternName(((TropicalFish)entity).getPattern()));
 
 		lore.add(getHealthMeter(((TropicalFish)entity).getHealth(), ((TropicalFish)entity).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
 		return lore;
@@ -26,43 +27,43 @@ public class TropicalFishLoreWriter extends LoreWriter {
 	/*
 	 * ※ 命名は雰囲気。わかりやすさを重視した。
 	 */
-	private String translatePatternName(String patternNameEnglish) {
+	private String translatePatternName(TropicalFish.Pattern patternNameEnglish) {
 		String name = "";
 		switch(patternNameEnglish) {
-		case "KOB":
+		case KOB:
 			name += "コーブ";
 			break;
-		case "SUNSTREAK":
+		case SUNSTREAK:
 			name += "サンストリーク";
 			break;
-		case "SNOOPER":
+		case SNOOPER:
 			name += "スヌーパー";
 			break;
-		case "DASHER":
+		case DASHER:
 			name += "ダッシャー";
 			break;
-		case "BRINELY":
+		case BRINELY:
 			name += "ブラインリー";
 			break;
-		case "SPOTTY":
+		case SPOTTY:
 			name += "スポッティー";
 			break;
-		case "FLOPPER":
+		case FLOPPER:
 			name += "フロッパー";
 			break;
-		case "STRIPEY":
+		case STRIPEY:
 			name += "ストライピー";
 			break;
-		case "GLITTER":
+		case GLITTER:
 			name += "グリッター";
 			break;
-		case "BLOCKFISH":
+		case BLOCKFISH:
 			name += "ブロックフィッシュ";
 			break;
-		case "BETTY":
+		case BETTY:
 			name += "ベティー";
 			break;
-		case "CLAYFISH":
+		case CLAYFISH:
 			name += "クレイフィッシュ";
 			break;
 		}
@@ -70,55 +71,55 @@ public class TropicalFishLoreWriter extends LoreWriter {
 		return name;
 	}
 
-	private String translateColorName(String colorNameEnglish) {
+	private String translateColorName(DyeColor colorNameEnglish) {
 		String name = "";
 		switch(colorNameEnglish) {
-		case "WHITE":
+		case WHITE:
 			name += ChatColor.WHITE + "白";
 			break;
-		case "ORANGE":
+		case ORANGE:
 			name += ChatColor.RED + "橙";
 			break;
-		case "MAGENTA":
+		case MAGENTA:
 			name += ChatColor.RED + "赤紫";
 			break;
-		case "LIGHT_BLUE":
+		case LIGHT_BLUE:
 			name += ChatColor.AQUA + "空";
 			break;
-		case "YELLOW":
+		case YELLOW:
 			name += ChatColor.YELLOW + "黄";
 			break;
-		case "LIME":
+		case LIME:
 			name += ChatColor.GREEN + "黄緑";
 			break;
-		case "PINK":
+		case PINK:
 			name += ChatColor.LIGHT_PURPLE + "桃";
 			break;
-		case "GRAY":
+		case GRAY:
 			name += ChatColor.DARK_GRAY + "灰";
 			break;
-		case "LIGHT_GRAY":
+		case LIGHT_GRAY:
 			name += ChatColor.GRAY + "薄灰";
 			break;
-		case "CYAN":
+		case CYAN:
 			name += ChatColor.BLUE + "青緑";
 			break;
-		case "PURPLE":
+		case PURPLE:
 			name += ChatColor.DARK_PURPLE + "紫";
 			break;
-		case "BLUE":
+		case BLUE:
 			name += ChatColor.DARK_BLUE + "青";
 			break;
-		case "BROWN":
+		case BROWN:
 			name += ChatColor.GRAY + "茶";
 			break;
-		case "GREEN":
+		case GREEN:
 			name +=ChatColor.GREEN +  "緑";
 			break;
-		case "RED":
+		case RED:
 			name += ChatColor.DARK_RED + "赤";
 			break;
-		case "BLACK":
+		case BLACK:
 			name += ChatColor.GRAY + "黒";
 			break;
 		}

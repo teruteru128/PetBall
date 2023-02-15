@@ -3,9 +3,9 @@ package com.github.albatross256.PetBall;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.plugin.Plugin;
-
 import com.github.albatross256.PetBall.io.ConfigLoader;
+
+import org.bukkit.plugin.Plugin;
 
 public class WorldManager {
 

@@ -3,8 +3,6 @@ package com.github.albatross256.PetBall;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bukkit.entity.EntityType;
-
 import com.github.albatross256.PetBall.BallData.AxolotlBallData;
 import com.github.albatross256.PetBall.BallData.BallData;
 import com.github.albatross256.PetBall.BallData.BatBallData;
@@ -44,6 +42,8 @@ import com.github.albatross256.PetBall.BallData.VillagerBallData;
 import com.github.albatross256.PetBall.BallData.WanderingTraderBallData;
 import com.github.albatross256.PetBall.BallData.WolfBallData;
 import com.github.albatross256.PetBall.BallData.ZombieHorseBallData;
+
+import org.bukkit.entity.EntityType;
 
 public class BallManager {
 

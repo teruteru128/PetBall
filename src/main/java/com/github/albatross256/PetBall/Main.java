@@ -2,9 +2,9 @@
 
 package com.github.albatross256.PetBall;
 
-import org.bukkit.plugin.java.JavaPlugin;
-
 import com.github.albatross256.PetBall.EventListener.EventListener;
+
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin{
 	public BallManager ballManager;

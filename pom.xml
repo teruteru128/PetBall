@@ -4,19 +4,7 @@
 
   <groupId>com.github.albatross256</groupId>
   <artifactId>PetBall</artifactId>
-  <version>4.4.0</version>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>17</source>
-          <target>17</target>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+  <version>4.4.1</version>
 
   <name>PetBall</name>
   <url>http://maven.apache.org</url>
@@ -26,26 +14,47 @@
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
   </properties>
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
   <repositories>
     <repository>
       <id>spigot-repo</id>
       <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+    </repository>
+    <repository>
+      <id>minecraft-libraries</id>
+      <name>Minecraft Libraries</name>
+      <url>https://libraries.minecraft.net</url>
     </repository>
   </repositories>
   <dependencies>
     <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot-api</artifactId>
-      <version>1.18-R0.1-SNAPSHOT</version>
+      <version>1.18.2-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot</artifactId>
-      <version>1.18-R0.1-SNAPSHOT</version>
-      <scope>system</scope>
+      <version>1.18.2-R0.1-SNAPSHOT</version>
+      <!-- <scope>system</scope> -->
       <!-- 自分でビルドして /lib/ に設置してください -->
-      <systemPath>${project.basedir}/lib/spigot-1.18.jar</systemPath>
+      <!-- %userprofile%\.m2\repository\org\spigotmc\spigot\ フォルダ以下に手動で設置しても可 -->
+      <!-- <systemPath>${project.basedir}/lib/spigot-1.18.2-R0.1-SNAPSHOT.jar</systemPath> -->
     </dependency>
+    <!-- com.mojang.serialization.Dynamic のエラーがウザかったら依存関係に入れる -->
+    <!-- <dependency>
+      <groupId>com.mojang</groupId>
+      <artifactId>datafixerupper</artifactId>
+      <version>4.1.27</version>
+      <scope>provided</scope>
+    </dependency> -->
   </dependencies>
 </project>
