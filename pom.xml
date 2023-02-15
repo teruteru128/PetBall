@@ -80,5 +80,11 @@
       <!-- 自分でビルドして /lib/ に設置してください -->
       <systemPath>${project.basedir}/lib/spigot-1.19.3-R0.1-SNAPSHOT-remapped-mojang.jar</systemPath>
     </dependency>
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>5.8.2</version>
+        <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>
