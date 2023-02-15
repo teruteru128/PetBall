@@ -14,7 +14,7 @@ import org.bukkit.plugin.Plugin;
 
 import com.github.albatross256.PetBall.BallData.BallData;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NBTTagCompound;
 
 public class BallRecipeManager {
 
@@ -29,10 +29,10 @@ public class BallRecipeManager {
 
 	public void init() {
 		ItemStack ball = new ItemStack(Material.ENDERMAN_SPAWN_EGG, 1);
-		CompoundTag nbttag = new CompoundTag();
-		nbttag.putString(BallData.ENTITYBALL_CONTENT_KEY, BallData.ENTITYBALL_CONTENT_EMPTY);
+		NBTTagCompound nbttag = new NBTTagCompound();
+		nbttag.a(BallData.ENTITYBALL_CONTENT_KEY, BallData.ENTITYBALL_CONTENT_EMPTY);
 		net.minecraft.world.item.ItemStack itemCopy = CraftItemStack.asNMSCopy(ball);
-		itemCopy.setTag(nbttag);
+		itemCopy.c(nbttag);
 		ball = CraftItemStack.asBukkitCopy(itemCopy);
 
 		ItemMeta meta = ball.getItemMeta();
