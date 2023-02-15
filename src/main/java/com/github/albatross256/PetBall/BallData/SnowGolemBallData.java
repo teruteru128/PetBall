@@ -12,11 +12,11 @@ public class SnowGolemBallData extends BallData{
 
 	@Override
 	public Material getFilledBallMaterial() {
-		return Material.ELDER_GUARDIAN_SPAWN_EGG;
+		return Material.SNOW_GOLEM_SPAWN_EGG;
 	}
 
 	@Override
 	public EntityType getFilledBallEntityType() {
-		return EntityType.ELDER_GUARDIAN;
+		return EntityType.SNOWMAN;
 	}
 }
