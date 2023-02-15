@@ -3,46 +3,7 @@ package com.github.albatross256.PetBall;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.github.albatross256.PetBall.BallData.AxolotlBallData;
-import com.github.albatross256.PetBall.BallData.BallData;
-import com.github.albatross256.PetBall.BallData.BatBallData;
-import com.github.albatross256.PetBall.BallData.BeeBallData;
-import com.github.albatross256.PetBall.BallData.CatBallData;
-import com.github.albatross256.PetBall.BallData.ChickenBallData;
-import com.github.albatross256.PetBall.BallData.CodBallData;
-import com.github.albatross256.PetBall.BallData.CowBallData;
-import com.github.albatross256.PetBall.BallData.DolphinBallData;
-import com.github.albatross256.PetBall.BallData.DonkeyBallData;
-import com.github.albatross256.PetBall.BallData.FoxBallData;
-import com.github.albatross256.PetBall.BallData.GlowSquidBallData;
-import com.github.albatross256.PetBall.BallData.GoatBallData;
-import com.github.albatross256.PetBall.BallData.HorseBallData;
-import com.github.albatross256.PetBall.BallData.IronGolemBallData;
-import com.github.albatross256.PetBall.BallData.LlamaBallData;
-import com.github.albatross256.PetBall.BallData.MuleBallData;
-import com.github.albatross256.PetBall.BallData.MushroomBallData;
-import com.github.albatross256.PetBall.BallData.OcelotBallData;
-import com.github.albatross256.PetBall.BallData.PandaBallData;
-import com.github.albatross256.PetBall.BallData.ParrotBallData;
-import com.github.albatross256.PetBall.BallData.PigBallData;
-import com.github.albatross256.PetBall.BallData.PiglinBallData;
-import com.github.albatross256.PetBall.BallData.PolarBearBallData;
-import com.github.albatross256.PetBall.BallData.PufferFishBallData;
-import com.github.albatross256.PetBall.BallData.RabbitBallData;
-import com.github.albatross256.PetBall.BallData.SalmonBallData;
-import com.github.albatross256.PetBall.BallData.SheepBallData;
-import com.github.albatross256.PetBall.BallData.SkeletonHorseBallData;
-import com.github.albatross256.PetBall.BallData.SnowGolemBallData;
-import com.github.albatross256.PetBall.BallData.SquidBallData;
-import com.github.albatross256.PetBall.BallData.StriderBallData;
-import com.github.albatross256.PetBall.BallData.TraderLlamaBallData;
-import com.github.albatross256.PetBall.BallData.TropicalFishData;
-import com.github.albatross256.PetBall.BallData.TurtleBallData;
-import com.github.albatross256.PetBall.BallData.VillagerBallData;
-import com.github.albatross256.PetBall.BallData.WanderingTraderBallData;
-import com.github.albatross256.PetBall.BallData.WolfBallData;
-import com.github.albatross256.PetBall.BallData.ZombieHorseBallData;
-
+import com.github.albatross256.PetBall.BallData.*;
 import org.bukkit.entity.EntityType;
 
 public class BallManager {
@@ -94,6 +55,9 @@ public class BallManager {
 				new AxolotlBallData(),
 				new GoatBallData(),
 				new GlowSquidBallData(),
+				new AllayBallData(),
+				new FrogBallData(),
+				new TadpoleBallData(),
 		};
 
 		for(BallData ballData : ballDatas) {

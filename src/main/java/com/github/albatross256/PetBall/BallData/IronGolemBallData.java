@@ -12,11 +12,9 @@ public class IronGolemBallData extends BallData{
 
 	@Override
 	public Material getFilledBallMaterial() {
-		return Material.STRAY_SPAWN_EGG;
+		return Material.IRON_GOLEM_SPAWN_EGG;
 	}
 
 	@Override
-	public EntityType getFilledBallEntityType() {
-		return EntityType.STRAY;
-	}
+	public EntityType getFilledBallEntityType() { return EntityType.IRON_GOLEM; }
 }
