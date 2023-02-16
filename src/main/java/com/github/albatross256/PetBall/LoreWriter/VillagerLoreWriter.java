@@ -2,6 +2,8 @@ package com.github.albatross256.PetBall.LoreWriter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -12,7 +14,7 @@ import org.bukkit.inventory.MerchantRecipe;
 
 public class VillagerLoreWriter extends LoreWriter {
 	
-	// private static final ResourceBundle BUNDLE = ResourceBundle.getBundle("com.github.albatross256.PetBall.LoreWriter.VillagerLoreWriter", Locale.JAPANESE);
+	private static final ResourceBundle BUNDLE = ResourceBundle.getBundle("com.github.albatross256.PetBall.LoreWriter.VillagerLoreWriter", Locale.JAPANESE);
 
 	@Override
 	public List<String> generateLore(Entity entity) {
@@ -36,7 +38,7 @@ public class VillagerLoreWriter extends LoreWriter {
 		}
 
 		String profession = this.translateCareerName(((Villager)entity).getProfession());
-		// String profession = bundle.getString(((Villager)entity).getProfession().name());
+		// String profession = BUNDLE.getString(((Villager)entity).getProfession().name());
 		lore.add("職業: " + profession);
 		lore.add("交易1: " + trade1);
 		lore.add("交易2: " + trade2);
