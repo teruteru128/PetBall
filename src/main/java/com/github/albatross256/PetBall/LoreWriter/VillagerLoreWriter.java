@@ -37,8 +37,8 @@ public class VillagerLoreWriter extends LoreWriter {
 			trade2 = this.getRecipeText(((Villager)entity).getRecipe(1));
 		}
 
-		String profession = this.translateCareerName(((Villager)entity).getProfession());
-		// String profession = BUNDLE.getString(((Villager)entity).getProfession().name());
+		// String profession = this.translateCareerName(((Villager)entity).getProfession());
+		String profession = BUNDLE.getString(((Villager)entity).getProfession().name());
 		lore.add("職業: " + profession);
 		lore.add("交易1: " + trade1);
 		lore.add("交易2: " + trade2);
@@ -60,6 +60,12 @@ public class VillagerLoreWriter extends LoreWriter {
 	}
 
 
+	/**
+	 * @deprecated
+	 * @param eName
+	 * @return
+	 */
+	@Deprecated(forRemoval = true, since = "4.5.0-SNAPSHOT")
 	private String translateCareerName(Villager.Profession eName) {
 		switch(eName) {
 		case FARMER:
