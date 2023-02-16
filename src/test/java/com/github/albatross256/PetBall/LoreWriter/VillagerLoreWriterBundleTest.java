@@ -13,7 +13,7 @@ public class VillagerLoreWriterBundleTest {
 
   @Test
   void farmerTest() {
-    assertEquals(bundle.getString("Farmer"), "農民");
+    assertEquals(bundle.getString("FARMER"), "農民");
   }
 
 }
