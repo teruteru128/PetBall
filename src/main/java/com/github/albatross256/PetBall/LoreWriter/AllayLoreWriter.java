@@ -2,7 +2,6 @@ package com.github.albatross256.PetBall.LoreWriter;
 
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Allay;
-import org.bukkit.entity.Axolotl;
 import org.bukkit.entity.Entity;
 
 import java.util.ArrayList;
