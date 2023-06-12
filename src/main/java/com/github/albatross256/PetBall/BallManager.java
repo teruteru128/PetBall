@@ -58,6 +58,8 @@ public class BallManager {
 				new AllayBallData(),
 				new FrogBallData(),
 				new TadpoleBallData(),
+				new CamelBallData(),
+				new SnifferBallData(),
 		};
 
 		for(BallData ballData : ballDatas) {
