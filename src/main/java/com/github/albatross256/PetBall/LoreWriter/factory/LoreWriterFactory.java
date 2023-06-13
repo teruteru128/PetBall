@@ -89,6 +89,10 @@ public class LoreWriterFactory {
 			return new FrogLoreWriter();
 		case TADPOLE:
 			return new TadpoleLoreWriter();
+		case CAMEL:
+			return new CamelLoreWriter();
+		case SNIFFER:
+			return  new SnifferLoreWriter();
 		default:
 			return null;
 		}
