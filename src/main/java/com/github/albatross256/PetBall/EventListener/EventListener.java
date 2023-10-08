@@ -17,30 +17,25 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
+import org.bukkit.block.*;
+import org.bukkit.block.Barrel;
+import org.bukkit.block.Chest;
+import org.bukkit.block.ChiseledBookshelf;
 import org.bukkit.block.CommandBlock;
-import org.bukkit.block.Container;
 import org.bukkit.block.DaylightDetector;
-import org.bukkit.block.EnchantingTable;
+import org.bukkit.block.Dispenser;
 import org.bukkit.block.EnderChest;
+import org.bukkit.block.Furnace;
+import org.bukkit.block.Hopper;
+import org.bukkit.block.Jukebox;
+import org.bukkit.block.Sign;
+import org.bukkit.block.data.type.*;
 import org.bukkit.block.data.type.Bed;
-import org.bukkit.block.data.type.Cake;
 import org.bukkit.block.data.type.Comparator;
-import org.bukkit.block.data.type.Door;
-import org.bukkit.block.data.type.Gate;
-import org.bukkit.block.data.type.Repeater;
-import org.bukkit.block.data.type.Sign;
-import org.bukkit.block.data.type.Switch;
-import org.bukkit.block.data.type.TrapDoor;
-import org.bukkit.block.data.type.WallSign;
 import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack;
-import org.bukkit.entity.AbstractHorse;
-import org.bukkit.entity.ChestedHorse;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -87,10 +82,10 @@ public class EventListener implements Listener{
 	@EventHandler
 	public void onTap(PlayerInteractEvent event) {
 		if(event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
-			if(this.isEntityBall(event.getItem())) {
+			if (this.isEntityBall(event.getItem())) {
 				event.setCancelled(true);
 				return;
-			}else{
+			} else {
 				return;
 			}
 		}else if(!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
@@ -383,25 +378,77 @@ public class EventListener implements Listener{
 	}
 
 	private boolean isTouchable(Block block) {
-		if(	block.getState() instanceof Container ||
+
+		if( block.getType().equals(Material.IRON_DOOR) ||
+			block.getType().equals(Material.IRON_TRAPDOOR)){
+			// 鉄シリーズは問答無用でfalse
+			return false;
+		} else if(block.getState() instanceof Sign){
+			// 看板は編集可・不可の状態が変化するので、動的に取得する
+			// TODO 1.20.1では看板のワックスがけ状態を判別するフィールドがないため、決め打ち。20.2以降に実装を変更する
+//			return ((Sign)block.getState()).isWaxed();
+			return true;
+		} else if(
+			// それ以外
+			// ベルは触った場所が本体以外だとうまく動作しないが、場所を知る手立てがないため入れてない
+			// コンポスターは最大状態以外だとうまく動作しないが、知る手立てがないため入れていない
+			block.getState() instanceof Container ||
 			block.getState() instanceof EnderChest ||
 			block.getState() instanceof EnchantingTable ||
 			block.getState() instanceof CommandBlock ||
 			block.getState() instanceof DaylightDetector ||
+			block.getState() instanceof Jukebox ||
+			block.getState() instanceof ChiseledBookshelf ||
 			block.getBlockData() instanceof Door ||
 			block.getBlockData() instanceof TrapDoor ||
 			block.getBlockData() instanceof Bed ||
 			block.getBlockData() instanceof Gate ||
 			block.getBlockData() instanceof Cake ||
-			block.getBlockData() instanceof Sign ||
-			block.getBlockData() instanceof WallSign ||
 			block.getBlockData() instanceof Switch ||
 			block.getBlockData() instanceof Repeater ||
+			block.getBlockData() instanceof Dispenser ||
 			block.getBlockData() instanceof Comparator ||
+			block.getBlockData() instanceof Hopper ||
+			block.getBlockData() instanceof NoteBlock ||
+			block.getBlockData() instanceof Chest ||
+			block.getBlockData() instanceof Grindstone ||
+			block.getBlockData() instanceof Furnace ||
+			block.getBlockData() instanceof Barrel ||
 			block.getBlockData().getMaterial().equals(Material.CRAFTING_TABLE) ||
 			block.getBlockData().getMaterial().equals(Material.ANVIL) ||
 			block.getBlockData().getMaterial().equals(Material.CHIPPED_ANVIL) ||
 			block.getBlockData().getMaterial().equals(Material.DAMAGED_ANVIL) ||
+			block.getBlockData().getMaterial().equals(Material.BEACON) ||
+			block.getBlockData().getMaterial().equals(Material.BREWING_STAND) ||
+			block.getBlockData().getMaterial().equals(Material.FURNACE_MINECART) ||
+			block.getBlockData().getMaterial().equals(Material.HOPPER_MINECART) ||
+			block.getBlockData().getMaterial().equals(Material.CAKE) ||
+			block.getBlockData().getMaterial().equals(Material.CANDLE_CAKE) ||
+			block.getBlockData().getMaterial().equals(Material.CHEST_MINECART) ||
+			block.getBlockData().getMaterial().equals(Material.COMMAND_BLOCK) ||
+			block.getBlockData().getMaterial().equals(Material.DAYLIGHT_DETECTOR) ||
+			block.getBlockData().getMaterial().equals(Material.RESPAWN_ANCHOR) ||
+			block.getBlockData().getMaterial().equals(Material.STONECUTTER) ||
+			block.getBlockData().getMaterial().equals(Material.CARTOGRAPHY_TABLE) ||
+			block.getBlockData().getMaterial().equals(Material.SMITHING_TABLE) ||
+			block.getBlockData().getMaterial().equals(Material.LOOM) ||
+			block.getBlockData().getMaterial().equals(Material.SHULKER_BOX) ||
+			block.getBlockData().getMaterial().equals(Material.RED_SHULKER_BOX) ||
+			block.getBlockData().getMaterial().equals(Material.ORANGE_SHULKER_BOX) ||
+			block.getBlockData().getMaterial().equals(Material.YELLOW_SHULKER_BOX) ||
+			block.getBlockData().getMaterial().equals(Material.LIME_SHULKER_BOX) ||
+			block.getBlockData().getMaterial().equals(Material.GREEN_SHULKER_BOX) ||
+			block.getBlockData().getMaterial().equals(Material.CYAN_SHULKER_BOX) ||
+			block.getBlockData().getMaterial().equals(Material.BLUE_SHULKER_BOX) ||
+			block.getBlockData().getMaterial().equals(Material.PURPLE_SHULKER_BOX) ||
+			block.getBlockData().getMaterial().equals(Material.MAGENTA_SHULKER_BOX) ||
+			block.getBlockData().getMaterial().equals(Material.LIGHT_BLUE_SHULKER_BOX) ||
+			block.getBlockData().getMaterial().equals(Material.PINK_SHULKER_BOX) ||
+			block.getBlockData().getMaterial().equals(Material.BROWN_SHULKER_BOX) ||
+			block.getBlockData().getMaterial().equals(Material.WHITE_SHULKER_BOX) ||
+			block.getBlockData().getMaterial().equals(Material.GRAY_SHULKER_BOX) ||
+			block.getBlockData().getMaterial().equals(Material.LIGHT_GRAY_SHULKER_BOX) ||
+			block.getBlockData().getMaterial().equals(Material.BLACK_SHULKER_BOX) ||
 			block.getBlockData().getMaterial().equals(Material.ANVIL)
 			) {
 			return true;
