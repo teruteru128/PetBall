@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.github.albatross256.PetBall.BallManager;
 import com.github.albatross256.PetBall.WorldManager;
@@ -32,9 +34,9 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.data.type.*;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.block.data.type.Comparator;
-import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -48,6 +50,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.NBTReadLimiter;
+
 
 /**
  * net.minecraft.server -> NMS
@@ -81,7 +85,11 @@ public class EventListener implements Listener{
 
 	@EventHandler
 	public void onTap(PlayerInteractEvent event) {
+		Logger logger = Logger.getLogger("onTap");
+		logger.log(Level.INFO,"onTap:start");
+		logger.log(Level.INFO,"event.getAction:" + event.getAction().toString());
 		if(event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
+			logger.log(Level.INFO,"this.isEntityBall:" + this.isEntityBall(event.getItem()));
 			if (this.isEntityBall(event.getItem())) {
 				event.setCancelled(true);
 				return;
@@ -98,12 +106,19 @@ public class EventListener implements Listener{
 				location.getZ() + event.getBlockFace().getModZ() + 0.5
 				);
 
+		logger.log(Level.INFO,"event.getPlayer().isSneaking():" + event.getPlayer().isSneaking());
+		logger.log(Level.INFO,"isTouchable(event.getClickedBlock()):" + isTouchable(event.getClickedBlock()));
 		if(!event.getPlayer().isSneaking() && isTouchable(event.getClickedBlock())) return;
 
 		ItemStack mainItem = event.getPlayer().getInventory().getItemInMainHand();
 		ItemStack offItem = event.getPlayer().getInventory().getItemInOffHand();
 		ItemStack entityBall = null;
 
+		logger.log(Level.INFO,"isEntityBall(mainItem):" + isEntityBall(mainItem));
+		logger.log(Level.INFO,"isEntityEmptyBall(mainItem):" + isEntityEmptyBall(mainItem));
+		logger.log(Level.INFO,"isEntityBall(offItem):" + isEntityBall(offItem));
+		logger.log(Level.INFO,"isEntityEmptyBall(offItem):" + isEntityEmptyBall(offItem));
+		logger.log(Level.INFO,"mainItem.getType().equals(Material.AIR):" + mainItem.getType().equals(Material.AIR));
 		if(isEntityBall(mainItem)){
 			event.setCancelled(true);
 			if(isEntityEmptyBall(mainItem)) {
@@ -122,6 +137,7 @@ public class EventListener implements Listener{
 
 		if(entityBall == null) return;
 
+		logger.log(Level.INFO,"isUsableWorld:" + this.worldManager.isUsableWorld(event.getPlayer().getWorld().getName()));
 		if(!this.worldManager.isUsableWorld(event.getPlayer().getWorld().getName())) return;
 
 		// CraftItemStack.asNMSCopy(entityBall).getTag() -> CraftItemStack.asNMSCopy(entityBall).t()
@@ -131,6 +147,7 @@ public class EventListener implements Listener{
 		Entity entity = null;
 
 		BallData ballData = null;
+		// このへんでとまっている
 		for(String key : this.ballManager.getAllBallDatas().keySet()) {
 			BallData eachBallData = this.ballManager.getAllBallDatas().get(key);
 
@@ -151,6 +168,7 @@ public class EventListener implements Listener{
 			}
 		}
 
+		logger.log(Level.INFO,"entity:" + entity);
 		if(entity == null) return;
 
 
@@ -160,7 +178,8 @@ public class EventListener implements Listener{
 
 		ByteArrayInputStream bais = new ByteArrayInputStream(byteNbt);
 		try {
-			CompoundTag nbt = NbtIo.readCompressed(bais);
+//			CompoundTag nbt = NbtIo.readCompressed(bais);
+			CompoundTag nbt = NbtIo.readCompressed(bais, NBTReadLimiter.unlimitedHeap());
 			((CraftEntity) entity).getHandle().load(nbt);
 			// Entity.setPositionRotation(double, double, double, float, float) -> absMoveTo(double,double,double,float,float) -> a(double,double,double,float,float) ?
 			((CraftEntity) entity).getHandle().absMoveTo(newLocation.getX(), newLocation.getY(), newLocation.getZ(), 0, 0);
@@ -192,15 +211,18 @@ public class EventListener implements Listener{
 		Player player = event.getPlayer();
 		PlayerInventory inventory = player.getInventory();
 
+//		logger.log(Level.INFO,"inventory.getItem(inventory.getHeldItemSlot()):" + inventory.getItem(inventory.getHeldItemSlot()));
 		if(inventory.getItem(inventory.getHeldItemSlot()) == null ) {
 			inventory.setItem(inventory.getHeldItemSlot(), addItem);
 		}else {
 			HashMap<Integer, ItemStack> notAddedItems = inventory.addItem(addItem);
+//			logger.log(Level.INFO,"notAddedItems.isEmpty():" + notAddedItems.isEmpty());
 			if(!notAddedItems.isEmpty()) {
 				player.getWorld().dropItem(player.getLocation(), notAddedItems.get(0));
 				player.sendMessage(ChatColor.GREEN + "[PetBall] " + ChatColor.RED +":: 空きスロット不足 :: 空のPetBallを地面に捨てました" );
 			}
 		}
+//		logger.log(Level.INFO,"onTap Complete");
 	}
 
 	private ItemStack getMetaItem(ItemStack item, String key, String value) {
@@ -385,9 +407,7 @@ public class EventListener implements Listener{
 			return false;
 		} else if(block.getState() instanceof Sign){
 			// 看板は編集可・不可の状態が変化するので、動的に取得する
-			// TODO 1.20.1では看板のワックスがけ状態を判別するフィールドがないため、決め打ち。20.2以降に実装を変更する
-//			return ((Sign)block.getState()).isWaxed();
-			return true;
+			return !((Sign)block.getState()).isWaxed();
 		} else if(
 			// それ以外
 			// ベルは触った場所が本体以外だとうまく動作しないが、場所を知る手立てがないため入れてない
