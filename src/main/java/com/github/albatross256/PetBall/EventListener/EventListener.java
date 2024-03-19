@@ -86,10 +86,10 @@ public class EventListener implements Listener{
 	Logger logger = Logger.getLogger("EventListener");
 	@EventHandler
 	public void onTap(PlayerInteractEvent event) {
-		logger.log(Level.INFO,"onTap:start");
-		logger.log(Level.INFO,"event.getAction:" + event.getAction().toString());
+		//logger.log(Level.INFO,"onTap:start");
+		//logger.log(Level.INFO,"event.getAction:" + event.getAction().toString());
 		if(event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
-			logger.log(Level.INFO,"this.isEntityBall:" + this.isEntityBall(event.getItem()));
+			//logger.log(Level.INFO,"this.isEntityBall:" + this.isEntityBall(event.getItem()));
 			if (this.isEntityBall(event.getItem())) {
 				event.setCancelled(true);
 				return;
@@ -106,19 +106,19 @@ public class EventListener implements Listener{
 				location.getZ() + event.getBlockFace().getModZ() + 0.5
 				);
 
-		logger.log(Level.INFO,"event.getPlayer().isSneaking():" + event.getPlayer().isSneaking());
-		logger.log(Level.INFO,"isTouchable(event.getClickedBlock()):" + isTouchable(event.getClickedBlock()));
+		//logger.log(Level.INFO,"event.getPlayer().isSneaking():" + event.getPlayer().isSneaking());
+		//logger.log(Level.INFO,"isTouchable(event.getClickedBlock()):" + isTouchable(event.getClickedBlock()));
 		if(!event.getPlayer().isSneaking() && isTouchable(event.getClickedBlock())) return;
 
 		ItemStack mainItem = event.getPlayer().getInventory().getItemInMainHand();
 		ItemStack offItem = event.getPlayer().getInventory().getItemInOffHand();
 		ItemStack entityBall = null;
 
-		logger.log(Level.INFO,"isEntityBall(mainItem):" + isEntityBall(mainItem));
-		logger.log(Level.INFO,"isEntityEmptyBall(mainItem):" + isEntityEmptyBall(mainItem));
-		logger.log(Level.INFO,"isEntityBall(offItem):" + isEntityBall(offItem));
-		logger.log(Level.INFO,"isEntityEmptyBall(offItem):" + isEntityEmptyBall(offItem));
-		logger.log(Level.INFO,"mainItem.getType().equals(Material.AIR):" + mainItem.getType().equals(Material.AIR));
+		//logger.log(Level.INFO,"isEntityBall(mainItem):" + isEntityBall(mainItem));
+		//logger.log(Level.INFO,"isEntityEmptyBall(mainItem):" + isEntityEmptyBall(mainItem));
+		//logger.log(Level.INFO,"isEntityBall(offItem):" + isEntityBall(offItem));
+		//logger.log(Level.INFO,"isEntityEmptyBall(offItem):" + isEntityEmptyBall(offItem));
+		//logger.log(Level.INFO,"mainItem.getType().equals(Material.AIR):" + mainItem.getType().equals(Material.AIR));
 		if(isEntityBall(mainItem)){
 			event.setCancelled(true);
 			if(isEntityEmptyBall(mainItem)) {
@@ -137,7 +137,7 @@ public class EventListener implements Listener{
 
 		if(entityBall == null) return;
 
-		logger.log(Level.INFO,"isUsableWorld:" + this.worldManager.isUsableWorld(event.getPlayer().getWorld().getName()));
+		//logger.log(Level.INFO,"isUsableWorld:" + this.worldManager.isUsableWorld(event.getPlayer().getWorld().getName()));
 		if(!this.worldManager.isUsableWorld(event.getPlayer().getWorld().getName())) return;
 
 		// CraftItemStack.asNMSCopy(entityBall).getTag() -> CraftItemStack.asNMSCopy(entityBall).t()
@@ -167,7 +167,7 @@ public class EventListener implements Listener{
 			}
 		}
 
-		logger.log(Level.INFO,"entity:" + entity);
+		//logger.log(Level.INFO,"entity:" + entity);
 		if(entity == null) return;
 
 
