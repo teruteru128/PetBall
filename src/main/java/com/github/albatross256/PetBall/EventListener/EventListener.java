@@ -344,7 +344,7 @@ public class EventListener implements Listener{
 		try {
 			NbtIo.writeCompressed(tag, baos);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.getLogger().throwing("EventListener", "onPlayerInteractEntityEvent", e);
 		}
 		byte[] byteNbt = baos.toByteArray();
 
