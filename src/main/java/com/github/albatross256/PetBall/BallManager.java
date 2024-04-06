@@ -1,6 +1,7 @@
 package com.github.albatross256.PetBall;
 
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.EnumMap;
 import java.util.Map;
 
 import com.github.albatross256.PetBall.BallData.*;
@@ -8,15 +9,15 @@ import org.bukkit.entity.EntityType;
 
 public class BallManager {
 
-	Map<String, BallData> ballDatas;
+	protected Map<EntityType, BallData> ballData;
 
 	public BallManager() {
-		this.ballDatas = new HashMap<String, BallData>();
-		init();
+        init();
 	}
 
 	private void init() {
-		BallData[] ballDatas = {
+		var map  = new EnumMap<EntityType, BallData>(EntityType.class);
+		BallData[] ballDataArray = {
 				new VillagerBallData(),
 				new CatBallData(),
 				new OcelotBallData(),
@@ -62,21 +63,22 @@ public class BallManager {
 				new SnifferBallData(),
 		};
 
-		for(BallData ballData : ballDatas) {
-			registerBall(ballData);
+		for(BallData ballData : ballDataArray) {
+			registerBall(map, ballData);
 		}
+		this.ballData = Collections.unmodifiableMap(map);
 	}
 
-	public void registerBall(BallData ballData) {
-		this.ballDatas.put(ballData.getEntityType().toString(), ballData);
+	private static void registerBall(EnumMap<EntityType, BallData> map, BallData ballData) {
+		map.put(ballData.getEntityType(), ballData);
 	}
 
-	public Map<String, BallData> getAllBallDatas() {
-		return this.ballDatas;
+	public Map<EntityType, BallData> getAllBallDatas() {
+		return this.ballData;
 	}
 
 	public BallData getBallData(EntityType entityType) {
-		return this.ballDatas.get(entityType.toString());
+		return this.ballData.get(entityType);
 	}
 
 

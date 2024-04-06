@@ -1,44 +1,50 @@
 package com.github.albatross256.PetBall.EventListener;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import com.github.albatross256.PetBall.BallManager;
-import com.github.albatross256.PetBall.WorldManager;
 import com.github.albatross256.PetBall.BallData.BallData;
+import com.github.albatross256.PetBall.BallManager;
 import com.github.albatross256.PetBall.LoreWriter.factory.LoreWriterFactory;
-
+import com.github.albatross256.PetBall.Main;
+import com.github.albatross256.PetBall.WorldManager;
+import com.twitter.teruteru128.logger.Logger;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
+import net.minecraft.nbt.NbtIo;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.*;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Barrel;
+import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.ChiseledBookshelf;
 import org.bukkit.block.CommandBlock;
+import org.bukkit.block.Container;
 import org.bukkit.block.DaylightDetector;
 import org.bukkit.block.Dispenser;
+import org.bukkit.block.EnchantingTable;
 import org.bukkit.block.EnderChest;
 import org.bukkit.block.Furnace;
 import org.bukkit.block.Hopper;
 import org.bukkit.block.Jukebox;
 import org.bukkit.block.Sign;
-import org.bukkit.block.data.type.*;
 import org.bukkit.block.data.type.Bed;
+import org.bukkit.block.data.type.Cake;
 import org.bukkit.block.data.type.Comparator;
+import org.bukkit.block.data.type.Door;
+import org.bukkit.block.data.type.Gate;
+import org.bukkit.block.data.type.Grindstone;
+import org.bukkit.block.data.type.NoteBlock;
+import org.bukkit.block.data.type.Repeater;
+import org.bukkit.block.data.type.Switch;
+import org.bukkit.block.data.type.TrapDoor;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
-import org.bukkit.entity.*;
+import org.bukkit.entity.ChestedHorse;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -48,9 +54,21 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.Plugin;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtIo;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static org.bukkit.Material.*;
 
 
 /**
@@ -58,45 +76,56 @@ import net.minecraft.nbt.NbtIo;
 */
 public class EventListener implements Listener{
 
-	private BallManager ballManager;
+    private static final Set<Material> MATERIALS = Collections.unmodifiableSet(EnumSet.of(CRAFTING_TABLE, CHIPPED_ANVIL, DAMAGED_ANVIL, BEACON, BREWING_STAND, FURNACE_MINECART, HOPPER_MINECART, CAKE, CANDLE_CAKE, CHEST_MINECART, COMMAND_BLOCK, DAYLIGHT_DETECTOR, RESPAWN_ANCHOR, STONECUTTER, CARTOGRAPHY_TABLE, SMITHING_TABLE, LOOM, SHULKER_BOX, RED_SHULKER_BOX, ORANGE_SHULKER_BOX, YELLOW_SHULKER_BOX, LIME_SHULKER_BOX, GREEN_SHULKER_BOX, CYAN_SHULKER_BOX, BLUE_SHULKER_BOX, PURPLE_SHULKER_BOX, MAGENTA_SHULKER_BOX, LIGHT_BLUE_SHULKER_BOX, PINK_SHULKER_BOX, BROWN_SHULKER_BOX, WHITE_SHULKER_BOX, GRAY_SHULKER_BOX, LIGHT_GRAY_SHULKER_BOX, BLACK_SHULKER_BOX, ANVIL));
+    private static final Set<Material> TYPES = Collections.unmodifiableSet(EnumSet.of(IRON_DOOR, IRON_TRAPDOOR));
+    private BallManager ballManager;
 	private WorldManager worldManager;
-
-	public EventListener(BallManager ballManager, WorldManager worldManager) {
-
+	private Logger logger;
+	private Plugin plugin;
+	public EventListener(BallManager ballManager, WorldManager worldManager, Main main) {
+		plugin = main;
+		var config = main.getConfig();
+		var logLevel = config.getString("log-level");
+		boolean logLevelIsNull = false;
+		if (logLevel == null) {
+			logLevel = "info";
+			logLevelIsNull = true;
+		}
+		logger = new Logger(java.util.logging.Logger.getLogger(getClass().getCanonicalName()), logLevel);
+		if (logLevelIsNull) {
+			logger.warn("log-levelに値がセットされていないためINFOに設定されました");
+		}
 		this.ballManager = ballManager;
 		this.worldManager = worldManager;
 	}
 
 	@EventHandler
 	public void onBlockDispense(BlockDispenseEvent event){
-		if(event.isCancelled() || event.getBlock().getType() .equals(Material.DROPPER)) return;
+		if(event.isCancelled() || event.getBlock().getType() .equals(DROPPER)) return;
 		if(isEntityBall(event.getItem())){
 			event.setCancelled(true);
 		}
 	}
 
 	private boolean canCatch(EntityType type) {
-		for(String key : this.ballManager.getAllBallDatas().keySet()) {
-			BallData ballData = this.ballManager.getAllBallDatas().get(key);
-			if(ballData.getEntityType().equals(type)) return true;
-		}
-		return false;
+		return this.ballManager.getAllBallDatas().containsKey(type);
 	}
 
-	Logger logger = Logger.getLogger("EventListener");
 	@EventHandler
 	public void onTap(PlayerInteractEvent event) {
-		//logger.log(Level.INFO,"onTap:start");
-		//logger.log(Level.INFO,"event.getAction:" + event.getAction().toString());
 		if(event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
-			//logger.log(Level.INFO,"this.isEntityBall:" + this.isEntityBall(event.getItem()));
 			if (this.isEntityBall(event.getItem())) {
 				event.setCancelled(true);
+				logger.trace("is entity ball 1");
 				return;
 			} else {
+				logger.trace("is not entity ball 2");
 				return;
 			}
-		}else if(!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
+		}else if(!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+			logger.trace("is not action RIGHT_CLICK_BLOCK");
+			return;
+		}
 
 		Location location = event.getClickedBlock().getLocation();
 		Location newLocation = new Location(
@@ -106,22 +135,19 @@ public class EventListener implements Listener{
 				location.getZ() + event.getBlockFace().getModZ() + 0.5
 				);
 
-		//logger.log(Level.INFO,"event.getPlayer().isSneaking():" + event.getPlayer().isSneaking());
-		//logger.log(Level.INFO,"isTouchable(event.getClickedBlock()):" + isTouchable(event.getClickedBlock()));
-		if(!event.getPlayer().isSneaking() && isTouchable(event.getClickedBlock())) return;
+		if(!event.getPlayer().isSneaking() && isTouchable(event.getClickedBlock())) {
+			logger.trace("is not Sneaking or is Touchable");
+			return;
+		}
 
 		ItemStack mainItem = event.getPlayer().getInventory().getItemInMainHand();
 		ItemStack offItem = event.getPlayer().getInventory().getItemInOffHand();
 		ItemStack entityBall = null;
 
-		//logger.log(Level.INFO,"isEntityBall(mainItem):" + isEntityBall(mainItem));
-		//logger.log(Level.INFO,"isEntityEmptyBall(mainItem):" + isEntityEmptyBall(mainItem));
-		//logger.log(Level.INFO,"isEntityBall(offItem):" + isEntityBall(offItem));
-		//logger.log(Level.INFO,"isEntityEmptyBall(offItem):" + isEntityEmptyBall(offItem));
-		//logger.log(Level.INFO,"mainItem.getType().equals(Material.AIR):" + mainItem.getType().equals(Material.AIR));
 		if(isEntityBall(mainItem)){
 			event.setCancelled(true);
 			if(isEntityEmptyBall(mainItem)) {
+				logger.trace("is not entity empty ball");
 				return;
 			}else{
 				entityBall = mainItem;
@@ -129,18 +155,23 @@ public class EventListener implements Listener{
 		}else if(isEntityBall(offItem)) {
 			event.setCancelled(true);
 			if(isEntityEmptyBall(offItem)) {
+				logger.trace("is entity empty ball");
 				return;
-			}else if(mainItem.getType().equals(Material.AIR)){
+			}else if(mainItem.getType().equals(AIR)){
 				entityBall = offItem;
 			}
 		}
 
-		if(entityBall == null) return;
+		if(entityBall == null) {
+			logger.trace("entity ball is null");
+			return;
+		}
 
-		//logger.log(Level.INFO,"isUsableWorld:" + this.worldManager.isUsableWorld(event.getPlayer().getWorld().getName()));
-		if(!this.worldManager.isUsableWorld(event.getPlayer().getWorld().getName())) return;
+		if(!this.worldManager.isUsableWorld(event.getPlayer().getWorld().getName())) {
+			logger.trace("is not Usable World");
+			return;
+		}
 
-		// CraftItemStack.asNMSCopy(entityBall).getTag() -> CraftItemStack.asNMSCopy(entityBall).t()
 		CompoundTag nbtTag =  CraftItemStack.asNMSCopy(entityBall).getTag();
 
 
@@ -148,40 +179,47 @@ public class EventListener implements Listener{
 
 		BallData ballData = null;
 		// このへんでとまっている
-		for(String key : this.ballManager.getAllBallDatas().keySet()) {
-			BallData eachBallData = this.ballManager.getAllBallDatas().get(key);
-
-			if(eachBallData.getEntityType().toString().equals(nbtTag.getString(BallData.ENTITYBALL_CONTENT_KEY))) {
+		var allBallDatas = this.ballManager.getAllBallDatas();
+		var entityBallContentKey = nbtTag.getString(BallData.ENTITYBALL_CONTENT_KEY);
+		logger.trace("entityBallContentKey = " + entityBallContentKey);
+		for(EntityType key : allBallDatas.keySet()) {
+			BallData eachBallData = allBallDatas.get(key);
+			if(eachBallData.getEntityType().toString().equals(entityBallContentKey)) {
 				event.setCancelled(true);
 
 				//同時出し入れ対策2
-				// worldData -> E -> M
-				// net.minecraft.world.level.storage.DerivedLevelData.getTime() -> e()
-				Long currentTime = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().getWorld().getTime();
-				// getLong -> i
-				if(Math.abs(nbtTag.getLong(BallData.ENTITYBALL_TIMESTAMP_KEY) - currentTime) < 1) return;
+				var world = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().getWorld();
+				long currentTime = world.getTime();
+				long fullTime = world.getFullTime();
+				var entityBallTimestamp = nbtTag.getLong(BallData.ENTITYBALL_TIMESTAMP_KEY);
+				var abs = Math.abs(entityBallTimestamp - currentTime);
+				logger.trace("entityBallTimestamp = " + entityBallTimestamp + ", currentTime = " + currentTime + ", fullTime = " + fullTime + ", diff = " + abs);
+				if(abs < 1) {
+					return;
+				}
 
+				logger.trace("spawn entity = " + key);
 				entity = location.getWorld().spawnEntity(newLocation, eachBallData.getEntityType());
 				ballData = eachBallData;
 				break;
 			}
 		}
 
-		//logger.log(Level.INFO,"entity:" + entity);
-		if(entity == null) return;
+		if(entity == null) {
+			logger.trace("entity is null");
+			return;
+		}
 
 
 		/* 以下 NBTの解析及び埋め込み */
 		byte[] byteNbt = nbtTag.getByteArray(BallData.ENTITYBALL_NBT_KEY);
 
 		try (ByteArrayInputStream bais = new ByteArrayInputStream(byteNbt)) {
-//			CompoundTag nbt = NbtIo.readCompressed(bais);
 			CompoundTag nbt = NbtIo.readCompressed(bais, NbtAccounter.unlimitedHeap());
 			((CraftEntity) entity).getHandle().load(nbt);
-			// Entity.setPositionRotation(double, double, double, float, float) -> absMoveTo(double,double,double,float,float) -> a(double,double,double,float,float) ?
 			((CraftEntity) entity).getHandle().absMoveTo(newLocation.getX(), newLocation.getY(), newLocation.getZ(), 0, 0);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.getLogger().throwing("com.github.albatross256.PetBall.EventListener.EventListener", "onTap", e);
 		}
 
 
@@ -208,18 +246,16 @@ public class EventListener implements Listener{
 		Player player = event.getPlayer();
 		PlayerInventory inventory = player.getInventory();
 
-//		logger.log(Level.INFO,"inventory.getItem(inventory.getHeldItemSlot()):" + inventory.getItem(inventory.getHeldItemSlot()));
 		if(inventory.getItem(inventory.getHeldItemSlot()) == null ) {
 			inventory.setItem(inventory.getHeldItemSlot(), addItem);
 		}else {
 			HashMap<Integer, ItemStack> notAddedItems = inventory.addItem(addItem);
-//			logger.log(Level.INFO,"notAddedItems.isEmpty():" + notAddedItems.isEmpty());
 			if(!notAddedItems.isEmpty()) {
 				player.getWorld().dropItem(player.getLocation(), notAddedItems.get(0));
 				player.sendMessage(ChatColor.GREEN + "[PetBall] " + ChatColor.RED +":: 空きスロット不足 :: 空のPetBallを地面に捨てました" );
 			}
 		}
-//		logger.log(Level.INFO,"onTap Complete");
+		logger.trace("onTap done");
 	}
 
 	private ItemStack getMetaItem(ItemStack item, String key, String value) {
@@ -260,8 +296,9 @@ public class EventListener implements Listener{
 		ItemStack offItem = event.getPlayer().getInventory().getItemInOffHand();
 
 		//子供生成対策
-		for(String key : this.ballManager.getAllBallDatas().keySet()) {
-			BallData ballData = this.ballManager.getAllBallDatas().get(key);
+		var allBallDatas = this.ballManager.getAllBallDatas();
+		for(EntityType key : allBallDatas.keySet()) {
+			BallData ballData = allBallDatas.get(key);
 
 			if(event.getRightClicked().getType().equals(ballData.getFilledBallEntityType())) {
 				if(isEntityBall(mainItem) && !isEntityEmptyBall(mainItem) && mainItem.getType().equals(ballData.getFilledBallMaterial())) {
@@ -280,30 +317,41 @@ public class EventListener implements Listener{
 				}
 			}
 		}
-
 		ItemStack entityEmptyBall = null;
-		if(!isEntityBall(mainItem) && !isEntityBall(offItem)) return;
-		if(!this.canCatch(event.getRightClicked().getType())) return;
+		if(!isEntityBall(mainItem) && !isEntityBall(offItem)) {
+			logger.trace("not entity ball");
+			return;
+		}
+		if(!this.canCatch(event.getRightClicked().getType())) {
+			logger.trace("can not catch RightClicked");
+			return;
+		}
 
 		boolean isMainHand = true;
 		if(this.isEntityEmptyBall(mainItem)) {
 			entityEmptyBall = mainItem;
 			isMainHand = true;
-		}else if(this.isEntityEmptyBall(offItem) && mainItem.getType().equals(Material.AIR)) {
+		}else if(this.isEntityEmptyBall(offItem) && mainItem.getType().equals(AIR)) {
 			entityEmptyBall = offItem;
 			isMainHand = false;
 		}
 
-		if(!this.worldManager.isUsableWorld(event.getPlayer().getWorld().getName())) return;
+		if(!this.worldManager.isUsableWorld(event.getPlayer().getWorld().getName())) {
+			logger.trace("usage world");
+			return;
+		}
 
-		// getTag -> t
 		CompoundTag handItemNbttag = CraftItemStack.asNMSCopy(mainItem).getTag();
-		// hasKey -> contains(e), getString -> l
-		if(handItemNbttag == null || !handItemNbttag.contains(BallData.ENTITYBALL_CONTENT_KEY) || !handItemNbttag.getString(BallData.ENTITYBALL_CONTENT_KEY).equals(BallData.ENTITYBALL_CONTENT_EMPTY)) return;
+		if(handItemNbttag == null || !handItemNbttag.contains(BallData.ENTITYBALL_CONTENT_KEY) ||
+				!handItemNbttag.getString(BallData.ENTITYBALL_CONTENT_KEY).equals(BallData.ENTITYBALL_CONTENT_EMPTY)) {
+			logger.trace("not entity ball");
+			return;
+		}
 
 		Entity entity = event.getRightClicked();
 
 		if(!this.canCatch(entity.getType())) {
+			logger.trace("can not catch");
 			return;
 		}
 
@@ -312,20 +360,19 @@ public class EventListener implements Listener{
 		 * 馬 チェストアイテム ばらまき
 		 */
 
-		if(entity instanceof ChestedHorse) {
+		if(entity instanceof ChestedHorse horse) {
 			Location entityLocation  = entity.getLocation();
 			Location dropItemLocation = new Location(entity.getWorld(), entityLocation.getX()+0.5, entityLocation.getY()+0.5, entityLocation.getZ()+0.5);
-			for(ItemStack strageItem : ((ChestedHorse)entity).getInventory().getStorageContents()) {
+			for(ItemStack strageItem : horse.getInventory().getStorageContents()) {
 				if(strageItem != null) {
 					entity.getWorld().dropItem(dropItemLocation, strageItem);
 				}
 			}
-			((AbstractHorse)entity).getInventory().clear();
+			horse.getInventory().clear();
 		}
 
 		net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity) entity).getHandle();
 		CompoundTag tag = new CompoundTag();
-		// NBTタグを追加しているのか削除しているのかメソッド名からわからない nmsEntity.saveAsPassenger(tag) -> nmsEntity.d(tag)-> nmsEntity.d(tag)
 		nmsEntity.saveAsPassenger(tag);
 		event.setCancelled(true);
 
@@ -337,27 +384,28 @@ public class EventListener implements Listener{
 		try {
 			NbtIo.writeCompressed(tag, baos);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.getLogger().throwing("EventListener", "onPlayerInteractEntityEvent", e);
 		}
 		byte[] byteNbt = baos.toByteArray();
 
 		//空気対策
-		// getString -> l
-		if(tag.getString("id") == null || tag.getString("id").equals("")) return;
+		if(tag.getString("id") == null || tag.getString("id").equals("")) {
+			logger.trace("tag is empty");
+			return;
+		}
 
-		// setByteArray -> putByteArray -> a, setString -> putString -> a
 		nbttag.putByteArray(BallData.ENTITYBALL_NBT_KEY, byteNbt);
 		nbttag.putString(BallData.ENTITYBALL_CONTENT_KEY, entity.getType().toString());
 
 		/*
 		 * 出し入れ同時対策1
 		 */
-		Long time = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().getWorld().getTime();
-		// setLong -> putLong -> a
+		long time = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().getWorld().getTime();
 		nbttag.putLong(BallData.ENTITYBALL_TIMESTAMP_KEY, time);
-		//entity.getPersistentDataContainer().set(new NamespacedKey(this.plugin, BallData.ENTITYBALL_TIMESTAMP_KEY), PersistentDataType.LONG, entity.getWorld().getFullTime());
+		var fullTime = entity.getWorld().getFullTime();
+		logger.trace("time = " + time + ", fullTime = " + fullTime);
+		entity.getPersistentDataContainer().set(new NamespacedKey(this.plugin, BallData.ENTITYBALL_TIMESTAMP_KEY), PersistentDataType.LONG, fullTime);
 
-		// setTag -> c
 		itemCopy.setTag(nbttag);
 		ItemStack entityBall = CraftItemStack.asBukkitCopy(itemCopy);
 
@@ -387,82 +435,50 @@ public class EventListener implements Listener{
 		}
 
 		entity.remove();
+		logger.trace("done");
 	}
 
 	private boolean isTouchable(Block block) {
 
-		if( block.getType().equals(Material.IRON_DOOR) ||
-			block.getType().equals(Material.IRON_TRAPDOOR)){
+		var type = block.getType();
+		if(TYPES.contains(type)){
 			// 鉄シリーズは問答無用でfalse
 			return false;
-		} else if(block.getState() instanceof Sign){
-			// 看板は編集可・不可の状態が変化するので、動的に取得する
-			return !((Sign)block.getState()).isWaxed();
-		} else if(
-			// それ以外
-			// ベルは触った場所が本体以外だとうまく動作しないが、場所を知る手立てがないため入れてない
-			// コンポスターは最大状態以外だとうまく動作しないが、知る手立てがないため入れていない
-			block.getState() instanceof Container ||
-			block.getState() instanceof EnderChest ||
-			block.getState() instanceof EnchantingTable ||
-			block.getState() instanceof CommandBlock ||
-			block.getState() instanceof DaylightDetector ||
-			block.getState() instanceof Jukebox ||
-			block.getState() instanceof ChiseledBookshelf ||
-			block.getBlockData() instanceof Door ||
-			block.getBlockData() instanceof TrapDoor ||
-			block.getBlockData() instanceof Bed ||
-			block.getBlockData() instanceof Gate ||
-			block.getBlockData() instanceof Cake ||
-			block.getBlockData() instanceof Switch ||
-			block.getBlockData() instanceof Repeater ||
-			block.getBlockData() instanceof Dispenser ||
-			block.getBlockData() instanceof Comparator ||
-			block.getBlockData() instanceof Hopper ||
-			block.getBlockData() instanceof NoteBlock ||
-			block.getBlockData() instanceof Chest ||
-			block.getBlockData() instanceof Grindstone ||
-			block.getBlockData() instanceof Furnace ||
-			block.getBlockData() instanceof Barrel ||
-			block.getBlockData().getMaterial().equals(Material.CRAFTING_TABLE) ||
-			block.getBlockData().getMaterial().equals(Material.ANVIL) ||
-			block.getBlockData().getMaterial().equals(Material.CHIPPED_ANVIL) ||
-			block.getBlockData().getMaterial().equals(Material.DAMAGED_ANVIL) ||
-			block.getBlockData().getMaterial().equals(Material.BEACON) ||
-			block.getBlockData().getMaterial().equals(Material.BREWING_STAND) ||
-			block.getBlockData().getMaterial().equals(Material.FURNACE_MINECART) ||
-			block.getBlockData().getMaterial().equals(Material.HOPPER_MINECART) ||
-			block.getBlockData().getMaterial().equals(Material.CAKE) ||
-			block.getBlockData().getMaterial().equals(Material.CANDLE_CAKE) ||
-			block.getBlockData().getMaterial().equals(Material.CHEST_MINECART) ||
-			block.getBlockData().getMaterial().equals(Material.COMMAND_BLOCK) ||
-			block.getBlockData().getMaterial().equals(Material.DAYLIGHT_DETECTOR) ||
-			block.getBlockData().getMaterial().equals(Material.RESPAWN_ANCHOR) ||
-			block.getBlockData().getMaterial().equals(Material.STONECUTTER) ||
-			block.getBlockData().getMaterial().equals(Material.CARTOGRAPHY_TABLE) ||
-			block.getBlockData().getMaterial().equals(Material.SMITHING_TABLE) ||
-			block.getBlockData().getMaterial().equals(Material.LOOM) ||
-			block.getBlockData().getMaterial().equals(Material.SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.RED_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.ORANGE_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.YELLOW_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.LIME_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.GREEN_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.CYAN_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.BLUE_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.PURPLE_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.MAGENTA_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.LIGHT_BLUE_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.PINK_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.BROWN_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.WHITE_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.GRAY_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.LIGHT_GRAY_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.BLACK_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.ANVIL)
-			) {
-			return true;
+		} else {
+			var state = block.getState();
+			if(state instanceof Sign sign){
+				// 看板は編集可・不可の状態が変化するので、動的に取得する
+				return !sign.isWaxed();
+			} else {
+				var blockData = block.getBlockData();
+				var material = blockData.getMaterial();
+                // それ以外
+                // ベルは触った場所が本体以外だとうまく動作しないが、場所を知る手立てがないため入れてない
+                // コンポスターは最大状態以外だとうまく動作しないが、知る手立てがないため入れていない
+                return state instanceof Container ||
+                        state instanceof EnderChest ||
+                        state instanceof EnchantingTable ||
+                        state instanceof CommandBlock ||
+                        state instanceof DaylightDetector ||
+                        state instanceof Jukebox ||
+                        state instanceof ChiseledBookshelf ||
+                        blockData instanceof Door ||
+                        blockData instanceof TrapDoor ||
+                        blockData instanceof Bed ||
+                        blockData instanceof Gate ||
+                        blockData instanceof Cake ||
+                        blockData instanceof Switch ||
+                        blockData instanceof Repeater ||
+                        blockData instanceof Dispenser ||
+                        blockData instanceof Comparator ||
+                        blockData instanceof Hopper ||
+                        blockData instanceof NoteBlock ||
+                        blockData instanceof Chest ||
+                        blockData instanceof Grindstone ||
+                        blockData instanceof Furnace ||
+                        blockData instanceof Barrel ||
+                        MATERIALS.contains(material);
+			}
 		}
-		return false;
-	}
+    }
 }
