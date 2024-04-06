@@ -61,9 +61,14 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import static org.bukkit.Material.*;
 
 
 /**
@@ -71,7 +76,9 @@ import java.util.Map;
 */
 public class EventListener implements Listener{
 
-	private BallManager ballManager;
+    private static final Set<Material> MATERIALS = Collections.unmodifiableSet(EnumSet.of(CRAFTING_TABLE, CHIPPED_ANVIL, DAMAGED_ANVIL, BEACON, BREWING_STAND, FURNACE_MINECART, HOPPER_MINECART, CAKE, CANDLE_CAKE, CHEST_MINECART, COMMAND_BLOCK, DAYLIGHT_DETECTOR, RESPAWN_ANCHOR, STONECUTTER, CARTOGRAPHY_TABLE, SMITHING_TABLE, LOOM, SHULKER_BOX, RED_SHULKER_BOX, ORANGE_SHULKER_BOX, YELLOW_SHULKER_BOX, LIME_SHULKER_BOX, GREEN_SHULKER_BOX, CYAN_SHULKER_BOX, BLUE_SHULKER_BOX, PURPLE_SHULKER_BOX, MAGENTA_SHULKER_BOX, LIGHT_BLUE_SHULKER_BOX, PINK_SHULKER_BOX, BROWN_SHULKER_BOX, WHITE_SHULKER_BOX, GRAY_SHULKER_BOX, LIGHT_GRAY_SHULKER_BOX, BLACK_SHULKER_BOX, ANVIL));
+    private static final Set<Material> TYPES = Collections.unmodifiableSet(EnumSet.of(IRON_DOOR, IRON_TRAPDOOR));
+    private BallManager ballManager;
 	private WorldManager worldManager;
 	private Logger logger;
 	private Plugin plugin;
@@ -85,7 +92,7 @@ public class EventListener implements Listener{
 
 	@EventHandler
 	public void onBlockDispense(BlockDispenseEvent event){
-		if(event.isCancelled() || event.getBlock().getType() .equals(Material.DROPPER)) return;
+		if(event.isCancelled() || event.getBlock().getType() .equals(DROPPER)) return;
 		if(isEntityBall(event.getItem())){
 			event.setCancelled(true);
 		}
@@ -135,7 +142,7 @@ public class EventListener implements Listener{
 			event.setCancelled(true);
 			if(isEntityEmptyBall(offItem)) {
 				return;
-			}else if(mainItem.getType().equals(Material.AIR)){
+			}else if(mainItem.getType().equals(AIR)){
 				entityBall = offItem;
 			}
 		}
@@ -289,7 +296,7 @@ public class EventListener implements Listener{
 		if(this.isEntityEmptyBall(mainItem)) {
 			entityEmptyBall = mainItem;
 			isMainHand = true;
-		}else if(this.isEntityEmptyBall(offItem) && mainItem.getType().equals(Material.AIR)) {
+		}else if(this.isEntityEmptyBall(offItem) && mainItem.getType().equals(AIR)) {
 			entityEmptyBall = offItem;
 			isMainHand = false;
 		}
@@ -396,78 +403,45 @@ public class EventListener implements Listener{
 
 	private boolean isTouchable(Block block) {
 
-		if( block.getType().equals(Material.IRON_DOOR) ||
-			block.getType().equals(Material.IRON_TRAPDOOR)){
+		var type = block.getType();
+		if(TYPES.contains(type)){
 			// 鉄シリーズは問答無用でfalse
 			return false;
-		} else if(block.getState() instanceof Sign){
-			// 看板は編集可・不可の状態が変化するので、動的に取得する
-			return !((Sign)block.getState()).isWaxed();
-		} else if(
-			// それ以外
-			// ベルは触った場所が本体以外だとうまく動作しないが、場所を知る手立てがないため入れてない
-			// コンポスターは最大状態以外だとうまく動作しないが、知る手立てがないため入れていない
-			block.getState() instanceof Container ||
-			block.getState() instanceof EnderChest ||
-			block.getState() instanceof EnchantingTable ||
-			block.getState() instanceof CommandBlock ||
-			block.getState() instanceof DaylightDetector ||
-			block.getState() instanceof Jukebox ||
-			block.getState() instanceof ChiseledBookshelf ||
-			block.getBlockData() instanceof Door ||
-			block.getBlockData() instanceof TrapDoor ||
-			block.getBlockData() instanceof Bed ||
-			block.getBlockData() instanceof Gate ||
-			block.getBlockData() instanceof Cake ||
-			block.getBlockData() instanceof Switch ||
-			block.getBlockData() instanceof Repeater ||
-			block.getBlockData() instanceof Dispenser ||
-			block.getBlockData() instanceof Comparator ||
-			block.getBlockData() instanceof Hopper ||
-			block.getBlockData() instanceof NoteBlock ||
-			block.getBlockData() instanceof Chest ||
-			block.getBlockData() instanceof Grindstone ||
-			block.getBlockData() instanceof Furnace ||
-			block.getBlockData() instanceof Barrel ||
-			block.getBlockData().getMaterial().equals(Material.CRAFTING_TABLE) ||
-			block.getBlockData().getMaterial().equals(Material.ANVIL) ||
-			block.getBlockData().getMaterial().equals(Material.CHIPPED_ANVIL) ||
-			block.getBlockData().getMaterial().equals(Material.DAMAGED_ANVIL) ||
-			block.getBlockData().getMaterial().equals(Material.BEACON) ||
-			block.getBlockData().getMaterial().equals(Material.BREWING_STAND) ||
-			block.getBlockData().getMaterial().equals(Material.FURNACE_MINECART) ||
-			block.getBlockData().getMaterial().equals(Material.HOPPER_MINECART) ||
-			block.getBlockData().getMaterial().equals(Material.CAKE) ||
-			block.getBlockData().getMaterial().equals(Material.CANDLE_CAKE) ||
-			block.getBlockData().getMaterial().equals(Material.CHEST_MINECART) ||
-			block.getBlockData().getMaterial().equals(Material.COMMAND_BLOCK) ||
-			block.getBlockData().getMaterial().equals(Material.DAYLIGHT_DETECTOR) ||
-			block.getBlockData().getMaterial().equals(Material.RESPAWN_ANCHOR) ||
-			block.getBlockData().getMaterial().equals(Material.STONECUTTER) ||
-			block.getBlockData().getMaterial().equals(Material.CARTOGRAPHY_TABLE) ||
-			block.getBlockData().getMaterial().equals(Material.SMITHING_TABLE) ||
-			block.getBlockData().getMaterial().equals(Material.LOOM) ||
-			block.getBlockData().getMaterial().equals(Material.SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.RED_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.ORANGE_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.YELLOW_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.LIME_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.GREEN_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.CYAN_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.BLUE_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.PURPLE_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.MAGENTA_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.LIGHT_BLUE_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.PINK_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.BROWN_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.WHITE_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.GRAY_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.LIGHT_GRAY_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.BLACK_SHULKER_BOX) ||
-			block.getBlockData().getMaterial().equals(Material.ANVIL)
-			) {
-			return true;
+		} else {
+			var state = block.getState();
+			if(state instanceof Sign sign){
+				// 看板は編集可・不可の状態が変化するので、動的に取得する
+				return !sign.isWaxed();
+			} else {
+				var blockData = block.getBlockData();
+				var material = blockData.getMaterial();
+                // それ以外
+                // ベルは触った場所が本体以外だとうまく動作しないが、場所を知る手立てがないため入れてない
+                // コンポスターは最大状態以外だとうまく動作しないが、知る手立てがないため入れていない
+                return state instanceof Container ||
+                        state instanceof EnderChest ||
+                        state instanceof EnchantingTable ||
+                        state instanceof CommandBlock ||
+                        state instanceof DaylightDetector ||
+                        state instanceof Jukebox ||
+                        state instanceof ChiseledBookshelf ||
+                        blockData instanceof Door ||
+                        blockData instanceof TrapDoor ||
+                        blockData instanceof Bed ||
+                        blockData instanceof Gate ||
+                        blockData instanceof Cake ||
+                        blockData instanceof Switch ||
+                        blockData instanceof Repeater ||
+                        blockData instanceof Dispenser ||
+                        blockData instanceof Comparator ||
+                        blockData instanceof Hopper ||
+                        blockData instanceof NoteBlock ||
+                        blockData instanceof Chest ||
+                        blockData instanceof Grindstone ||
+                        blockData instanceof Furnace ||
+                        blockData instanceof Barrel ||
+                        MATERIALS.contains(material);
+			}
 		}
-		return false;
-	}
+    }
 }
