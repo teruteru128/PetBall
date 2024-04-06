@@ -320,15 +320,15 @@ public class EventListener implements Listener{
 		 * 馬 チェストアイテム ばらまき
 		 */
 
-		if(entity instanceof ChestedHorse) {
+		if(entity instanceof ChestedHorse horse) {
 			Location entityLocation  = entity.getLocation();
 			Location dropItemLocation = new Location(entity.getWorld(), entityLocation.getX()+0.5, entityLocation.getY()+0.5, entityLocation.getZ()+0.5);
-			for(ItemStack strageItem : ((ChestedHorse)entity).getInventory().getStorageContents()) {
+			for(ItemStack strageItem : horse.getInventory().getStorageContents()) {
 				if(strageItem != null) {
 					entity.getWorld().dropItem(dropItemLocation, strageItem);
 				}
 			}
-			((AbstractHorse)entity).getInventory().clear();
+			horse.getInventory().clear();
 		}
 
 		net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity) entity).getHandle();
