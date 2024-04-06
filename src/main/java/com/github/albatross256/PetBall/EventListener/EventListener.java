@@ -85,7 +85,16 @@ public class EventListener implements Listener{
 	public EventListener(BallManager ballManager, WorldManager worldManager, Main main) {
 		plugin = main;
 		var config = main.getConfig();
-		logger = new Logger(java.util.logging.Logger.getLogger(getClass().toString()), config.getString("log-level"));
+		var logLevel = config.getString("log-level");
+		boolean logLevelIsNull = false;
+		if (logLevel == null) {
+			logLevel = "info";
+			logLevelIsNull = true;
+		}
+		logger = new Logger(java.util.logging.Logger.getLogger(getClass().getCanonicalName()), logLevel);
+		if (logLevelIsNull) {
+			logger.warn("log-levelに値がセットされていないためINFOに設定されました");
+		}
 		this.ballManager = ballManager;
 		this.worldManager = worldManager;
 	}
