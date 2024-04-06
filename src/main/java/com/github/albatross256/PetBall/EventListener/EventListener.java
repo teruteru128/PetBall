@@ -85,7 +85,7 @@ public class EventListener implements Listener{
 	public EventListener(BallManager ballManager, WorldManager worldManager, Main main) {
 		plugin = main;
 		var config = main.getConfig();
-		logger = new Logger(main, config.getString("log-level"));
+		logger = new Logger(java.util.logging.Logger.getLogger(getClass().toString()), config.getString("log-level"));
 		this.ballManager = ballManager;
 		this.worldManager = worldManager;
 	}
