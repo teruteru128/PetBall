@@ -41,7 +41,6 @@ import org.bukkit.block.data.type.TrapDoor;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
-import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -55,7 +54,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.Plugin;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -76,6 +76,7 @@ public class EventListener implements Listener{
 	private Logger logger;
 	private Plugin plugin;
 	public EventListener(BallManager ballManager, WorldManager worldManager, Main main) {
+		plugin = main;
 		var config = main.getConfig();
 		logger = new Logger(main, config.getString("log-level"));
 		this.ballManager = ballManager;
