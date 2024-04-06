@@ -1,43 +1,49 @@
 package com.github.albatross256.PetBall.EventListener;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-
-import com.github.albatross256.PetBall.BallManager;
-import com.github.albatross256.PetBall.WorldManager;
 import com.github.albatross256.PetBall.BallData.BallData;
+import com.github.albatross256.PetBall.BallManager;
 import com.github.albatross256.PetBall.LoreWriter.factory.LoreWriterFactory;
-
+import com.github.albatross256.PetBall.WorldManager;
+import com.github.albatross256.PetBall.logging.Logger;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
+import net.minecraft.nbt.NbtIo;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.*;
 import org.bukkit.block.Barrel;
+import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.ChiseledBookshelf;
 import org.bukkit.block.CommandBlock;
+import org.bukkit.block.Container;
 import org.bukkit.block.DaylightDetector;
 import org.bukkit.block.Dispenser;
+import org.bukkit.block.EnchantingTable;
 import org.bukkit.block.EnderChest;
 import org.bukkit.block.Furnace;
 import org.bukkit.block.Hopper;
 import org.bukkit.block.Jukebox;
 import org.bukkit.block.Sign;
-import org.bukkit.block.data.type.*;
 import org.bukkit.block.data.type.Bed;
+import org.bukkit.block.data.type.Cake;
 import org.bukkit.block.data.type.Comparator;
+import org.bukkit.block.data.type.Door;
+import org.bukkit.block.data.type.Gate;
+import org.bukkit.block.data.type.Grindstone;
+import org.bukkit.block.data.type.NoteBlock;
+import org.bukkit.block.data.type.Repeater;
+import org.bukkit.block.data.type.Switch;
+import org.bukkit.block.data.type.TrapDoor;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
-import org.bukkit.entity.*;
+import org.bukkit.entity.AbstractHorse;
+import org.bukkit.entity.ChestedHorse;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -47,9 +53,15 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.java.JavaPlugin;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtIo;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -59,9 +71,10 @@ public class EventListener implements Listener{
 
 	private BallManager ballManager;
 	private WorldManager worldManager;
-
-	public EventListener(BallManager ballManager, WorldManager worldManager) {
-
+	private Logger logger;
+	public EventListener(BallManager ballManager, WorldManager worldManager, JavaPlugin main) {
+		var config = main.getConfig();
+		logger = new Logger(main, config.getString("log-level"));
 		this.ballManager = ballManager;
 		this.worldManager = worldManager;
 	}
@@ -263,10 +276,16 @@ public class EventListener implements Listener{
 				}
 			}
 		}
-
+		logger.trace("子供生成対策終わり");
 		ItemStack entityEmptyBall = null;
-		if(!isEntityBall(mainItem) && !isEntityBall(offItem)) return;
-		if(!this.canCatch(event.getRightClicked().getType())) return;
+		if(!isEntityBall(mainItem) && !isEntityBall(offItem)) {
+			logger.trace("not entity ball");
+			return;
+		}
+		if(!this.canCatch(event.getRightClicked().getType())) {
+			logger.trace("can not catch RightClicked");
+			return;
+		}
 
 		boolean isMainHand = true;
 		if(this.isEntityEmptyBall(mainItem)) {
@@ -277,16 +296,24 @@ public class EventListener implements Listener{
 			isMainHand = false;
 		}
 
-		if(!this.worldManager.isUsableWorld(event.getPlayer().getWorld().getName())) return;
+		if(!this.worldManager.isUsableWorld(event.getPlayer().getWorld().getName())) {
+			logger.trace("usage world");
+			return;
+		}
 
 		// getTag -> t
 		CompoundTag handItemNbttag = CraftItemStack.asNMSCopy(mainItem).getTag();
 		// hasKey -> contains(e), getString -> l
-		if(handItemNbttag == null || !handItemNbttag.contains(BallData.ENTITYBALL_CONTENT_KEY) || !handItemNbttag.getString(BallData.ENTITYBALL_CONTENT_KEY).equals(BallData.ENTITYBALL_CONTENT_EMPTY)) return;
+		if(handItemNbttag == null || !handItemNbttag.contains(BallData.ENTITYBALL_CONTENT_KEY) ||
+				!handItemNbttag.getString(BallData.ENTITYBALL_CONTENT_KEY).equals(BallData.ENTITYBALL_CONTENT_EMPTY)) {
+			logger.trace("not entity ball");
+			return;
+		}
 
 		Entity entity = event.getRightClicked();
 
 		if(!this.canCatch(entity.getType())) {
+			logger.trace("can not catch");
 			return;
 		}
 
@@ -326,7 +353,10 @@ public class EventListener implements Listener{
 
 		//空気対策
 		// getString -> l
-		if(tag.getString("id") == null || tag.getString("id").equals("")) return;
+		if(tag.getString("id") == null || tag.getString("id").equals("")) {
+			logger.trace("tag is empty");
+			return;
+		}
 
 		// setByteArray -> putByteArray -> a, setString -> putString -> a
 		nbttag.putByteArray(BallData.ENTITYBALL_NBT_KEY, byteNbt);
@@ -370,6 +400,7 @@ public class EventListener implements Listener{
 		}
 
 		entity.remove();
+		logger.trace("done");
 	}
 
 	private boolean isTouchable(Block block) {

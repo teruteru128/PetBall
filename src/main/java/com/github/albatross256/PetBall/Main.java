@@ -14,7 +14,7 @@ public class Main extends JavaPlugin{
     public void onEnable() {
 		this.ballManager = new BallManager();
 		this.worldManager = new WorldManager(this);
-		this.getServer().getPluginManager().registerEvents(new EventListener(ballManager, worldManager), this);
+		this.getServer().getPluginManager().registerEvents(new EventListener(ballManager, worldManager, this), this);
 
 		new BallRecipeManager(this, ballManager.getAllBallDatas()).init();
     }
