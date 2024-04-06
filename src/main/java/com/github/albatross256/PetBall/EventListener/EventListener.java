@@ -116,11 +116,16 @@ public class EventListener implements Listener{
 		if(event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
 			if (this.isEntityBall(event.getItem())) {
 				event.setCancelled(true);
+				logger.trace("is entity ball 1");
 				return;
 			} else {
+				logger.trace("is not entity ball 2");
 				return;
 			}
-		}else if(!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
+		}else if(!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+			logger.trace("is not action RIGHT_CLICK_BLOCK");
+			return;
+		}
 
 		Location location = event.getClickedBlock().getLocation();
 		Location newLocation = new Location(
@@ -130,7 +135,10 @@ public class EventListener implements Listener{
 				location.getZ() + event.getBlockFace().getModZ() + 0.5
 				);
 
-		if(!event.getPlayer().isSneaking() && isTouchable(event.getClickedBlock())) return;
+		if(!event.getPlayer().isSneaking() && isTouchable(event.getClickedBlock())) {
+			logger.trace("is not Sneaking or is Touchable");
+			return;
+		}
 
 		ItemStack mainItem = event.getPlayer().getInventory().getItemInMainHand();
 		ItemStack offItem = event.getPlayer().getInventory().getItemInOffHand();
@@ -139,6 +147,7 @@ public class EventListener implements Listener{
 		if(isEntityBall(mainItem)){
 			event.setCancelled(true);
 			if(isEntityEmptyBall(mainItem)) {
+				logger.trace("is not entity empty ball");
 				return;
 			}else{
 				entityBall = mainItem;
@@ -146,15 +155,22 @@ public class EventListener implements Listener{
 		}else if(isEntityBall(offItem)) {
 			event.setCancelled(true);
 			if(isEntityEmptyBall(offItem)) {
+				logger.trace("is entity empty ball");
 				return;
 			}else if(mainItem.getType().equals(AIR)){
 				entityBall = offItem;
 			}
 		}
 
-		if(entityBall == null) return;
+		if(entityBall == null) {
+			logger.trace("entity ball is null");
+			return;
+		}
 
-		if(!this.worldManager.isUsableWorld(event.getPlayer().getWorld().getName())) return;
+		if(!this.worldManager.isUsableWorld(event.getPlayer().getWorld().getName())) {
+			logger.trace("is not Usable World");
+			return;
+		}
 
 		CompoundTag nbtTag =  CraftItemStack.asNMSCopy(entityBall).getTag();
 
@@ -180,7 +196,10 @@ public class EventListener implements Listener{
 			}
 		}
 
-		if(entity == null) return;
+		if(entity == null) {
+			logger.trace("entity is null");
+			return;
+		}
 
 
 		/* 以下 NBTの解析及び埋め込み */
@@ -191,7 +210,7 @@ public class EventListener implements Listener{
 			((CraftEntity) entity).getHandle().load(nbt);
 			((CraftEntity) entity).getHandle().absMoveTo(newLocation.getX(), newLocation.getY(), newLocation.getZ(), 0, 0);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.getLogger().throwing("com.github.albatross256.PetBall.EventListener.EventListener", "onTap", e);
 		}
 
 
@@ -227,6 +246,7 @@ public class EventListener implements Listener{
 				player.sendMessage(ChatColor.GREEN + "[PetBall] " + ChatColor.RED +":: 空きスロット不足 :: 空のPetBallを地面に捨てました" );
 			}
 		}
+		logger.trace("onTap done");
 	}
 
 	private ItemStack getMetaItem(ItemStack item, String key, String value) {
@@ -288,7 +308,6 @@ public class EventListener implements Listener{
 				}
 			}
 		}
-		logger.trace("子供生成対策終わり");
 		ItemStack entityEmptyBall = null;
 		if(!isEntityBall(mainItem) && !isEntityBall(offItem)) {
 			logger.trace("not entity ball");
