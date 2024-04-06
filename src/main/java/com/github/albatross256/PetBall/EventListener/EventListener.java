@@ -372,7 +372,7 @@ public class EventListener implements Listener{
 		/*
 		 * 出し入れ同時対策1
 		 */
-		Long time = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().getWorld().getTime();
+		long time = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().getWorld().getTime();
 		nbttag.putLong(BallData.ENTITYBALL_TIMESTAMP_KEY, time);
 		entity.getPersistentDataContainer().set(new NamespacedKey(this.plugin, BallData.ENTITYBALL_TIMESTAMP_KEY), PersistentDataType.LONG, entity.getWorld().getFullTime());
 
