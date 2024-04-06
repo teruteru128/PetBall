@@ -180,16 +180,25 @@ public class EventListener implements Listener{
 		BallData ballData = null;
 		// このへんでとまっている
 		var allBallDatas = this.ballManager.getAllBallDatas();
+		var entityBallContentKey = nbtTag.getString(BallData.ENTITYBALL_CONTENT_KEY);
+		logger.trace("entityBallContentKey = " + entityBallContentKey);
 		for(EntityType key : allBallDatas.keySet()) {
 			BallData eachBallData = allBallDatas.get(key);
-
-			if(eachBallData.getEntityType().toString().equals(nbtTag.getString(BallData.ENTITYBALL_CONTENT_KEY))) {
+			if(eachBallData.getEntityType().toString().equals(entityBallContentKey)) {
 				event.setCancelled(true);
 
 				//同時出し入れ対策2
-				Long currentTime = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().getWorld().getTime();
-				if(Math.abs(nbtTag.getLong(BallData.ENTITYBALL_TIMESTAMP_KEY) - currentTime) < 1) return;
+				var world = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().getWorld();
+				long currentTime = world.getTime();
+				long fullTime = world.getFullTime();
+				var entityBallTimestamp = nbtTag.getLong(BallData.ENTITYBALL_TIMESTAMP_KEY);
+				var abs = Math.abs(entityBallTimestamp - currentTime);
+				logger.trace("entityBallTimestamp = " + entityBallTimestamp + ", currentTime = " + currentTime + ", fullTime = " + fullTime + ", diff = " + abs);
+				if(abs < 1) {
+					return;
+				}
 
+				logger.trace("spawn entity = " + key);
 				entity = location.getWorld().spawnEntity(newLocation, eachBallData.getEntityType());
 				ballData = eachBallData;
 				break;
@@ -393,7 +402,9 @@ public class EventListener implements Listener{
 		 */
 		long time = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().getWorld().getTime();
 		nbttag.putLong(BallData.ENTITYBALL_TIMESTAMP_KEY, time);
-		entity.getPersistentDataContainer().set(new NamespacedKey(this.plugin, BallData.ENTITYBALL_TIMESTAMP_KEY), PersistentDataType.LONG, entity.getWorld().getFullTime());
+		var fullTime = entity.getWorld().getFullTime();
+		logger.trace("time = " + time + ", fullTime = " + fullTime);
+		entity.getPersistentDataContainer().set(new NamespacedKey(this.plugin, BallData.ENTITYBALL_TIMESTAMP_KEY), PersistentDataType.LONG, fullTime);
 
 		itemCopy.setTag(nbttag);
 		ItemStack entityBall = CraftItemStack.asBukkitCopy(itemCopy);
