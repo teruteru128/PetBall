@@ -9,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Main extends JavaPlugin{
 	public BallManager ballManager;
 	public WorldManager worldManager;
+	private BallRecipeManager ballRecipeManager;
 
 	@Override
     public void onEnable() {
@@ -16,6 +17,13 @@ public class Main extends JavaPlugin{
 		this.worldManager = new WorldManager(this);
 		this.getServer().getPluginManager().registerEvents(new EventListener(ballManager, worldManager, this), this);
 
-		new BallRecipeManager(this, ballManager.getAllBallDatas()).init();
+		ballRecipeManager = new BallRecipeManager(this, ballManager.getAllBallDatas());
+		ballRecipeManager.init();
+    }
+
+    @Override
+    public void onDisable() {
+		super.onDisable();
+		ballRecipeManager.disable();
     }
 }

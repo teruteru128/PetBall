@@ -21,6 +21,7 @@ public class BallRecipeManager {
 
 	private Map<EntityType, BallData> ballDatas;
 	private Plugin plugin;
+    private NamespacedKey key;
 
 
     public BallRecipeManager(Plugin plugin, Map<EntityType, BallData> map) {
@@ -43,7 +44,8 @@ public class BallRecipeManager {
 		meta.setLore(lore);
 		ball.setItemMeta(meta);
 
-		ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(this.plugin, BallData.BALL_NAME), ball);
+        key = new NamespacedKey(this.plugin, BallData.BALL_NAME);
+        ShapedRecipe recipe = new ShapedRecipe(key, ball);
 		recipe.shape(	"CBC",
 							"BAB",
 							"CBC");
@@ -51,5 +53,9 @@ public class BallRecipeManager {
 		recipe.setIngredient('B', Material.NETHER_STAR);
 		recipe.setIngredient('C', Material.ENDER_CHEST);
 		this.plugin.getServer().addRecipe(recipe);
+	}
+
+	public void disable(){
+		this.plugin.getServer().removeRecipe(key);
 	}
 }
