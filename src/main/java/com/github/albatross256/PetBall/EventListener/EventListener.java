@@ -99,11 +99,7 @@ public class EventListener implements Listener{
 	}
 
 	private boolean canCatch(EntityType type) {
-		for(String key : this.ballManager.getAllBallDatas().keySet()) {
-			BallData ballData = this.ballManager.getAllBallDatas().get(key);
-			if(ballData.getEntityType().equals(type)) return true;
-		}
-		return false;
+		return this.ballManager.getAllBallDatas().containsKey(type);
 	}
 
 	@EventHandler
@@ -158,8 +154,9 @@ public class EventListener implements Listener{
 
 		BallData ballData = null;
 		// このへんでとまっている
-		for(String key : this.ballManager.getAllBallDatas().keySet()) {
-			BallData eachBallData = this.ballManager.getAllBallDatas().get(key);
+		var allBallDatas = this.ballManager.getAllBallDatas();
+		for(EntityType key : allBallDatas.keySet()) {
+			BallData eachBallData = allBallDatas.get(key);
 
 			if(eachBallData.getEntityType().toString().equals(nbtTag.getString(BallData.ENTITYBALL_CONTENT_KEY))) {
 				event.setCancelled(true);
@@ -261,8 +258,9 @@ public class EventListener implements Listener{
 		ItemStack offItem = event.getPlayer().getInventory().getItemInOffHand();
 
 		//子供生成対策
-		for(String key : this.ballManager.getAllBallDatas().keySet()) {
-			BallData ballData = this.ballManager.getAllBallDatas().get(key);
+		var allBallDatas = this.ballManager.getAllBallDatas();
+		for(EntityType key : allBallDatas.keySet()) {
+			BallData ballData = allBallDatas.get(key);
 
 			if(event.getRightClicked().getType().equals(ballData.getFilledBallEntityType())) {
 				if(isEntityBall(mainItem) && !isEntityEmptyBall(mainItem) && mainItem.getType().equals(ballData.getFilledBallMaterial())) {

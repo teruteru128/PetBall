@@ -7,6 +7,7 @@ import java.util.Map;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -18,11 +19,11 @@ import net.minecraft.nbt.CompoundTag;
 
 public class BallRecipeManager {
 
-	private Map<String, BallData> ballDatas;
+	private Map<EntityType, BallData> ballDatas;
 	private Plugin plugin;
 
 
-	public BallRecipeManager(Plugin plugin, Map<String, BallData> map) {
+    public BallRecipeManager(Plugin plugin, Map<EntityType, BallData> map) {
 		this.ballDatas = map;
 		this.plugin = plugin;
 	}
