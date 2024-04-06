@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.github.albatross256.PetBall.BallManager;
 import com.github.albatross256.PetBall.WorldManager;
@@ -83,13 +82,9 @@ public class EventListener implements Listener{
 		return false;
 	}
 
-	Logger logger = Logger.getLogger("EventListener");
 	@EventHandler
 	public void onTap(PlayerInteractEvent event) {
-		//logger.log(Level.INFO,"onTap:start");
-		//logger.log(Level.INFO,"event.getAction:" + event.getAction().toString());
 		if(event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
-			//logger.log(Level.INFO,"this.isEntityBall:" + this.isEntityBall(event.getItem()));
 			if (this.isEntityBall(event.getItem())) {
 				event.setCancelled(true);
 				return;
@@ -106,19 +101,12 @@ public class EventListener implements Listener{
 				location.getZ() + event.getBlockFace().getModZ() + 0.5
 				);
 
-		//logger.log(Level.INFO,"event.getPlayer().isSneaking():" + event.getPlayer().isSneaking());
-		//logger.log(Level.INFO,"isTouchable(event.getClickedBlock()):" + isTouchable(event.getClickedBlock()));
 		if(!event.getPlayer().isSneaking() && isTouchable(event.getClickedBlock())) return;
 
 		ItemStack mainItem = event.getPlayer().getInventory().getItemInMainHand();
 		ItemStack offItem = event.getPlayer().getInventory().getItemInOffHand();
 		ItemStack entityBall = null;
 
-		//logger.log(Level.INFO,"isEntityBall(mainItem):" + isEntityBall(mainItem));
-		//logger.log(Level.INFO,"isEntityEmptyBall(mainItem):" + isEntityEmptyBall(mainItem));
-		//logger.log(Level.INFO,"isEntityBall(offItem):" + isEntityBall(offItem));
-		//logger.log(Level.INFO,"isEntityEmptyBall(offItem):" + isEntityEmptyBall(offItem));
-		//logger.log(Level.INFO,"mainItem.getType().equals(Material.AIR):" + mainItem.getType().equals(Material.AIR));
 		if(isEntityBall(mainItem)){
 			event.setCancelled(true);
 			if(isEntityEmptyBall(mainItem)) {
@@ -137,7 +125,6 @@ public class EventListener implements Listener{
 
 		if(entityBall == null) return;
 
-		//logger.log(Level.INFO,"isUsableWorld:" + this.worldManager.isUsableWorld(event.getPlayer().getWorld().getName()));
 		if(!this.worldManager.isUsableWorld(event.getPlayer().getWorld().getName())) return;
 
 		// CraftItemStack.asNMSCopy(entityBall).getTag() -> CraftItemStack.asNMSCopy(entityBall).t()
@@ -167,7 +154,6 @@ public class EventListener implements Listener{
 			}
 		}
 
-		//logger.log(Level.INFO,"entity:" + entity);
 		if(entity == null) return;
 
 
@@ -208,18 +194,15 @@ public class EventListener implements Listener{
 		Player player = event.getPlayer();
 		PlayerInventory inventory = player.getInventory();
 
-//		logger.log(Level.INFO,"inventory.getItem(inventory.getHeldItemSlot()):" + inventory.getItem(inventory.getHeldItemSlot()));
 		if(inventory.getItem(inventory.getHeldItemSlot()) == null ) {
 			inventory.setItem(inventory.getHeldItemSlot(), addItem);
 		}else {
 			HashMap<Integer, ItemStack> notAddedItems = inventory.addItem(addItem);
-//			logger.log(Level.INFO,"notAddedItems.isEmpty():" + notAddedItems.isEmpty());
 			if(!notAddedItems.isEmpty()) {
 				player.getWorld().dropItem(player.getLocation(), notAddedItems.get(0));
 				player.sendMessage(ChatColor.GREEN + "[PetBall] " + ChatColor.RED +":: 空きスロット不足 :: 空のPetBallを地面に捨てました" );
 			}
 		}
-//		logger.log(Level.INFO,"onTap Complete");
 	}
 
 	private ItemStack getMetaItem(ItemStack item, String key, String value) {
