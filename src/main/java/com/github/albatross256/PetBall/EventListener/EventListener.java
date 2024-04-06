@@ -299,9 +299,7 @@ public class EventListener implements Listener{
 			return;
 		}
 
-		// getTag -> t
 		CompoundTag handItemNbttag = CraftItemStack.asNMSCopy(mainItem).getTag();
-		// hasKey -> contains(e), getString -> l
 		if(handItemNbttag == null || !handItemNbttag.contains(BallData.ENTITYBALL_CONTENT_KEY) ||
 				!handItemNbttag.getString(BallData.ENTITYBALL_CONTENT_KEY).equals(BallData.ENTITYBALL_CONTENT_EMPTY)) {
 			logger.trace("not entity ball");
