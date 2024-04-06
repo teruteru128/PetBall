@@ -3,6 +3,7 @@ package com.github.albatross256.PetBall.EventListener;
 import com.github.albatross256.PetBall.BallData.BallData;
 import com.github.albatross256.PetBall.BallManager;
 import com.github.albatross256.PetBall.LoreWriter.factory.LoreWriterFactory;
+import com.github.albatross256.PetBall.Main;
 import com.github.albatross256.PetBall.WorldManager;
 import com.github.albatross256.PetBall.logging.Logger;
 import net.minecraft.nbt.CompoundTag;
@@ -12,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Barrel;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -72,7 +74,8 @@ public class EventListener implements Listener{
 	private BallManager ballManager;
 	private WorldManager worldManager;
 	private Logger logger;
-	public EventListener(BallManager ballManager, WorldManager worldManager, JavaPlugin main) {
+	private Plugin plugin;
+	public EventListener(BallManager ballManager, WorldManager worldManager, Main main) {
 		var config = main.getConfig();
 		logger = new Logger(main, config.getString("log-level"));
 		this.ballManager = ballManager;
@@ -358,7 +361,7 @@ public class EventListener implements Listener{
 		 */
 		Long time = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().getWorld().getTime();
 		nbttag.putLong(BallData.ENTITYBALL_TIMESTAMP_KEY, time);
-		//entity.getPersistentDataContainer().set(new NamespacedKey(this.plugin, BallData.ENTITYBALL_TIMESTAMP_KEY), PersistentDataType.LONG, entity.getWorld().getFullTime());
+		entity.getPersistentDataContainer().set(new NamespacedKey(this.plugin, BallData.ENTITYBALL_TIMESTAMP_KEY), PersistentDataType.LONG, entity.getWorld().getFullTime());
 
 		itemCopy.setTag(nbttag);
 		ItemStack entityBall = CraftItemStack.asBukkitCopy(itemCopy);
