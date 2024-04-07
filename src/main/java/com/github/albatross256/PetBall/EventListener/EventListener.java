@@ -9,7 +9,6 @@ import com.twitter.teruteru128.logger.Logger;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -38,7 +37,6 @@ import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.block.data.type.Repeater;
 import org.bukkit.block.data.type.Switch;
 import org.bukkit.block.data.type.TrapDoor;
-import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.entity.ChestedHorse;
@@ -188,13 +186,11 @@ public class EventListener implements Listener{
 				event.setCancelled(true);
 
 				//同時出し入れ対策2
-				var world = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().getWorld();
-				long currentTime = world.getTime();
-				long fullTime = world.getFullTime();
+				long currentTime = System.nanoTime();
 				var entityBallTimestamp = nbtTag.getLong(BallData.ENTITYBALL_TIMESTAMP_KEY);
-				var abs = Math.abs(entityBallTimestamp - currentTime);
-				logger.trace("entityBallTimestamp = " + entityBallTimestamp + ", currentTime = " + currentTime + ", fullTime = " + fullTime + ", diff = " + abs);
-				if(abs < 1) {
+				var abs = Math.abs(currentTime - entityBallTimestamp);
+				// 差が1ミリ秒未満だった場合拒否する
+				if(abs < 1000000) {
 					return;
 				}
 
@@ -400,11 +396,9 @@ public class EventListener implements Listener{
 		/*
 		 * 出し入れ同時対策1
 		 */
-		long time = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().getWorld().getTime();
+		long time = System.nanoTime();
 		nbttag.putLong(BallData.ENTITYBALL_TIMESTAMP_KEY, time);
-		var fullTime = entity.getWorld().getFullTime();
-		logger.trace("time = " + time + ", fullTime = " + fullTime);
-		entity.getPersistentDataContainer().set(new NamespacedKey(this.plugin, BallData.ENTITYBALL_TIMESTAMP_KEY), PersistentDataType.LONG, fullTime);
+		entity.getPersistentDataContainer().set(new NamespacedKey(this.plugin, BallData.ENTITYBALL_TIMESTAMP_KEY), PersistentDataType.LONG, time);
 
 		itemCopy.setTag(nbttag);
 		ItemStack entityBall = CraftItemStack.asBukkitCopy(itemCopy);
