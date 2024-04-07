@@ -190,7 +190,7 @@ public class EventListener implements Listener{
 				var entityBallTimestamp = nbtTag.getLong(BallData.ENTITYBALL_TIMESTAMP_KEY);
 				var abs = Math.abs(currentTime - entityBallTimestamp);
 				logger.trace("currentTime = " + currentTime + ", entityBallTimestamp = " + entityBallTimestamp + ", diff = " + abs);
-				// 差が1ミリ秒未満だった場合拒否する
+				// 差が50ミリ秒未満だった場合拒否する
 				if (abs < 50) {
 					return;
 				}
