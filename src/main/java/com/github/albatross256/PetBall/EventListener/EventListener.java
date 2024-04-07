@@ -186,11 +186,12 @@ public class EventListener implements Listener{
 				event.setCancelled(true);
 
 				//同時出し入れ対策2
-				long currentTime = System.nanoTime();
+				long currentTime = System.currentTimeMillis();
 				var entityBallTimestamp = nbtTag.getLong(BallData.ENTITYBALL_TIMESTAMP_KEY);
 				var abs = Math.abs(currentTime - entityBallTimestamp);
+				logger.trace("currentTime = " + currentTime + ", entityBallTimestamp = " + entityBallTimestamp + ", diff = " + abs);
 				// 差が1ミリ秒未満だった場合拒否する
-				if(abs < 1000000) {
+				if (abs < 50) {
 					return;
 				}
 
@@ -396,7 +397,7 @@ public class EventListener implements Listener{
 		/*
 		 * 出し入れ同時対策1
 		 */
-		long time = System.nanoTime();
+		long time = System.currentTimeMillis();
 		nbttag.putLong(BallData.ENTITYBALL_TIMESTAMP_KEY, time);
 		entity.getPersistentDataContainer().set(new NamespacedKey(this.plugin, BallData.ENTITYBALL_TIMESTAMP_KEY), PersistentDataType.LONG, time);
 
