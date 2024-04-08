@@ -17,4 +17,6 @@ public class ConfigLoader {
 	public List<String> getUnsableWorldNames(){
 		return this.config.getStringList("UnusableWorldNames");
 	}
+
+	public String getLogLevel() { return this.config.getString("log-level"); }
 }

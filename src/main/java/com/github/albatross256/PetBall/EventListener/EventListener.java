@@ -82,107 +82,152 @@ public class EventListener implements Listener{
 	private Plugin plugin;
 	public EventListener(BallManager ballManager, WorldManager worldManager, Main main) {
 		plugin = main;
-		var config = main.getConfig();
-		var logLevel = config.getString("log-level");
-		boolean logLevelIsNull = false;
-		if (logLevel == null) {
-			logLevel = "info";
-			logLevelIsNull = true;
-		}
-		logger = new Logger(java.util.logging.Logger.getLogger(getClass().getCanonicalName()), logLevel);
-		if (logLevelIsNull) {
-			logger.warn("log-levelに値がセットされていないためINFOに設定されました");
-		}
+		// loggerの細かい設定はMainでしているので、levelは空文字にする
+		logger = new Logger(java.util.logging.Logger.getLogger(getClass().getCanonicalName()), "");
 		this.ballManager = ballManager;
 		this.worldManager = worldManager;
 	}
 
 	@EventHandler
 	public void onBlockDispense(BlockDispenseEvent event){
-		if(event.isCancelled() || event.getBlock().getType() .equals(DROPPER)) return;
+		logger.debug("onBlockDispense:Start");
+		logger.trace("event.isCancelled():" + event.isCancelled());
+		logger.trace("event.getBlock():" + event.getBlock());
+		logger.trace("event.getBlock().getType():" + event.getBlock().getType());
+		logger.trace("event.isCancelled() || event.getBlock().getType() .equals(DROPPER):" +(event.isCancelled() || event.getBlock().getType() .equals(DROPPER)));
+		if(event.isCancelled() || event.getBlock().getType() .equals(DROPPER)) {
+			logger.debug("イベントキャンセルか、ドロッパーが実施");
+			return;
+		}
 		if(isEntityBall(event.getItem())){
+			logger.debug("isEntityBall=true");
 			event.setCancelled(true);
 		}
+		logger.debug("onBlockDispense:End");
 	}
 
 	private boolean canCatch(EntityType type) {
+		logger.debug("canCatchCall");
+		logger.trace("type:" + type);
 		return this.ballManager.getAllBallDatas().containsKey(type);
 	}
 
 	@EventHandler
 	public void onTap(PlayerInteractEvent event) {
+		logger.debug("onTap:Start");
+		logger.trace("event:" + event);
+		logger.trace("event.getAction():" + event.getAction());
+		logger.trace("event.getAction().equals(Action.RIGHT_CLICK_AIR):" + event.getAction().equals(Action.RIGHT_CLICK_AIR));
+
 		if(event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
+			logger.debug("right click AIR");
+			logger.trace("this.isEntityBall(event.getItem()):" + this.isEntityBall(event.getItem()));
 			if (this.isEntityBall(event.getItem())) {
 				event.setCancelled(true);
-				logger.trace("is entity ball 1");
-				return;
+				logger.trace("isEntityBall:True");
 			} else {
-				logger.trace("is not entity ball 2");
-				return;
+				logger.trace("isEntityBall:False");
 			}
+			return;
 		}else if(!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-			logger.trace("is not action RIGHT_CLICK_BLOCK");
+			logger.debug("is not action RIGHT_CLICK_BLOCK");
 			return;
 		}
 
 		Location location = event.getClickedBlock().getLocation();
+		logger.trace("event.getClickedBlock():" + event.getClickedBlock());
+		logger.trace("location:" + location);
+
 		Location newLocation = new Location(
 				location.getWorld(),
 				location.getX() + event.getBlockFace().getModX() + 0.5,
 				location.getY() + event.getBlockFace().getModY(),
 				location.getZ() + event.getBlockFace().getModZ() + 0.5
 				);
+		logger.trace("location.getWorld():" + location.getWorld());
+		logger.trace("location.getX():" + location.getX());
+		logger.trace("event.getBlockFace().getModX() + 0.5:" + event.getBlockFace().getModX() + 0.5);
+		logger.trace("location.getY():" + location.getY());
+		logger.trace("event.getBlockFace().getModY():" + event.getBlockFace().getModY());
+		logger.trace("location.getZ():" + location.getZ());
+		logger.trace("event.getBlockFace().getModZ() + 0.5:" + event.getBlockFace().getModZ() + 0.5);
+		logger.trace("newLocation:" + newLocation);
 
+		logger.trace("!event.getPlayer().isSneaking():" + !event.getPlayer().isSneaking());
+		logger.trace("isTouchable(event.getClickedBlock()):" + isTouchable(event.getClickedBlock()));
 		if(!event.getPlayer().isSneaking() && isTouchable(event.getClickedBlock())) {
-			logger.trace("is not Sneaking or is Touchable");
+			logger.debug("is not Sneaking or is Touchable");
 			return;
 		}
 
 		ItemStack mainItem = event.getPlayer().getInventory().getItemInMainHand();
 		ItemStack offItem = event.getPlayer().getInventory().getItemInOffHand();
-		ItemStack entityBall = null;
+		logger.trace("mainItem:" + mainItem);
+		logger.trace("offItem:" + offItem);
 
-		if(isEntityBall(mainItem)){
+		ItemStack entityBall = null;
+		boolean isEntityBallMain = isEntityBall(mainItem);
+		boolean isEntityBallOff = isEntityBall(offItem);
+		logger.trace("isEntityBallMain:" + isEntityBallMain);
+		logger.trace("isEntityBallOff:" + isEntityBallOff);
+		if(isEntityBallMain){
+			logger.debug("mainItem is EntityBall");
 			event.setCancelled(true);
+
+			logger.trace("isEntityEmptyBall(mainItem):" + isEntityEmptyBall(mainItem));
 			if(isEntityEmptyBall(mainItem)) {
-				logger.trace("is not entity empty ball");
+				logger.debug("mainItem is EntityEmptyBall");
 				return;
 			}else{
+				logger.debug("entityBall is MainItem");
 				entityBall = mainItem;
 			}
-		}else if(isEntityBall(offItem)) {
+		}else if(isEntityBallOff) {
+			logger.trace("OffItem is EntityBall");
 			event.setCancelled(true);
+
+			logger.trace("isEntityEmptyBall(offItem):" + isEntityEmptyBall(offItem));
+			logger.trace("mainItem.getType().equals(AIR):" + mainItem.getType().equals(AIR));
 			if(isEntityEmptyBall(offItem)) {
-				logger.trace("is entity empty ball");
+				logger.debug("offItem is EntityEmptyBall");
 				return;
 			}else if(mainItem.getType().equals(AIR)){
+				logger.debug("mainItem.getType().equals(AIR) True");
 				entityBall = offItem;
 			}
 		}
 
+		logger.trace("entityBall:" + entityBall);
 		if(entityBall == null) {
-			logger.trace("entity ball is null");
+			logger.debug("entity ball is null");
 			return;
 		}
 
+		logger.trace("!this.worldManager.isUsableWorld(event.getPlayer().getWorld().getName()):" + !this.worldManager.isUsableWorld(event.getPlayer().getWorld().getName()));
 		if(!this.worldManager.isUsableWorld(event.getPlayer().getWorld().getName())) {
-			logger.trace("is not Usable World");
+			logger.debug("is not Usable World");
 			return;
 		}
 
 		CompoundTag nbtTag =  CraftItemStack.asNMSCopy(entityBall).getTag();
-
+		logger.trace("nbtTag:" + nbtTag);
 
 		Entity entity = null;
-
 		BallData ballData = null;
 		// このへんでとまっている
 		var allBallDatas = this.ballManager.getAllBallDatas();
 		var entityBallContentKey = nbtTag.getString(BallData.ENTITYBALL_CONTENT_KEY);
-		logger.trace("entityBallContentKey = " + entityBallContentKey);
+		logger.trace("this.ballManager:" + this.ballManager);
+		logger.trace("allBallDatas:" + allBallDatas);
+		logger.trace("entityBallContentKey:" + entityBallContentKey);
+
 		for(EntityType key : allBallDatas.keySet()) {
 			BallData eachBallData = allBallDatas.get(key);
+			logger.trace("key:" + key);
+			logger.trace("eachBallData:" + eachBallData);
+			logger.trace("eachBallData.getEntityType().toString().equals(entityBallContentKey):" + eachBallData.getEntityType().toString().equals(entityBallContentKey));
 			if(eachBallData.getEntityType().toString().equals(entityBallContentKey)) {
+				logger.debug("eachBallData entityBallContentKey is Found. key:" + key);
 				event.setCancelled(true);
 
 				//同時出し入れ対策2
@@ -192,18 +237,19 @@ public class EventListener implements Listener{
 				logger.trace("currentTime = " + currentTime + ", entityBallTimestamp = " + entityBallTimestamp + ", diff = " + abs);
 				// 差が50ミリ秒未満だった場合拒否する
 				if (abs < 50) {
+					logger.debug("abs < 50");
 					return;
 				}
 
-				logger.trace("spawn entity = " + key);
 				entity = location.getWorld().spawnEntity(newLocation, eachBallData.getEntityType());
 				ballData = eachBallData;
+				logger.trace("entity:" + entity);
 				break;
 			}
 		}
 
 		if(entity == null) {
-			logger.trace("entity is null");
+			logger.debug("entity is null");
 			return;
 		}
 
@@ -215,26 +261,34 @@ public class EventListener implements Listener{
 			CompoundTag nbt = NbtIo.readCompressed(bais, NbtAccounter.unlimitedHeap());
 			((CraftEntity) entity).getHandle().load(nbt);
 			((CraftEntity) entity).getHandle().absMoveTo(newLocation.getX(), newLocation.getY(), newLocation.getZ(), 0, 0);
+			logger.trace("nbt:" + nbt);
+			logger.debug("bais OK");
 		} catch (IOException e) {
+			logger.debug("bais Error");
 			logger.getLogger().throwing("com.github.albatross256.PetBall.EventListener.EventListener", "onTap", e);
 		}
 
 
 		/* 以下ボールの生成及びインベントリ転送*/
-
 		ItemStack dItemStack = new ItemStack(entityBall);
 		dItemStack.setAmount(1);
 		HashMap<Integer, ItemStack> leftItems = event.getPlayer().getInventory().removeItem(dItemStack);
+		logger.trace("leftItems" + leftItems);
 		for(Integer key : leftItems.keySet()) {
 			offItem.setAmount(offItem.getAmount() - 1);
 		}
 
 
 		ItemStack addItem = new ItemStack(this.ballManager.getBallData(entity.getType()).getEmptyBallMaterial(), 1);
+		logger.trace("addItem:" + addItem);
 		addItem = this.getMetaItem(addItem, BallData.ENTITYBALL_CONTENT_KEY, BallData.ENTITYBALL_CONTENT_EMPTY);
 		ItemMeta meta = addItem.getItemMeta();
 		meta.setDisplayName(this.ballManager.getBallData(entity.getType()).getDisplayName());
+		logger.trace("afterAddItem:" + addItem);
+		logger.trace("meta:" + meta);
+		logger.trace("this.ballManager.getBallData(entity.getType()).getDisplayName()" + this.ballManager.getBallData(entity.getType()).getDisplayName());
 
+		// 空のボール作成
 		List<String> lore = new ArrayList<String>();
 		lore.add("Empty");
 		meta.setLore(lore);
@@ -242,129 +296,210 @@ public class EventListener implements Listener{
 
 		Player player = event.getPlayer();
 		PlayerInventory inventory = player.getInventory();
-
+		logger.trace("player:" + player);
+		logger.trace("inventory:" + inventory);
+		logger.trace("inventory.getItem(inventory.getHeldItemSlot()) == null :" + (inventory.getItem(inventory.getHeldItemSlot()) == null ));
 		if(inventory.getItem(inventory.getHeldItemSlot()) == null ) {
+			logger.debug("inventory is Empty");
 			inventory.setItem(inventory.getHeldItemSlot(), addItem);
 		}else {
+			logger.debug("inventory is not Empty");
 			HashMap<Integer, ItemStack> notAddedItems = inventory.addItem(addItem);
 			if(!notAddedItems.isEmpty()) {
+				logger.debug("notAddedItems is Empty");
 				player.getWorld().dropItem(player.getLocation(), notAddedItems.get(0));
 				player.sendMessage(ChatColor.GREEN + "[PetBall] " + ChatColor.RED +":: 空きスロット不足 :: 空のPetBallを地面に捨てました" );
 			}
 		}
-		logger.trace("onTap done");
+		logger.debug("onTap:End");
 	}
 
 	private ItemStack getMetaItem(ItemStack item, String key, String value) {
+		logger.debug("getMetaItem:Start");
+
 		CompoundTag nbttag = new CompoundTag();
+		logger.trace("nbttag:" + nbttag);
+
 		nbttag.putString(key, value);
 		net.minecraft.world.item.ItemStack itemCopy = CraftItemStack.asNMSCopy(item);
 		itemCopy.setTag(nbttag);
 		ItemStack entityBall = CraftItemStack.asBukkitCopy(itemCopy);
+		logger.trace("nbttag:" + nbttag);
+		logger.trace("itemCopy:" + itemCopy);
+		logger.trace("entityBall:" + entityBall);
+
+		logger.debug("getMetaItem:End");
 		return entityBall;
 	}
 
 	private boolean isEntityBall(ItemStack item) {
-		if(item == null) return false;
+		logger.debug("isEntityBall:Start");
+		if(item == null) {
+			logger.debug("item is NULL");
+			return false;
+		}
 		ItemMeta itemMeta = item.getItemMeta();
-		if(itemMeta == null) return false;
+		if(itemMeta == null) {
+			logger.debug("itemMeta is NULL");
+			return false;
+		}
 
 		net.minecraft.world.item.ItemStack handItemCopy = CraftItemStack.asNMSCopy(item);
 		CompoundTag handItemNbtTag = handItemCopy.getTag();
-		if(handItemNbtTag != null && handItemNbtTag.contains(BallData.ENTITYBALL_CONTENT_KEY)) return true;
+		logger.trace("handItemNbtTag != null:" + (handItemNbtTag != null));
+		if(handItemNbtTag != null && handItemNbtTag.contains(BallData.ENTITYBALL_CONTENT_KEY)) {
+			logger.debug("is Entity Ball");
+			return true;
+		}
 
+		logger.debug("itemMeta is not Exist");
 		return false;
 	}
 
 	private boolean isEntityEmptyBall(ItemStack item) {
+		logger.debug("isEntityEmptyBall:Start");
 		ItemMeta itemMeta = item.getItemMeta();
-		if(itemMeta == null) return false;
+		if(itemMeta == null) {
+			logger.debug("itemMeta is NULL");
+			return false;
+		}
 
 		net.minecraft.world.item.ItemStack handItemCopy = CraftItemStack.asNMSCopy(item);
 		CompoundTag handItemNbtTag = handItemCopy.getTag();
-		if(handItemNbtTag != null && handItemNbtTag.contains(BallData.ENTITYBALL_CONTENT_KEY) && handItemNbtTag.getString(BallData.ENTITYBALL_CONTENT_KEY).equals(BallData.ENTITYBALL_CONTENT_EMPTY)) return true;
+		logger.trace("itemMeta:" + itemMeta);
+		logger.trace("handItemNbtTag:" + handItemNbtTag);
+		logger.trace("handItemNbtTag != null :" + (handItemNbtTag != null ));
+		logger.trace("handItemNbtTag.contains(BallData.ENTITYBALL_CONTENT_KEY):" + handItemNbtTag.contains(BallData.ENTITYBALL_CONTENT_KEY));
+		logger.trace("handItemNbtTag.getString(BallData.ENTITYBALL_CONTENT_KEY).equals(BallData.ENTITYBALL_CONTENT_EMPTY):" + handItemNbtTag.getString(BallData.ENTITYBALL_CONTENT_KEY).equals(BallData.ENTITYBALL_CONTENT_EMPTY));
+		if(handItemNbtTag != null && handItemNbtTag.contains(BallData.ENTITYBALL_CONTENT_KEY) && handItemNbtTag.getString(BallData.ENTITYBALL_CONTENT_KEY).equals(BallData.ENTITYBALL_CONTENT_EMPTY)) {
+			logger.debug("item is EntityEmptyBall");
+			return true;
+		}
 
+		logger.debug("item is not empty ball.");
 		return false;
 	}
 
 	@EventHandler
 	public void onPlayerInteractEntityEvent(PlayerInteractEntityEvent event) {
+		logger.debug("onPlayerInteractEntityEvent:Start");
 		ItemStack mainItem = event.getPlayer().getInventory().getItemInMainHand();
 		ItemStack offItem = event.getPlayer().getInventory().getItemInOffHand();
 
 		//子供生成対策
 		var allBallDatas = this.ballManager.getAllBallDatas();
+		logger.trace("mainItem:" + mainItem);
+		logger.trace("offItem:" + offItem);
+		logger.trace("allBallDatas:" + allBallDatas);
 		for(EntityType key : allBallDatas.keySet()) {
 			BallData ballData = allBallDatas.get(key);
 
+			logger.trace("key:" + key);
+			logger.trace("ballData:" + ballData);
+			logger.trace("event.getRightClicked().getType().equals(ballData.getFilledBallEntityType()):" + event.getRightClicked().getType().equals(ballData.getFilledBallEntityType()));
+			logger.trace("event.getRightClicked().getType().equals(ballData.getEmptyBallEntityType()):" + event.getRightClicked().getType().equals(ballData.getEmptyBallEntityType()));
 			if(event.getRightClicked().getType().equals(ballData.getFilledBallEntityType())) {
+				logger.debug("getFilledBallEntityType is found. key:" + key);
+				logger.trace("isEntityBall(mainItem):" + isEntityBall(mainItem));
+				logger.trace("!isEntityEmptyBall(mainItem) :" + !isEntityEmptyBall(mainItem) );
+				logger.trace("mainItem.getType().equals(ballData.getFilledBallMaterial()):" + mainItem.getType().equals(ballData.getFilledBallMaterial()));
+				logger.trace("isEntityBall(offItem):" + isEntityBall(offItem));
+				logger.trace("!isEntityEmptyBall(offItem):" + !isEntityEmptyBall(offItem));
+				logger.trace("offItem.getType().equals(ballData.getFilledBallMaterial()):" + offItem.getType().equals(ballData.getFilledBallMaterial()));
 				if(isEntityBall(mainItem) && !isEntityEmptyBall(mainItem) && mainItem.getType().equals(ballData.getFilledBallMaterial())) {
+					logger.debug("mainItem is not EmptyBall");
 					event.setCancelled(true);
 					return;
 				}else if(isEntityBall(offItem) && !isEntityEmptyBall(offItem) && offItem.getType().equals(ballData.getFilledBallMaterial())){
+					logger.debug("offItem is not EmptyBall");
 					event.setCancelled(true);
 					return;
 				}
 			}else if(event.getRightClicked().getType().equals(ballData.getEmptyBallEntityType())) {
+				logger.debug("getFilledBallEntityType is not found.");
+				logger.trace("isEntityEmptyBall(mainItem):" + isEntityEmptyBall(mainItem));
+				logger.trace("mainItem.getType().equals(ballData.getEmptyBallMaterial()):" + mainItem.getType().equals(ballData.getEmptyBallMaterial()));
+				logger.trace("isEntityEmptyBall(offItem) :" + offItem.getType().equals(ballData.getEmptyBallMaterial()));
 				if(isEntityEmptyBall(mainItem) && mainItem.getType().equals(ballData.getEmptyBallMaterial())) {
+					logger.debug("mainItem is EntityEmptyBall");
 					event.setCancelled(true);
 					return;
 				}else if(isEntityEmptyBall(offItem) && offItem.getType().equals(ballData.getEmptyBallMaterial())){
+					logger.debug("offItem is EntityEmptyBall");
 					event.setCancelled(true);
 				}
 			}
 		}
 		ItemStack entityEmptyBall = null;
 		if(!isEntityBall(mainItem) && !isEntityBall(offItem)) {
-			logger.trace("not entity ball");
+			logger.debug("not entity ball");
 			return;
 		}
 		if(!this.canCatch(event.getRightClicked().getType())) {
-			logger.trace("can not catch RightClicked");
+			logger.debug("can not catch RightClicked");
 			return;
 		}
 
 		boolean isMainHand = true;
+		logger.trace("this.isEntityEmptyBall(mainItem):" + this.isEntityEmptyBall(mainItem));
+		logger.trace("this.isEntityEmptyBall(offItem):" + this.isEntityEmptyBall(offItem));
+		logger.trace("mainItem.getType().equals(AIR):" + mainItem.getType().equals(AIR));
 		if(this.isEntityEmptyBall(mainItem)) {
+			logger.debug("mainItem is Empty Ball");
 			entityEmptyBall = mainItem;
 			isMainHand = true;
 		}else if(this.isEntityEmptyBall(offItem) && mainItem.getType().equals(AIR)) {
+			logger.debug("offItem is Empty Ball");
 			entityEmptyBall = offItem;
 			isMainHand = false;
 		}
 
+		logger.trace("!this.worldManager.isUsableWorld(event.getPlayer().getWorld().getName()):" + !this.worldManager.isUsableWorld(event.getPlayer().getWorld().getName()));
 		if(!this.worldManager.isUsableWorld(event.getPlayer().getWorld().getName())) {
-			logger.trace("usage world");
+			logger.debug("not usage world");
 			return;
 		}
 
 		CompoundTag handItemNbttag = CraftItemStack.asNMSCopy(mainItem).getTag();
+		logger.trace("handItemNbttag:" + handItemNbttag);
+		logger.trace("!handItemNbttag.contains(BallData.ENTITYBALL_CONTENT_KEY):" + !handItemNbttag.contains(BallData.ENTITYBALL_CONTENT_KEY));
+		logger.trace("!handItemNbttag.getString(BallData.ENTITYBALL_CONTENT_KEY).equals(BallData.ENTITYBALL_CONTENT_EMPTY):" + !handItemNbttag.getString(BallData.ENTITYBALL_CONTENT_KEY).equals(BallData.ENTITYBALL_CONTENT_EMPTY));
 		if(handItemNbttag == null || !handItemNbttag.contains(BallData.ENTITYBALL_CONTENT_KEY) ||
 				!handItemNbttag.getString(BallData.ENTITYBALL_CONTENT_KEY).equals(BallData.ENTITYBALL_CONTENT_EMPTY)) {
-			logger.trace("not entity ball");
+			logger.debug("not entity ball");
 			return;
 		}
 
 		Entity entity = event.getRightClicked();
-
+		logger.trace("entity:" + entity);
+		logger.trace("!this.canCatch(entity.getType()):" + !this.canCatch(entity.getType()));
 		if(!this.canCatch(entity.getType())) {
-			logger.trace("can not catch");
+			logger.debug("can not catch");
 			return;
 		}
-
 
 		/*
 		 * 馬 チェストアイテム ばらまき
 		 */
 
 		if(entity instanceof ChestedHorse horse) {
+			logger.debug("entity is ChestedHorse");
+
 			Location entityLocation  = entity.getLocation();
 			Location dropItemLocation = new Location(entity.getWorld(), entityLocation.getX()+0.5, entityLocation.getY()+0.5, entityLocation.getZ()+0.5);
+			logger.trace("entityLocation:" + entityLocation);
+			logger.trace("dropItemLocation:" + dropItemLocation);
+			logger.trace("entity.getWorld():" + entity.getWorld());
+			logger.trace("entityLocation.getX()+0.5:" + entityLocation.getX()+0.5);
+			logger.trace("entityLocation.getY()+0.5:" + entityLocation.getY()+0.5);
+			logger.trace("entityLocation.getZ()+0.5:" + entityLocation.getZ()+0.5);
 			for(ItemStack strageItem : horse.getInventory().getStorageContents()) {
 				if(strageItem != null) {
+					logger.debug("StrageItem is not null.Item drop!");
 					entity.getWorld().dropItem(dropItemLocation, strageItem);
 				}
 			}
+			logger.debug("HorseInventory Clear.");
 			horse.getInventory().clear();
 		}
 
@@ -372,22 +507,30 @@ public class EventListener implements Listener{
 		CompoundTag tag = new CompoundTag();
 		nmsEntity.saveAsPassenger(tag);
 		event.setCancelled(true);
+		logger.trace("nmsEntity:" + nmsEntity);
+		logger.trace("tag:" + tag);
 
 		ItemStack item = new ItemStack(this.ballManager.getBallData(entity.getType()).getFilledBallMaterial(), 1);
 		net.minecraft.world.item.ItemStack itemCopy = CraftItemStack.asNMSCopy(item);
 		CompoundTag nbttag = new CompoundTag();
+		logger.trace("item:" + item);
+		logger.trace("itemCopy:" + itemCopy);
+		logger.trace("nbttag:" + nbttag);
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
 			NbtIo.writeCompressed(tag, baos);
+			logger.debug("Write NBT");
 		} catch (IOException e) {
 			logger.getLogger().throwing("EventListener", "onPlayerInteractEntityEvent", e);
 		}
 		byte[] byteNbt = baos.toByteArray();
 
 		//空気対策
+		logger.trace("tag.getString(\"id\") == null:" + (tag.getString("id") == null));
+		logger.trace("tag.getString(\"id\").equals(\"\"):" + tag.getString("id").equals(""));
 		if(tag.getString("id") == null || tag.getString("id").equals("")) {
-			logger.trace("tag is empty");
+			logger.debug("tag is empty");
 			return;
 		}
 
@@ -403,24 +546,33 @@ public class EventListener implements Listener{
 
 		itemCopy.setTag(nbttag);
 		ItemStack entityBall = CraftItemStack.asBukkitCopy(itemCopy);
+		logger.trace("entityBall:" + entityBall);
 
 		ItemMeta itemMeta2 = entityBall.getItemMeta();
 		itemMeta2.setDisplayName(entity.getCustomName() == null ? this.ballManager.getBallData(entity.getType()).getDisplayName() : entity.getCustomName());
+		logger.trace("itemMeta2:" + itemMeta2);
 
 		List<String> lore = new LoreWriterFactory().newLoreWriter(entity.getType()).generateLore(entity);
+		logger.trace("lore:" + lore);
 
 		itemMeta2.setLore(lore);
 		entityBall.setItemMeta(itemMeta2);
 
 		Player player = event.getPlayer();
+		logger.trace("entityEmptyBall.getAmount() == 1:" + (entityEmptyBall.getAmount() == 1));
 		if(entityEmptyBall.getAmount() == 1) {
+			logger.debug("entityEmptyBall count is 1");
+			logger.trace("isMainHand:" + isMainHand);
 			if(isMainHand) {
+				logger.debug("isMainHand:True");
 				player.getInventory().setItem(player.getInventory().getHeldItemSlot(), entityBall);
 			}else {
+				logger.debug("isMainHand:False");
 				player.getInventory().remove(entityEmptyBall);
 				player.getInventory().addItem(entityBall);
 			}
 		}else {
+			logger.debug("entityEmptyBall count is not 1");
 			entityEmptyBall.setAmount(entityEmptyBall.getAmount() - 1);
 			 Map<Integer, ItemStack> left = player.getInventory().addItem(entityBall);
 			if(!left.isEmpty()) {
@@ -430,23 +582,32 @@ public class EventListener implements Listener{
 		}
 
 		entity.remove();
-		logger.trace("done");
+		logger.debug("onPlayerInteractEntityEvent:End");
 	}
 
 	private boolean isTouchable(Block block) {
 
+		logger.trace("isTouchable:Start");
 		var type = block.getType();
+		logger.trace("type:" + type);
+		logger.trace("TYPES.contains(type):" + TYPES.contains(type));
 		if(TYPES.contains(type)){
+			logger.debug("type is IRON series");
 			// 鉄シリーズは問答無用でfalse
 			return false;
 		} else {
 			var state = block.getState();
+			logger.trace("state:" + state);
 			if(state instanceof Sign sign){
 				// 看板は編集可・不可の状態が変化するので、動的に取得する
+				logger.debug("type is Sign series");
+				logger.trace("!sign.isWaxed():" + !sign.isWaxed());
 				return !sign.isWaxed();
 			} else {
 				var blockData = block.getBlockData();
 				var material = blockData.getMaterial();
+				logger.trace("stateClass:" + state.getClass());
+				logger.trace("checkMaterial.blockData:"+ blockData + ".material:" + material + "isTouchable:End");
                 // それ以外
                 // ベルは触った場所が本体以外だとうまく動作しないが、場所を知る手立てがないため入れてない
                 // コンポスターは最大状態以外だとうまく動作しないが、知る手立てがないため入れていない
