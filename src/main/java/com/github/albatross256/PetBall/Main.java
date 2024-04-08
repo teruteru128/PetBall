@@ -15,6 +15,9 @@ public class Main extends JavaPlugin{
 	private ConfigLoader configLoader;
 	private Logger logger;
 
+	/**
+	 * プラグイン有効化時の初期化処理
+	 * */
 	@Override
     public void onEnable() {
 		// ロガーの設定
@@ -36,6 +39,9 @@ public class Main extends JavaPlugin{
 		logger.debug("Main.onEnable:End");
     }
 
+	/**
+	 * プラグイン無効化処理
+	 * */
     @Override
     public void onDisable() {
 		super.onDisable();

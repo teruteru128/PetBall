@@ -27,12 +27,21 @@ public class BallRecipeManager {
 	private Logger logger;
 
 
-    public BallRecipeManager(Plugin plugin, Map<EntityType, BallData> map, Logger logger) {
+	/**
+	 * コンストラクタ
+	 * @param plugin プラグイン本体
+	 * @param map 利用できるボールデータの一覧
+	 * @param logger ロガー
+	 * */
+	public BallRecipeManager(Plugin plugin, Map<EntityType, BallData> map, Logger logger) {
 		this.ballDatas = map;
 		this.plugin = plugin;
 		this.logger = logger;
 	}
 
+	/**
+	 * 初期化。レシピの登録処理。
+	 * */
 	public void init() {
 		logger.debug("BallRecipeManager.init:Start");
 
@@ -68,6 +77,9 @@ public class BallRecipeManager {
 		logger.debug("BallRecipeManager.init:End");
 	}
 
+	/**
+	 * レシピの無効化処理
+	 * */
 	public void disable(){
 		logger.debug("BallRecipeManager.disable:Start");
 

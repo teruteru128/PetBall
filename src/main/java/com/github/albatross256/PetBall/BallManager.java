@@ -13,6 +13,10 @@ public class BallManager {
 	protected Map<EntityType, BallData> ballData;
 	private Logger logger;
 
+	/**
+	 * コンストラクタ
+	 * @param logger ロガー
+	 * */
 	public BallManager(Logger logger) {
 		logger.debug("BallManager:Start");
 		this.logger = logger;
@@ -20,6 +24,9 @@ public class BallManager {
 		logger.debug("BallManager:End");
 	}
 
+	/**
+	 * 初期化。PetBallのボール本体の一覧を作成。
+	 * */
 	private void init() {
 		logger.debug("BallManager.init:Start");
 
@@ -78,15 +85,27 @@ public class BallManager {
 		logger.debug("BallManager.init:End");
 	}
 
+	/**
+	 * PetBallデータの登録
+	 * @param map 登録先のMAP
+	 * @param ballData 登録したいボールデータ
+	 * */
 	private static void registerBall(EnumMap<EntityType, BallData> map, BallData ballData) {
 		map.put(ballData.getEntityType(), ballData);
 	}
 
+	/**
+	 * すべてのPetBallデータの取得
+	 * */
 	public Map<EntityType, BallData> getAllBallDatas() {
 		logger.debug("BallManager.getAllBallDatas");
 		return this.ballData;
 	}
 
+	/**
+	 * PetBallのボールデータ取得
+	 * @param entityType 取得したいエンティティタイプ
+	 * */
 	public BallData getBallData(EntityType entityType) {
 		logger.debug("BallManager.getBallData");
 		return this.ballData.get(entityType);

@@ -13,6 +13,11 @@ public class WorldManager {
 	private Logger logger;
 	List<String> unusableWorldNames;
 
+	/**
+	 * コンストラクタ
+	 * @param plugin プラグイン本体
+	 * @param logger ログ出力クラス
+	 * */
 	public WorldManager(Plugin plugin, Logger logger) {
 		logger.debug("BallRecipeManager:Start");
 		this.logger = logger;
@@ -21,6 +26,10 @@ public class WorldManager {
 		logger.debug("BallRecipeManager:End");
 	}
 
+	/**
+	 * 初期化処理
+	 * @param plugin プラグイン本体
+	 * */
 	private void init(Plugin plugin) {
 		logger.debug("BallRecipeManager.init:Start");
 		List<String> worldNames = new ConfigLoader(plugin).getUnsableWorldNames();
@@ -32,10 +41,18 @@ public class WorldManager {
 		logger.debug("BallRecipeManager.init:End");
 	}
 
+	/**
+	 * 無効化ワールド一覧への追加処理
+	 * @param worldName 無効化するワールド名
+	 * */
 	public void registerUnusableWorldName(String worldName) {
 		this.unusableWorldNames.add(worldName);
 	}
 
+	/**
+	 * 無効化ワールドかの判定
+	 * @param worldName 確認するワールド名
+	 * */
 	public boolean isUsableWorld(String worldName) {
 		return !this.unusableWorldNames.contains(worldName);
 	}

@@ -88,6 +88,10 @@ public class EventListener implements Listener{
 		this.worldManager = worldManager;
 	}
 
+	/**
+	 * ブロック排出イベント処理
+	 * @param event BlockDispenseEvent
+	 * */
 	@EventHandler
 	public void onBlockDispense(BlockDispenseEvent event){
 		logger.debug("onBlockDispense:Start");
@@ -106,12 +110,21 @@ public class EventListener implements Listener{
 		logger.debug("onBlockDispense:End");
 	}
 
+	/**
+	 * 捕獲可能なエンティティか
+	 * @param type エンティティのタイプ
+	 * */
 	private boolean canCatch(EntityType type) {
 		logger.debug("canCatchCall");
 		logger.trace("type:" + type);
 		return this.ballManager.getAllBallDatas().containsKey(type);
 	}
 
+	/**
+	 * プレイヤーが右クリックした時のイベント。
+	 * PetBallの取り出し処理もここで実施。
+	 * @param event PlayerInteractEvent
+	 * */
 	@EventHandler
 	public void onTap(PlayerInteractEvent event) {
 		logger.debug("onTap:Start");
@@ -314,6 +327,12 @@ public class EventListener implements Listener{
 		logger.debug("onTap:End");
 	}
 
+	/**
+	 * アイテムの作成処理
+	 * @param item Item情報
+	 * @param key NBTタグのキー
+	 * @param value NBTタグの値
+	 * */
 	private ItemStack getMetaItem(ItemStack item, String key, String value) {
 		logger.debug("getMetaItem:Start");
 
@@ -332,6 +351,10 @@ public class EventListener implements Listener{
 		return entityBall;
 	}
 
+	/**
+	 * PetBallかの判定処理
+	 * @param item Item情報
+	 * */
 	private boolean isEntityBall(ItemStack item) {
 		logger.debug("isEntityBall:Start");
 		if(item == null) {
@@ -356,6 +379,10 @@ public class EventListener implements Listener{
 		return false;
 	}
 
+	/**
+	 * 空のPetBallかの判定処理
+	 * @param item Item情報
+	 * */
 	private boolean isEntityEmptyBall(ItemStack item) {
 		logger.debug("isEntityEmptyBall:Start");
 		ItemMeta itemMeta = item.getItemMeta();
@@ -380,6 +407,11 @@ public class EventListener implements Listener{
 		return false;
 	}
 
+	/**
+	 * プレイヤーがエンティティに対して右クリックした時のイベント。
+	 * PetBall収納処理を実施。
+	 * @param event PlayerInteractEntityEvent
+	 * */
 	@EventHandler
 	public void onPlayerInteractEntityEvent(PlayerInteractEntityEvent event) {
 		logger.debug("onPlayerInteractEntityEvent:Start");
@@ -585,6 +617,11 @@ public class EventListener implements Listener{
 		logger.debug("onPlayerInteractEntityEvent:End");
 	}
 
+	/**
+	 * PetBallを動かしていいブロックかの判定。
+	 * 主に右クリックしたときにインベントリや、動作があるブロックかをここでチェックする。
+	 * @param block 対象のブロック
+	 * */
 	private boolean isTouchable(Block block) {
 
 		logger.trace("isTouchable:Start");
