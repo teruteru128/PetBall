@@ -19,6 +19,9 @@ import com.github.albatross256.PetBall.BallData.BallData;
 
 import net.minecraft.nbt.CompoundTag;
 
+/**
+ * ボールレシピマネージャー
+ * */
 public class BallRecipeManager {
 
 	private Map<EntityType, BallData> ballDatas;

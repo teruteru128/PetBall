@@ -8,6 +8,9 @@ import com.github.albatross256.PetBall.io.ConfigLoader;
 import com.twitter.teruteru128.logger.Logger;
 import org.bukkit.plugin.Plugin;
 
+/**
+ * ワールドマネージャー
+ * */
 public class WorldManager {
 
 	private Logger logger;
@@ -50,8 +53,9 @@ public class WorldManager {
 	}
 
 	/**
-	 * 無効化ワールドかの判定
+	 * 渡されたワールドが、利用可能ワールドかの判定
 	 * @param worldName 確認するワールド名
+	 * @return チェック結果
 	 * */
 	public boolean isUsableWorld(String worldName) {
 		return !this.unusableWorldNames.contains(worldName);

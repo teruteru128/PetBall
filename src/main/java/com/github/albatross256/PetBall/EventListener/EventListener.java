@@ -113,6 +113,7 @@ public class EventListener implements Listener{
 	/**
 	 * 捕獲可能なエンティティか
 	 * @param type エンティティのタイプ
+	 * @return チェック結果
 	 * */
 	private boolean canCatch(EntityType type) {
 		logger.debug("canCatchCall");
@@ -332,6 +333,8 @@ public class EventListener implements Listener{
 	 * @param item Item情報
 	 * @param key NBTタグのキー
 	 * @param value NBTタグの値
+	 *
+	 * @return 作成したアイテム情報
 	 * */
 	private ItemStack getMetaItem(ItemStack item, String key, String value) {
 		logger.debug("getMetaItem:Start");
@@ -354,6 +357,8 @@ public class EventListener implements Listener{
 	/**
 	 * PetBallかの判定処理
 	 * @param item Item情報
+	 *
+	 * @return チェック結果
 	 * */
 	private boolean isEntityBall(ItemStack item) {
 		logger.debug("isEntityBall:Start");
@@ -382,6 +387,8 @@ public class EventListener implements Listener{
 	/**
 	 * 空のPetBallかの判定処理
 	 * @param item Item情報
+	 *
+	 * @return チェック結果
 	 * */
 	private boolean isEntityEmptyBall(ItemStack item) {
 		logger.debug("isEntityEmptyBall:Start");
@@ -621,6 +628,7 @@ public class EventListener implements Listener{
 	 * PetBallを動かしていいブロックかの判定。
 	 * 主に右クリックしたときにインベントリや、動作があるブロックかをここでチェックする。
 	 * @param block 対象のブロック
+	 * @return チェック結果
 	 * */
 	private boolean isTouchable(Block block) {
 

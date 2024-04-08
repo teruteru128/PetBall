@@ -8,6 +8,9 @@ import com.github.albatross256.PetBall.BallData.*;
 import com.twitter.teruteru128.logger.Logger;
 import org.bukkit.entity.EntityType;
 
+/**
+ * ボールマネージャー
+ * */
 public class BallManager {
 
 	protected Map<EntityType, BallData> ballData;
@@ -96,6 +99,7 @@ public class BallManager {
 
 	/**
 	 * すべてのPetBallデータの取得
+	 * @return 全ボールデータ一覧
 	 * */
 	public Map<EntityType, BallData> getAllBallDatas() {
 		logger.debug("BallManager.getAllBallDatas");
@@ -105,6 +109,7 @@ public class BallManager {
 	/**
 	 * PetBallのボールデータ取得
 	 * @param entityType 取得したいエンティティタイプ
+	 * @return 該当するボールデータ
 	 * */
 	public BallData getBallData(EntityType entityType) {
 		logger.debug("BallManager.getBallData");
