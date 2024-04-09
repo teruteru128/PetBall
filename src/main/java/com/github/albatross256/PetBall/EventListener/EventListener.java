@@ -5,7 +5,7 @@ import com.github.albatross256.PetBall.BallManager;
 import com.github.albatross256.PetBall.LoreWriter.factory.LoreWriterFactory;
 import com.github.albatross256.PetBall.Main;
 import com.github.albatross256.PetBall.WorldManager;
-import com.twitter.teruteru128.logger.Logger;
+import com.github.teruteru128.logger.Logger;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;

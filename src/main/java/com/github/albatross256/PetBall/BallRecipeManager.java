@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.twitter.teruteru128.logger.Logger;
+import com.github.teruteru128.logger.Logger;
 import jline.internal.Log;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;

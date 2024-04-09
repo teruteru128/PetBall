@@ -5,7 +5,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import com.github.albatross256.PetBall.BallData.*;
-import com.twitter.teruteru128.logger.Logger;
+import com.github.teruteru128.logger.Logger;
 import org.bukkit.entity.EntityType;
 
 /**

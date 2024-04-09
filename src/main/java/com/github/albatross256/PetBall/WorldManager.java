@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.github.albatross256.PetBall.io.ConfigLoader;
 
-import com.twitter.teruteru128.logger.Logger;
+import com.github.teruteru128.logger.Logger;
 import org.bukkit.plugin.Plugin;
 
 /**
