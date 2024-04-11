@@ -82,8 +82,7 @@ public class EventListener implements Listener{
 	private Plugin plugin;
 	public EventListener(BallManager ballManager, WorldManager worldManager, Main main) {
 		plugin = main;
-		// loggerの細かい設定はMainでしているので、levelは空文字にする
-		logger = new Logger(java.util.logging.Logger.getLogger(getClass().getCanonicalName()), "");
+		logger = Logger.getInstance(plugin);
 		this.ballManager = ballManager;
 		this.worldManager = worldManager;
 	}
