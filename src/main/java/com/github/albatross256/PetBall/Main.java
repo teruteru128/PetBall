@@ -27,7 +27,8 @@ public class Main extends JavaPlugin{
 			logLevel = "INFO";
 			logger.warn("log-levelに値がセットされていないため、INFOに設定されました");
 		}
-		logger = new Logger(java.util.logging.Logger.getLogger(getClass().getCanonicalName()), logLevel);
+		Logger.register(this, logLevel);
+		logger = Logger.getInstance(this);
 
 		logger.debug("Main.onEnable:Start");
 		this.ballManager = new BallManager(logger);
