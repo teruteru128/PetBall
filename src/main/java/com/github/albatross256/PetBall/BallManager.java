@@ -1,22 +1,40 @@
 package com.github.albatross256.PetBall;
 
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.EnumMap;
 import java.util.Map;
 
 import com.github.albatross256.PetBall.BallData.*;
+import com.github.teruteru128.logger.Logger;
 import org.bukkit.entity.EntityType;
 
+/**
+ * ボールマネージャー
+ * */
 public class BallManager {
 
-	Map<String, BallData> ballDatas;
+	protected Map<EntityType, BallData> ballData;
+	private Logger logger;
 
-	public BallManager() {
-		this.ballDatas = new HashMap<String, BallData>();
+	/**
+	 * コンストラクタ
+	 * @param logger ロガー
+	 * */
+	public BallManager(Logger logger) {
+		logger.debug("BallManager:Start");
+		this.logger = logger;
 		init();
+		logger.debug("BallManager:End");
 	}
 
+	/**
+	 * 初期化。PetBallのボール本体の一覧を作成。
+	 * */
 	private void init() {
-		BallData[] ballDatas = {
+		logger.debug("BallManager.init:Start");
+
+		var map  = new EnumMap<EntityType, BallData>(EntityType.class);
+		BallData[] ballDataArray = {
 				new VillagerBallData(),
 				new CatBallData(),
 				new OcelotBallData(),
@@ -62,21 +80,40 @@ public class BallManager {
 				new SnifferBallData(),
 		};
 
-		for(BallData ballData : ballDatas) {
-			registerBall(ballData);
+		for(BallData ballData : ballDataArray) {
+			logger.trace("ballData:" + ballData);
+			registerBall(map, ballData);
 		}
+		this.ballData = Collections.unmodifiableMap(map);
+		logger.debug("BallManager.init:End");
 	}
 
-	public void registerBall(BallData ballData) {
-		this.ballDatas.put(ballData.getEntityType().toString(), ballData);
+	/**
+	 * PetBallデータの登録
+	 * @param map 登録先のMAP
+	 * @param ballData 登録したいボールデータ
+	 * */
+	private static void registerBall(EnumMap<EntityType, BallData> map, BallData ballData) {
+		map.put(ballData.getEntityType(), ballData);
 	}
 
-	public Map<String, BallData> getAllBallDatas() {
-		return this.ballDatas;
+	/**
+	 * すべてのPetBallデータの取得
+	 * @return 全ボールデータ一覧
+	 * */
+	public Map<EntityType, BallData> getAllBallDatas() {
+		logger.debug("BallManager.getAllBallDatas");
+		return this.ballData;
 	}
 
+	/**
+	 * PetBallのボールデータ取得
+	 * @param entityType 取得したいエンティティタイプ
+	 * @return 該当するボールデータ
+	 * */
 	public BallData getBallData(EntityType entityType) {
-		return this.ballDatas.get(entityType.toString());
+		logger.debug("BallManager.getBallData");
+		return this.ballData.get(entityType);
 	}
 
 

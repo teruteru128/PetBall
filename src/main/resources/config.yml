@@ -1,4 +1,5 @@
 
+log-level: INFO
 UnusableWorldNames: 
   - world1
   - world2

@@ -12,11 +12,11 @@ public class CatBallData extends BallData{
 
 	@Override
 	public Material getFilledBallMaterial() {
-		return Material.OCELOT_SPAWN_EGG;
+		return Material.CAT_SPAWN_EGG;
 	}
 
 	@Override
 	public EntityType getFilledBallEntityType() {
-		return EntityType.OCELOT;
+		return EntityType.CAT;
 	}
 }
