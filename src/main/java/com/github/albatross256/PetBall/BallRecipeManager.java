@@ -1,14 +1,13 @@
 package com.github.albatross256.PetBall;
 
+import com.saicone.rtag.RtagItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import com.github.teruteru128.logger.Logger;
-import jline.internal.Log;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
@@ -16,8 +15,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
 import com.github.albatross256.PetBall.BallData.BallData;
-
-import net.minecraft.nbt.CompoundTag;
 
 /**
  * ボールレシピマネージャー
@@ -49,15 +46,17 @@ public class BallRecipeManager {
 		logger.debug("BallRecipeManager.init:Start");
 
 		ItemStack ball = new ItemStack(Material.ENDERMAN_SPAWN_EGG, 1);
-		CompoundTag nbttag = new CompoundTag();
-		nbttag.putString(BallData.ENTITYBALL_CONTENT_KEY, BallData.ENTITYBALL_CONTENT_EMPTY);
-		net.minecraft.world.item.ItemStack itemCopy = CraftItemStack.asNMSCopy(ball);
-		itemCopy.setTag(nbttag);
-		ball = CraftItemStack.asBukkitCopy(itemCopy);
+		RtagItem tag = new RtagItem(ball);
+		logger.trace("tag:" + tag);
+		tag.set(BallData.ENTITYBALL_CONTENT_KEY, BallData.ENTITYBALL_CONTENT_EMPTY);
+		tag.update();
+//		CompoundTag nbttag = new CompoundTag();
+//		nbttag.putString(BallData.ENTITYBALL_CONTENT_KEY, BallData.ENTITYBALL_CONTENT_EMPTY);
+//		net.minecraft.world.item.ItemStack itemCopy = CraftItemStack.asNMSCopy(ball);
+//		itemCopy.setTag(nbttag);
+
 		logger.trace("ball:" + ball);
-		logger.trace("nbttag:" + nbttag);
-		logger.trace("itemCopy:" + itemCopy);
-		logger.trace("ball:" + ball);
+		logger.trace("tag:" + tag);
 
 		ItemMeta meta = ball.getItemMeta();
 		meta.setDisplayName(BallData.BALL_NAME);

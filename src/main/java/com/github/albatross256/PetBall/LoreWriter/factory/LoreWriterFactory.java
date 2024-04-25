@@ -19,7 +19,7 @@ public class LoreWriterFactory {
 			return new WolfLoreWriter();
 		case COW:
 			return new CowLoreWriter();
-		case MUSHROOM_COW:
+			case MOOSHROOM:
 			return new MushroomLoreWriter();
 		case PIG:
 			return new PigLoreWriter();
@@ -39,7 +39,7 @@ public class LoreWriterFactory {
 			return new SquidLoreWriter();
 		case IRON_GOLEM:
 			return new IronGolemLoreWriter();
-		case SNOWMAN:
+			case SNOW_GOLEM:
 			return new SnowmanLoreWriter();
 		case BAT:
 			return new BatLoreWriter();

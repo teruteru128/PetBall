@@ -7,7 +7,7 @@ public class SnowGolemBallData extends BallData{
 
 	@Override
 	public EntityType getEntityType() {
-		return EntityType.SNOWMAN;
+		return EntityType.SNOW_GOLEM;
 	}
 
 	@Override
@@ -17,6 +17,6 @@ public class SnowGolemBallData extends BallData{
 
 	@Override
 	public EntityType getFilledBallEntityType() {
-		return EntityType.SNOWMAN;
+		return EntityType.SNOW_GOLEM;
 	}
 }

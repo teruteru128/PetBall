@@ -7,7 +7,7 @@ public class MushroomBallData extends BallData{
 
 	@Override
 	public EntityType getEntityType() {
-		return EntityType.MUSHROOM_COW;
+		return EntityType.MOOSHROOM;
 	}
 
 	@Override
@@ -17,6 +17,6 @@ public class MushroomBallData extends BallData{
 
 	@Override
 	public EntityType getFilledBallEntityType() {
-		return EntityType.MUSHROOM_COW;
+		return EntityType.MOOSHROOM;
 	}
 }
