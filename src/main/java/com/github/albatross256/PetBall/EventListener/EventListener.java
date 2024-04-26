@@ -354,7 +354,7 @@ public class EventListener implements Listener{
 //		itemCopy.setTag(nbttag);
 //		ItemStack entityBall = CraftItemStack.asBukkitCopy(itemCopy);
 		tag.set(key, value);
-		tag.update();
+		tag.load();
 //		logger.trace("nbttag:" + nbttag);
 //		logger.trace("itemCopy:" + itemCopy);
 		logger.trace("tag:" + tag);
@@ -517,14 +517,17 @@ public class EventListener implements Listener{
 			return;
 		}
 
-		CompoundTag handItemNbttag = CraftItemStack.asNMSCopy(mainItem).getTag();
-		logger.trace("handItemNbttag:" + handItemNbttag);
-		logger.trace("!handItemNbttag.contains(BallData.ENTITYBALL_CONTENT_KEY):" + !handItemNbttag.contains(BallData.ENTITYBALL_CONTENT_KEY));
-		logger.trace("!handItemNbttag.getString(BallData.ENTITYBALL_CONTENT_KEY).equals(BallData.ENTITYBALL_CONTENT_EMPTY):" + !handItemNbttag.getString(BallData.ENTITYBALL_CONTENT_KEY).equals(BallData.ENTITYBALL_CONTENT_EMPTY));
-		if(handItemNbttag == null || !handItemNbttag.contains(BallData.ENTITYBALL_CONTENT_KEY) ||
-				!handItemNbttag.getString(BallData.ENTITYBALL_CONTENT_KEY).equals(BallData.ENTITYBALL_CONTENT_EMPTY)) {
+		RtagItem handTag = new RtagItem(mainItem);
+//		CompoundTag handItemNbttag = CraftItemStack.asNMSCopy(mainItem).getTag();
+//		logger.trace("handItemNbttag:" + handItemNbttag);
+//		logger.trace("!handItemNbttag.contains(BallData.ENTITYBALL_CONTENT_KEY):" + !handItemNbttag.contains(BallData.ENTITYBALL_CONTENT_KEY));
+//		logger.trace("!handItemNbttag.getString(BallData.ENTITYBALL_CONTENT_KEY).equals(BallData.ENTITYBALL_CONTENT_EMPTY):" + !handItemNbttag.getString(BallData.ENTITYBALL_CONTENT_KEY).equals(BallData.ENTITYBALL_CONTENT_EMPTY));
+		if(!handTag.hasTag(BallData.ENTITYBALL_CONTENT_KEY) || !handTag.get(BallData.ENTITYBALL_CONTENT_KEY).toString().equals(BallData.ENTITYBALL_CONTENT_EMPTY)) {
+//		if(handItemNbttag == null || !handItemNbttag.contains(BallData.ENTITYBALL_CONTENT_KEY) ||
+//				!handItemNbttag.getString(BallData.ENTITYBALL_CONTENT_KEY).equals(BallData.ENTITYBALL_CONTENT_EMPTY)) {
 			logger.debug("not entity ball");
 			return;
+//		}
 		}
 
 		Entity entity = event.getRightClicked();
@@ -560,49 +563,60 @@ public class EventListener implements Listener{
 			horse.getInventory().clear();
 		}
 
-		net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity) entity).getHandle();
-		CompoundTag tag = new CompoundTag();
-		nmsEntity.saveAsPassenger(tag);
+//		net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity) entity).getHandle();
+//		CompoundTag tag = new CompoundTag();
+//		nmsEntity.saveAsPassenger(tag);
+		RtagEntity entityTag = new RtagEntity(entity);
+		entityTag.update();
 		event.setCancelled(true);
-		logger.trace("nmsEntity:" + nmsEntity);
-		logger.trace("tag:" + tag);
+//		logger.trace("nmsEntity:" + nmsEntity);
+//		logger.trace("tag:" + tag);
 
 		ItemStack item = new ItemStack(this.ballManager.getBallData(entity.getType()).getFilledBallMaterial(), 1);
-		net.minecraft.world.item.ItemStack itemCopy = CraftItemStack.asNMSCopy(item);
-		CompoundTag nbttag = new CompoundTag();
+//		net.minecraft.world.item.ItemStack itemCopy = CraftItemStack.asNMSCopy(item);
+//		CompoundTag nbttag = new CompoundTag();
+		ItemStack itemCopy = item.clone();
+		RtagItem itemTag = new RtagItem(itemCopy);
 		logger.trace("item:" + item);
-		logger.trace("itemCopy:" + itemCopy);
-		logger.trace("nbttag:" + nbttag);
+//		logger.trace("itemCopy:" + itemCopy);
+//		logger.trace("nbttag:" + nbttag);
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		try {
-			NbtIo.writeCompressed(tag, baos);
+//		try {
+//			NbtIo.writeCompressed(tag, baos);
 			logger.debug("Write NBT");
-		} catch (IOException e) {
-			logger.getLogger().throwing("EventListener", "onPlayerInteractEntityEvent", e);
-		}
+//		} catch (IOException e) {
+//			logger.getLogger().throwing("EventListener", "onPlayerInteractEntityEvent", e);
+//		}
+
 		byte[] byteNbt = baos.toByteArray();
 
 		//空気対策
-		logger.trace("tag.getString(\"id\") == null:" + (tag.getString("id") == null));
-		logger.trace("tag.getString(\"id\").equals(\"\"):" + tag.getString("id").equals(""));
-		if(tag.getString("id") == null || tag.getString("id").equals("")) {
+//		logger.trace("tag.getString(\"id\") == null:" + (tag.getString("id") == null));
+//		logger.trace("tag.getString(\"id\").equals(\"\"):" + tag.getString("id").equals(""));
+//		if(tag.getString("id") == null || tag.getString("id").equals("")) {
+		if(!entityTag.hasTag("id") || entityTag.get("id").toString().isEmpty()){
 			logger.debug("tag is empty");
 			return;
 		}
 
-		nbttag.putByteArray(BallData.ENTITYBALL_NBT_KEY, byteNbt);
-		nbttag.putString(BallData.ENTITYBALL_CONTENT_KEY, entity.getType().toString());
+		itemTag.set(BallData.ENTITYBALL_NBT_KEY, byteNbt);
+		itemTag.set(BallData.ENTITYBALL_CONTENT_KEY, entity.getType().toString());
+//		nbttag.putByteArray(BallData.ENTITYBALL_NBT_KEY, byteNbt);
+//		nbttag.putString(BallData.ENTITYBALL_CONTENT_KEY, entity.getType().toString());
 
 		/*
 		 * 出し入れ同時対策1
 		 */
 		long time = System.currentTimeMillis();
-		nbttag.putLong(BallData.ENTITYBALL_TIMESTAMP_KEY, time);
+		itemTag.set(BallData.ENTITYBALL_TIMESTAMP_KEY, time);
+//		nbttag.putLong(BallData.ENTITYBALL_TIMESTAMP_KEY, time);
 		entity.getPersistentDataContainer().set(new NamespacedKey(this.plugin, BallData.ENTITYBALL_TIMESTAMP_KEY), PersistentDataType.LONG, time);
 
-		itemCopy.setTag(nbttag);
-		ItemStack entityBall = CraftItemStack.asBukkitCopy(itemCopy);
+//		itemCopy.setTag(nbttag);
+//		ItemStack entityBall = CraftItemStack.asBukkitCopy(itemCopy);
+		itemTag.load();
+		ItemStack entityBall = itemCopy;
 		logger.trace("entityBall:" + entityBall);
 
 		ItemMeta itemMeta2 = entityBall.getItemMeta();

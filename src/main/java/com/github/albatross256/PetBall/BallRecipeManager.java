@@ -1,5 +1,7 @@
 package com.github.albatross256.PetBall;
 
+import com.saicone.rtag.RtagEditor;
+import com.saicone.rtag.RtagEntity;
 import com.saicone.rtag.RtagItem;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,9 +48,10 @@ public class BallRecipeManager {
 		logger.debug("BallRecipeManager.init:Start");
 
 		ItemStack ball = new ItemStack(Material.ENDERMAN_SPAWN_EGG, 1);
-		RtagItem tag = new RtagItem(ball);
+		RtagEditor tag = new RtagItem(ball);
 		logger.trace("tag:" + tag);
-		tag.set(BallData.ENTITYBALL_CONTENT_KEY, BallData.ENTITYBALL_CONTENT_EMPTY);
+		tag.set(BallData.ENTITYBALL_CONTENT_EMPTY,BallData.ENTITYBALL_CONTENT_KEY);
+		tag.load();
 		tag.update();
 //		CompoundTag nbttag = new CompoundTag();
 //		nbttag.putString(BallData.ENTITYBALL_CONTENT_KEY, BallData.ENTITYBALL_CONTENT_EMPTY);
