@@ -52,7 +52,7 @@ public class BallRecipeManager {
 		logger.trace("tag:" + tag);
 		tag.set(BallData.ENTITYBALL_CONTENT_EMPTY,BallData.ENTITYBALL_CONTENT_KEY);
 		tag.load();
-		tag.update();
+//		tag.update();
 //		CompoundTag nbttag = new CompoundTag();
 //		nbttag.putString(BallData.ENTITYBALL_CONTENT_KEY, BallData.ENTITYBALL_CONTENT_EMPTY);
 //		net.minecraft.world.item.ItemStack itemCopy = CraftItemStack.asNMSCopy(ball);

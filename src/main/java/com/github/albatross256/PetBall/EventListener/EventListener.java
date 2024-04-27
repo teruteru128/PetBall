@@ -6,8 +6,11 @@ import com.github.albatross256.PetBall.LoreWriter.factory.LoreWriterFactory;
 import com.github.albatross256.PetBall.Main;
 import com.github.albatross256.PetBall.WorldManager;
 import com.github.teruteru128.logger.Logger;
+import com.saicone.rtag.RtagEditor;
 import com.saicone.rtag.RtagEntity;
 import com.saicone.rtag.RtagItem;
+import java.util.Objects;
+import org.apache.logging.log4j.LogManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -73,7 +76,9 @@ public class EventListener implements Listener{
 
     private static final Set<Material> MATERIALS = Collections.unmodifiableSet(EnumSet.of(CRAFTING_TABLE, CHIPPED_ANVIL, DAMAGED_ANVIL, BEACON, BREWING_STAND, FURNACE_MINECART, HOPPER_MINECART, CAKE, CANDLE_CAKE, CHEST_MINECART, COMMAND_BLOCK, DAYLIGHT_DETECTOR, RESPAWN_ANCHOR, STONECUTTER, CARTOGRAPHY_TABLE, SMITHING_TABLE, LOOM, SHULKER_BOX, RED_SHULKER_BOX, ORANGE_SHULKER_BOX, YELLOW_SHULKER_BOX, LIME_SHULKER_BOX, GREEN_SHULKER_BOX, CYAN_SHULKER_BOX, BLUE_SHULKER_BOX, PURPLE_SHULKER_BOX, MAGENTA_SHULKER_BOX, LIGHT_BLUE_SHULKER_BOX, PINK_SHULKER_BOX, BROWN_SHULKER_BOX, WHITE_SHULKER_BOX, GRAY_SHULKER_BOX, LIGHT_GRAY_SHULKER_BOX, BLACK_SHULKER_BOX, ANVIL));
     private static final Set<Material> TYPES = Collections.unmodifiableSet(EnumSet.of(IRON_DOOR, IRON_TRAPDOOR));
-    private BallManager ballManager;
+	private static final org.apache.logging.log4j.Logger log = LogManager.getLogger(
+			EventListener.class);
+	private BallManager ballManager;
 	private WorldManager worldManager;
 	private Logger logger;
 	private Plugin plugin;
@@ -269,22 +274,23 @@ public class EventListener implements Listener{
 
 		/* 以下 NBTの解析及び埋め込み */
 //		byte[] byteNbt = nbtTag.getByteArray(BallData.ENTITYBALL_NBT_KEY);
+		byte[] byteIsc = tag.get(BallData.ENTITYBALL_NBT_KEY);
 		RtagEntity entityTag = new RtagEntity(entity);
 
-//		try (ByteArrayInputStream bais = new ByteArrayInputStream(byteNbt)) {
-//			CompoundTag nbt = NbtIo.readCompressed(bais, NbtAccounter.unlimitedHeap());
-//			((CraftEntity) entity).getHandle().load(nbt);
-//			((CraftEntity) entity).getHandle().absMoveTo(newLocation.getX(), newLocation.getY(), newLocation.getZ(), 0, 0);
+		try (ByteArrayInputStream bais = new ByteArrayInputStream(byteIsc)) {
+			CompoundTag nbt = NbtIo.readCompressed(bais, NbtAccounter.unlimitedHeap());
+			((CraftEntity) entity).getHandle().load(nbt);
+			((CraftEntity) entity).getHandle().absMoveTo(newLocation.getX(), newLocation.getY(), newLocation.getZ(), 0, 0);
 			float yaw = 0;
 			float pitch = 0;
-			entityTag.load();
+//			entityTag.update();
 			entity.getLocation(new Location(newLocation.getWorld(), newLocation.getX(), newLocation.getY(), newLocation.getZ(), yaw, pitch));
 //			logger.trace("nbt:" + nbt);
 			logger.debug("bais OK");
-//		} catch (IOException e) {
-//			logger.debug("bais Error");
-//			logger.getLogger().throwing("com.github.albatross256.PetBall.EventListener.EventListener", "onTap", e);
-//		}
+		} catch (IOException e) {
+			logger.debug("bais Error");
+			logger.getLogger().throwing("com.github.albatross256.PetBall.EventListener.EventListener", "onTap", e);
+		}
 
 
 		/* 以下ボールの生成及びインベントリ転送*/
@@ -346,14 +352,14 @@ public class EventListener implements Listener{
 //		CompoundTag nbttag = new CompoundTag();
 //		logger.trace("nbttag:" + nbttag);
 		ItemStack entityBall = item.clone();
-		RtagItem tag = new RtagItem(entityBall);
+		RtagEditor tag = new RtagItem(entityBall);
 
 		logger.trace("tag:" + tag);
 //		nbttag.putString(key, value);
 //		net.minecraft.world.item.ItemStack itemCopy = CraftItemStack.asNMSCopy(item);
 //		itemCopy.setTag(nbttag);
 //		ItemStack entityBall = CraftItemStack.asBukkitCopy(itemCopy);
-		tag.set(key, value);
+		tag.set(value, key);
 		tag.load();
 //		logger.trace("nbttag:" + nbttag);
 //		logger.trace("itemCopy:" + itemCopy);
@@ -577,31 +583,35 @@ public class EventListener implements Listener{
 //		CompoundTag nbttag = new CompoundTag();
 		ItemStack itemCopy = item.clone();
 		RtagItem itemTag = new RtagItem(itemCopy);
+		itemTag.update();
 		logger.trace("item:" + item);
 //		logger.trace("itemCopy:" + itemCopy);
 //		logger.trace("nbttag:" + nbttag);
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 //		try {
-//			NbtIo.writeCompressed(tag, baos);
-			logger.debug("Write NBT");
+////			NbtIo.writeCompressed(tag, baos);
+//			logger.debug("Write NBT");
 //		} catch (IOException e) {
 //			logger.getLogger().throwing("EventListener", "onPlayerInteractEntityEvent", e);
 //		}
 
-		byte[] byteNbt = baos.toByteArray();
+//		byte[] byteNbt = baos.toByteArray();
+		byte[] byteNbt = itemTag.get
 
 		//空気対策
+		Entity ent = entityTag.getEntity();
+		logger.trace("ent: " + ent);
 //		logger.trace("tag.getString(\"id\") == null:" + (tag.getString("id") == null));
 //		logger.trace("tag.getString(\"id\").equals(\"\"):" + tag.getString("id").equals(""));
 //		if(tag.getString("id") == null || tag.getString("id").equals("")) {
-		if(!entityTag.hasTag("id") || entityTag.get("id").toString().isEmpty()){
+		if(Objects.isNull(ent) || ent.getType().equals("")){
 			logger.debug("tag is empty");
 			return;
 		}
 
-		itemTag.set(BallData.ENTITYBALL_NBT_KEY, byteNbt);
-		itemTag.set(BallData.ENTITYBALL_CONTENT_KEY, entity.getType().toString());
+		itemTag.set(byteNbt, BallData.ENTITYBALL_NBT_KEY);
+		itemTag.set(entity.getType().toString(), BallData.ENTITYBALL_CONTENT_KEY);
 //		nbttag.putByteArray(BallData.ENTITYBALL_NBT_KEY, byteNbt);
 //		nbttag.putString(BallData.ENTITYBALL_CONTENT_KEY, entity.getType().toString());
 
@@ -609,7 +619,7 @@ public class EventListener implements Listener{
 		 * 出し入れ同時対策1
 		 */
 		long time = System.currentTimeMillis();
-		itemTag.set(BallData.ENTITYBALL_TIMESTAMP_KEY, time);
+		itemTag.set(time, BallData.ENTITYBALL_TIMESTAMP_KEY);
 //		nbttag.putLong(BallData.ENTITYBALL_TIMESTAMP_KEY, time);
 		entity.getPersistentDataContainer().set(new NamespacedKey(this.plugin, BallData.ENTITYBALL_TIMESTAMP_KEY), PersistentDataType.LONG, time);
 
