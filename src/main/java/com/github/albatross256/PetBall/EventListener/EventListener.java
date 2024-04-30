@@ -274,23 +274,28 @@ public class EventListener implements Listener{
 
 		/* 以下 NBTの解析及び埋め込み */
 //		byte[] byteNbt = nbtTag.getByteArray(BallData.ENTITYBALL_NBT_KEY);
-		byte[] byteIsc = tag.get(BallData.ENTITYBALL_NBT_KEY);
-		RtagEntity entityTag = new RtagEntity(entity);
+			RtagEntity entityTag = new RtagEntity(entity);
+			Map tags = tag.get(BallData.ENTITYBALL_NBT_KEY);
+			tags.forEach((k, v) -> {
+				entityTag.set(v, k);
+			});
 
-		try (ByteArrayInputStream bais = new ByteArrayInputStream(byteIsc)) {
-			CompoundTag nbt = NbtIo.readCompressed(bais, NbtAccounter.unlimitedHeap());
-			((CraftEntity) entity).getHandle().load(nbt);
-			((CraftEntity) entity).getHandle().absMoveTo(newLocation.getX(), newLocation.getY(), newLocation.getZ(), 0, 0);
+//		try (ByteArrayInputStream bais = new ByteArrayInputStream(byteIsc)) {
+//			CompoundTag nbt = NbtIo.readCompressed(bais, NbtAccounter.unlimitedHeap());
+//			((CraftEntity) entity).getHandle().load(nbt);
+//			((CraftEntity) entity).getHandle().absMoveTo(newLocation.getX(), newLocation.getY(), newLocation.getZ(), 0, 0);
+
 			float yaw = 0;
 			float pitch = 0;
 //			entityTag.update();
-			entity.getLocation(new Location(newLocation.getWorld(), newLocation.getX(), newLocation.getY(), newLocation.getZ(), yaw, pitch));
+		entityTag.load();
+			entity.teleport(newLocation);
 //			logger.trace("nbt:" + nbt);
 			logger.debug("bais OK");
-		} catch (IOException e) {
-			logger.debug("bais Error");
-			logger.getLogger().throwing("com.github.albatross256.PetBall.EventListener.EventListener", "onTap", e);
-		}
+//		} catch (IOException e) {
+//			logger.debug("bais Error");
+//			logger.getLogger().throwing("com.github.albatross256.PetBall.EventListener.EventListener", "onTap", e);
+//		}
 
 
 		/* 以下ボールの生成及びインベントリ転送*/
@@ -392,6 +397,7 @@ public class EventListener implements Listener{
 //		CompoundTag handItemNbtTag = handItemCopy.getTag();
 		ItemStack handItemCopy = item.clone();
 		RtagItem tag = new RtagItem(handItemCopy);
+//		RtagItem tag = new RtagItem(item);
 //		logger.trace("handItemNbtTag != null:" + (handItemNbtTag != null));
 //		if(handItemNbtTag != null && handItemNbtTag.contains(BallData.ENTITYBALL_CONTENT_KEY)) {
 		if(tag.hasTag(BallData.ENTITYBALL_CONTENT_KEY)) {
@@ -597,7 +603,7 @@ public class EventListener implements Listener{
 //		}
 
 //		byte[] byteNbt = baos.toByteArray();
-		byte[] byteNbt = itemTag.get
+
 
 		//空気対策
 		Entity ent = entityTag.getEntity();
@@ -610,7 +616,7 @@ public class EventListener implements Listener{
 			return;
 		}
 
-		itemTag.set(byteNbt, BallData.ENTITYBALL_NBT_KEY);
+		itemTag.set(entityTag.get(), BallData.ENTITYBALL_NBT_KEY);
 		itemTag.set(entity.getType().toString(), BallData.ENTITYBALL_CONTENT_KEY);
 //		nbttag.putByteArray(BallData.ENTITYBALL_NBT_KEY, byteNbt);
 //		nbttag.putString(BallData.ENTITYBALL_CONTENT_KEY, entity.getType().toString());
