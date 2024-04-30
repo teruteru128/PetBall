@@ -93,6 +93,8 @@ public class LoreWriterFactory {
 			return new CamelLoreWriter();
 		case SNIFFER:
 			return  new SnifferLoreWriter();
+		case ARMADILLO:
+			return  new ArmadilloLoreWriter();
 		default:
 			return null;
 		}
