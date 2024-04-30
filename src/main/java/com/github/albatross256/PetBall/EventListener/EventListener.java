@@ -285,10 +285,7 @@ public class EventListener implements Listener{
 //			((CraftEntity) entity).getHandle().load(nbt);
 //			((CraftEntity) entity).getHandle().absMoveTo(newLocation.getX(), newLocation.getY(), newLocation.getZ(), 0, 0);
 
-			float yaw = 0;
-			float pitch = 0;
-//			entityTag.update();
-		entityTag.load();
+			entityTag.load();
 			entity.teleport(newLocation);
 //			logger.trace("nbt:" + nbt);
 			logger.debug("bais OK");
