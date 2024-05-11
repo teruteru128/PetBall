@@ -8,6 +8,7 @@ public abstract class BallData {
 	public static final String ENTITYBALL_CONTENT_KEY = "EntityBall";
 	public static final String ENTITYBALL_CONTENT_EMPTY= "Empty";
 	public static final String ENTITYBALL_NBT_KEY = "EntityBall_NBT";
+	public static final String ENTITYBALL_ISC_KEY = "EntityBall_ISC";
 	public static final String ENTITYBALL_TIMESTAMP_KEY = "EntityBallTimeStump";
 
 	public static final String BALL_NAME = "Pet_Ball";
