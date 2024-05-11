@@ -4,4 +4,4 @@ description: you can catch mob in the egg.
 author: albatross256
 main: com.github.albatross256.PetBall.Main
 api-version: 1.20
-depend: [Logger]
+depend: [Logger, Rtag]
