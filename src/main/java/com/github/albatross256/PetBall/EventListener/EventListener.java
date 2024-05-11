@@ -283,12 +283,12 @@ public class EventListener implements Listener{
         this.logger.trace("[TRACE] RtagEntity entityTag <- new RtagEntity(entity)");
         
         RtagItem itemTag = new RtagItem(mainItem);
+
+				// 1.20.4以前のNBTデータから馬鎧を取り出す
         var nbtTag = itemTag.get().get(BallData.ENTITYBALL_NBT_KEY);
         boolean isInstanceOfBytes = nbtTag instanceof byte[];
         
-//        Map<String, ?> armorItemMap;
         ItemStack equipedHorseArmor = null;
-
         if (isInstanceOfBytes) {
           byte[] tagCompoundBytes = (byte[]) nbtTag;
           var tagCompound = TStream.COMPOUND.fromBytes(tagCompoundBytes);
@@ -310,11 +310,11 @@ public class EventListener implements Listener{
                 this.logger.trace("[TRACE] isNotEmptyArmorItemList ? " + isNotEmptyArmorItemList);
 
                 if (isNotEmptyArmorItemList) {
+									// Armorはプレイヤーと一緒で４部位に分かれて格納されているため、格納部分を探しに行く
                   for (Map<String, Object> armorMap : armorItemList) {
                     boolean isNotEmptyArmorMap = !armorMap.keySet().isEmpty();
                     this.logger.trace("[TRACE] boolean isNotEmptyArmorMap <- !armorMap.keySet().isEmpty()");
                     this.logger.trace("[TRACE] isNotEmptyArmorMap ? " + isNotEmptyArmorMap);
-
                     if (isNotEmptyArmorMap) {
                       Integer count = null;
                       Material armorMaterial = null;
@@ -322,7 +322,6 @@ public class EventListener implements Listener{
                         boolean isIdCount = armKey.equals("Count");
                         this.logger.trace("[TRACE] boolean isIdCount = armKey.equals(\"Count\")");
                         this.logger.trace("[TRACE] isIdCount ? " + isIdCount);
-
                         if (isIdCount) {
                           count = Integer.valueOf(armorMap.get(armKey).toString());
                           this.logger.trace("[TRACE] int count <- Integer.valueOf(armorMap.get(armKey).toString())");
@@ -332,16 +331,14 @@ public class EventListener implements Listener{
                         boolean isIdKey = armKey.equals("id");
                         this.logger.trace("[TRACE] boolean isIdKey = armKey.equals(\"id\")");
                         this.logger.trace("[TRACE] isIdKey ? " + isIdKey);
-
                         if (isIdKey) {
                           String namespaceKey = armorMap.get(armKey).toString();
                           armorMaterial = Material.matchMaterial(namespaceKey);
                           this.logger.trace("[TRACE] Material armorMaterial <- Material.matchMaterial(armKey)");
                           this.logger.trace("[TRACE] armorMaterial=" + armorMaterial);
+                       }
 
-
-                        }
-
+												// アーマー名と数量が入ってたら、設定されているものと見て馬鎧を設定する
                         if (Objects.nonNull(armorMaterial) && Objects.nonNull(count)) {
                           equipedHorseArmor = new ItemStack(armorMaterial, count.intValue());
                           this.logger.trace("[TRACE] equipedHorseArmor <- new ItemStack(armorMaterial, count)");
@@ -351,116 +348,35 @@ public class EventListener implements Listener{
                     }
                   }
                 }
-              }
-              entityTag.set(v, k);
+              } else {
+								// 入っていたタグを召喚したエンティティタグに設定する
+								entityTag.set(v, k);
+							}
             }
           }
-//          tags.forEach((k, v) -> {
-//            this.logger.trace("[TRACE] key=" + k.toString());
-//            this.logger.trace("[TRACE] value=" + v.toString());
-//            if ("ArmorItems".equals(k)) {
-//              List<Map<String, Object>> armorItemList = (List<Map<String, Object>>) List.of(v);
-//              if (!armorItemList.isEmpty()) {
-//                for (Map<String, Object> armorMap : armorItemList) {
-//                  if (!armorMap.keySet().isEmpty()) {
-//                    for (String armKey : armorMap.keySet()) {
-//                      if ("id=minecraft:diamond_horse_armor".equals(armKey)) {
-//                        Material armorMaterial = Material.matchMaterial(armKey);
-//                        int count = Integer.valueOf(armorMap.get(armKey).toString());
-//                        equipedHorseArmor = new ItemStack(armorMaterial, count);
-//                      }
-//                    }
-//                  }
-//                }
-//              }
-//            }
-//            entityTag.set(v, k);
-//          });
         }
-//        this.logger.trace("[TRACE] entityTag=" + entityTag.toString());
-//        Object compound = entityTag.get().get(BallData.ENTITYBALL_NBT_KEY);
-//        var tagCompound = TStream.COMPOUND.fromBytes(compound);
-
-//        Object tagObj = entityTag.get().get(BallData.ENTITYBALL_NBT_KEY);
-//        this.logger.trace("[TRACE] Object tagObj <- entityTag.get().get(BallData.ENTITYBALL_NBT_KEY)");
-//        this.logger.trace("[TRACE] tagObj=" + tagObj.toString());
-//
-//        boolean isInstancdOfBytes = tagObj instanceof byte[];
-//        this.logger.trace("[TRACE] isInstancdOfBytes ? " + isInstancdOfBytes);
-//
-//        if (isInstancdOfBytes) {
-//          byte[] tagCompoundBytes = (byte[]) entityTag.get().get(BallData.ENTITYBALL_NBT_KEY);
-//          this.logger.trace("[TRACE] byte[] tagCompoundBytes <- (byte[]) entityTag.get().get(BallData.ENTITYBALL_NBT_KEY)");
-//
-//          var tagCompound = TStream.COMPOUND.fromBytes(tagCompoundBytes);
-//          this.logger.trace("[TRACE] var tagCompound <- TStream.COMPOUND.fromBytes(tagCompoundBytes)");
-//
-//          Map<?, ?> tags = TStream.COMPOUND.toMap(tagCompound);
-//          this.logger.trace("[TRACE] Map <?, ?> tags <- TStream.COMPOUND.toMap(tagCompound)");
-//
-//          this.logger.trace("[TRACE] TStream.COMPOUND.toMap(entityTag).forEach((k, v) START");
-//          tags.forEach((k, v) -> {
-//            entityTag.set(v, k);
-//          });
-//          this.logger.trace("[TRACE] TStream.COMPOUND.toMap(entityTag).forEach((k, v) END");
-//        }
-        
-        // var tagBytes = TStream.COMPOUND.toBytes(entityTag);
-        // this.logger.trace("[TRACE] var tagBytes <- TStream.COMPOUND.toBytes(entityTag)");
-
-        // var tagObj = TStream.COMPOUND.fromBytes(tagBytes);
-        // this.logger.trace("[TRACE] var tags <- TStream.COMPOUND.fromBytes(tagBytes)");
         // Map tags = tag.get(BallData.ENTITYBALL_NBT_KEY);
         // tags.forEach((k, v) -> {
         // entityTag.set(v, k);
         // });
-        // Map <?, ?> tags = TStream.COMPOUND.toMap(entityTag);
-        // this.logger.trace("[TRACE] Map <?, ?> tags <- TStream.COMPOUND.toMap(entityTag)");
-        // this.logger.trace("[TRACE] TStream.COMPOUND.toMap(entityTag).forEach((k, v) START");
-        // TStream.COMPOUND.toMap(tagObj).forEach((k, v) -> {
-        // entityTag.set(v, k);
-        // this.logger.trace("[TRACE] key=" + k.toString());
-        // this.logger.trace("[TRACE] value=" + v.toString());
-        // });
-        // this.logger.trace("[TRACE] TStream.COMPOUND.toMap(entityTag).forEach((k, v) END");
 
 //		try (ByteArrayInputStream bais = new ByteArrayInputStream(byteIsc)) {
 //			CompoundTag nbt = NbtIo.readCompressed(bais, NbtAccounter.unlimitedHeap());
 //			((CraftEntity) entity).getHandle().load(nbt);
 //			((CraftEntity) entity).getHandle().absMoveTo(newLocation.getX(), newLocation.getY(), newLocation.getZ(), 0, 0);
-            if (entity instanceof AbstractHorse absHorse) {
-              if (absHorse instanceof Horse horse) {
-                ItemStack armor = horse.getInventory().getArmor();
-                this.logger.trace("[TRACE] ItemStack armor <- horse.getInventory().getArmor()");
-                this.logger.trace("[TRACE] armor=" + armor);
-                
-                boolean isHasEquipedHorseArmor = Objects.nonNull(equipedHorseArmor);
-                this.logger.trace("[TRACE] isHasEquipedHorseArmor ? " + isHasEquipedHorseArmor);
+		entityTag.load();
+		this.logger.trace("[TRACE] entityTag.load()");
 
-                if (isHasEquipedHorseArmor) {
-                  HorseInventory horseInv = horse.getInventory();
-                  this.logger.trace("[TRACE] HorseInventory horseInv <- horse.getInventory()");
-                  this.logger.trace("[TRACE] horseInv=" + horseInv);
-                  boolean isEmptyInventory = horseInv.isEmpty();
-                  this.logger.trace("boolean isEmptyInventory <- horseInv.isEmpty() ? ");
-                  this.logger.trace("[TRACE] isEmptyInventory ? " + isEmptyInventory);
-                  horseInv.addItem(equipedHorseArmor);
-                  
-
-//                  horse.getInventory().setArmor(new ItemStack(equipedHorseArmor.clone()));
-//                  this.logger.trace("[TRACE] horse.getInventory().setArmor(equipedHorseArmor)");
-                }
-              }
-            }
-			entityTag.load();
-			this.logger.trace("[TRACE] entityTag.load()");
-            if (entity instanceof AbstractHorse absHorse) {
-              if (absHorse instanceof Horse horse) {
-                ItemStack armor = horse.getInventory().getArmor();
-                this.logger.trace("[TRACE] ItemStack armor <- horseInv.getArmor()");
-                this.logger.trace("[TRACE] armor=" + armor);
-              }
-            }
+		// 旧式馬鎧の設定
+		if (Objects.nonNull(equipedHorseArmor) && entity instanceof Horse horse) {
+			HorseInventory horseInv = horse.getInventory();
+			this.logger.trace("[TRACE] HorseInventory horseInv <- horse.getInventory()");
+			this.logger.trace("[TRACE] horseInv=" + horseInv);
+			boolean isEmptyInventory = horseInv.isEmpty();
+			this.logger.trace("boolean isEmptyInventory <- horseInv.isEmpty() ? ");
+			this.logger.trace("[TRACE] isEmptyInventory ? " + isEmptyInventory);
+			horseInv.setArmor(equipedHorseArmor);
+		}
 			entity.teleport(newLocation);
 			this.logger.trace("[TRACE]EventListener.EventListener.onTap Parse NBT END");
 //			logger.trace("nbt:" + nbt);
