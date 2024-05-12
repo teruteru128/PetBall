@@ -52,8 +52,8 @@ public abstract class LoreWriter {
 
 		return "体力 : [" + ChatColor.GREEN
 				+ ":".repeat(rate) + ChatColor.GRAY + ":".repeat(20 - rate)
-				+ ChatColor.DARK_PURPLE + "]  (" + currentHealth + " / "
-				+ maxHealth + ")";
+				+ ChatColor.DARK_PURPLE + "]  (" + Math.round(currentHealth) + " / "
+				+ Math.round(maxHealth) + ")";
 	}
 
 
