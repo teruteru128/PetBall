@@ -1,13 +1,51 @@
 package com.github.albatross256.PetBall.LoreWriter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.attribute.Attributable;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Ageable;
+import org.bukkit.entity.Allay;
+import org.bukkit.entity.Axolotl;
+import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Tameable;
 
 public abstract class LoreWriter {
 
+	private static String adultDisplayStr = "大人";
+	private static String childDisplayStr = "子供";
+	private static String noOwnerDisplayStr = "なし";
+	private static String loreOwnerDisplayStr = "飼い主: ";
+
+	private String mobName;
+
+	public LoreWriter(String mobName) {
+		this.mobName = mobName;
+	}
+
 	public abstract List<String> generateLore(Entity entity);
+
+	public List<String> generateCommonLore(Entity entity){
+		List<String> lore = new ArrayList<String>();
+		lore.add(this.mobName);
+		if(entity instanceof Damageable && entity instanceof Attributable){
+			lore.add(getHealthMeter(((Damageable)entity).getHealth(), ((Attributable)entity).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+		}
+		if (entity instanceof Ageable){
+			String age =  ((Axolotl)entity).isAdult() ? adultDisplayStr : childDisplayStr;
+			lore.add(age);
+		}
+
+		if(entity instanceof Tameable){
+			Tameable tameable = (Tameable) entity;
+			String owner = tameable.getOwner() == null ? noOwnerDisplayStr : tameable.getOwner().getName();
+			lore.add(loreOwnerDisplayStr + owner);
+		}
+		return lore;
+	}
 
 	protected String getHealthMeter(double currentHealth, double maxHealth) {
 		double rate = currentHealth * 20  /  maxHealth;
@@ -24,7 +62,7 @@ public abstract class LoreWriter {
 		}
 		healthMeter = healthMeter + ChatColor.DARK_PURPLE.toString();
 
-		return "体力 : [" + healthMeter + "]  (" + String.valueOf(currentHealth) + " / " + String.valueOf(maxHealth) + ")";
+		return "体力 : [" + healthMeter + "]  (" + String.valueOf(Math.round(currentHealth)) + " / " + String.valueOf(Math.round(maxHealth)) + ")";
 	}
 
 
