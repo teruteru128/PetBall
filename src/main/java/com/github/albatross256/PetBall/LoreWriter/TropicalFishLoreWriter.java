@@ -11,16 +11,28 @@ import org.bukkit.entity.TropicalFish;
 import net.md_5.bungee.api.ChatColor;
 
 public class TropicalFishLoreWriter extends LoreWriter {
+	/** Loreに表示するMobの日本語名 */
+	private static String loreMobName = "行商人のラマ";
 
+	/**
+	 * コンストラクタ
+	 * */
+	public TropicalFishLoreWriter(){
+		super(loreMobName);
+	}
+
+	/**
+	 * Lore情報の作成
+	 * @param entity Loreを作成するエンティティ情報
+	 * */
 	@Override
 	public List<String> generateLore(Entity entity) {
-		List<String> lore = new ArrayList<String>();
+		List<String> lore = generateCommonLore(entity);
+
 		lore.add("熱帯魚" + ((TropicalFish)entity).getName().toString());
 		lore.add("肌の色 : " + translateColorName(((TropicalFish)entity).getBodyColor()));
 		lore.add("模様の色 : " + translateColorName(((TropicalFish)entity).getPatternColor()));
 		lore.add("形・模様の種類 : " + translatePatternName(((TropicalFish)entity).getPattern()));
-
-		lore.add(getHealthMeter(((TropicalFish)entity).getHealth(), ((TropicalFish)entity).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
 		return lore;
 	}
 

@@ -7,25 +7,37 @@ import java.util.ResourceBundle;
 
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Axolotl;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 
 public class VillagerLoreWriter extends LoreWriter {
-	
+
+	/** Loreに表示する村人の日本語名 */
 	private static final ResourceBundle BUNDLE = ResourceBundle.getBundle("com.github.albatross256.PetBall.LoreWriter.VillagerLoreWriter", Locale.JAPANESE);
 
+	/** Loreに表示するMobの日本語名 */
+	private static String loreMobName = "村人";
+
+	/**
+	 * コンストラクタ
+	 * */
+	public VillagerLoreWriter(){
+		super(loreMobName);
+	}
+
+	/**
+	 * Lore情報の作成
+	 * @param entity Loreを作成するエンティティ情報
+	 * */
 	@Override
 	public List<String> generateLore(Entity entity) {
-		List<String> lore = new ArrayList<String>();
-
-		//String pro = ((Villager)entity).getCareer().name();
+		List<String> lore = generateCommonLore(entity);
 
 		String trade1;
 		String trade2;
-		lore.add("村人");
-		lore.add(getHealthMeter(((Villager)entity).getHealth(), ((Villager)entity).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
 		if(((Villager)entity).getRecipeCount() < 1) {
 			trade1 = "なし";
 		}else {
@@ -45,7 +57,10 @@ public class VillagerLoreWriter extends LoreWriter {
 		return lore;
 	}
 
-
+	/**
+	 * 交易情報の作成
+	 * @param recipe 村人の交易情報
+	 * */
 	private String getRecipeText(MerchantRecipe recipe) {
 		String ingredientString ="";
 		for(ItemStack ingredient : recipe.getIngredients()) {
@@ -57,47 +72,5 @@ public class VillagerLoreWriter extends LoreWriter {
 		ItemStack result = recipe.getResult();
 
 		return ingredientString + " => " + result.getType().toString() + " × " + result.getAmount();
-	}
-
-
-	/**
-	 * @deprecated
-	 * @param eName
-	 * @return
-	 */
-	@Deprecated(forRemoval = true, since = "4.5.0-SNAPSHOT")
-	private String translateCareerName(Villager.Profession eName) {
-		switch(eName) {
-		case FARMER:
-			return "農民";
-		case FISHERMAN:
-			return "釣り人";
-		case SHEPHERD:
-			return "羊飼い";
-		case FLETCHER:
-			return "矢師";
-		case LIBRARIAN:
-			return "司書";
-		case CARTOGRAPHER:
-			return "製図家";
-		case CLERIC:
-			return "聖職者";
-		case ARMORER:
-			return "防具鍛冶";
-		case WEAPONSMITH:
-			return "武器鍛冶";
-		case TOOLSMITH:
-			return "道具鍛冶";
-		case BUTCHER:
-			return "肉屋";
-		case LEATHERWORKER:
-			return "革細工師";
-		case NITWIT:
-			return "無職";
-		case MASON:
-			return "石工職人";
-		default:
-			return eName.name();
-		}
 	}
 }

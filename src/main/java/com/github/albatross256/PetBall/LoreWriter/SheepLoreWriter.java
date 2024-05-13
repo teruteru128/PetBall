@@ -8,14 +8,23 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Sheep;
 
 public class SheepLoreWriter extends LoreWriter {
+	/** Loreに表示するMobの日本語名 */
+	private static String loreMobName = "ヒツジ";
 
+	/**
+	 * コンストラクタ
+	 * */
+	public SheepLoreWriter(){
+		super(loreMobName);
+	}
+
+	/**
+	 * Lore情報の作成
+	 * @param entity Loreを作成するエンティティ情報
+	 * */
 	@Override
 	public List<String> generateLore(Entity entity) {
-		List<String> lore = new ArrayList<String>();
-		String age =  ((Sheep)entity).isAdult() ? "大人" : "子供";
-		lore.add("ヒツジ");
-		lore.add(getHealthMeter(((Sheep)entity).getHealth(), ((Sheep)entity).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
-		lore.add(age);
+		List<String> lore = generateCommonLore(entity);
 		return lore;
 	}
 }
