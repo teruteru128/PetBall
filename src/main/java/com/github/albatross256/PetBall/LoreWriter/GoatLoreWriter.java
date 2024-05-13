@@ -8,14 +8,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GoatLoreWriter extends LoreWriter {
+	/** Loreに表示するMobの日本語名 */
+	private static String loreMobName = "ヤギ";
 
+	/**
+	 * コンストラクタ
+	 * */
+	public GoatLoreWriter(){
+		super(loreMobName);
+	}
+
+	/**
+	 * Lore情報の作成
+	 * @param entity Loreを作成するエンティティ情報
+	 * */
 	@Override
 	public List<String> generateLore(Entity entity) {
-		List<String> lore = new ArrayList<String>();
-		String age =  ((Goat)entity).isAdult() ? "大人" : "子供";
-		lore.add("ヤギ");
-		lore.add(getHealthMeter(((Goat)entity).getHealth(), ((Goat)entity).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
-		lore.add(age);
+		List<String> lore = generateCommonLore(entity);
 		return lore;
 	}
 }

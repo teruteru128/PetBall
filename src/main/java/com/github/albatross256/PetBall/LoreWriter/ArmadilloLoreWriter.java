@@ -8,12 +8,24 @@ import org.bukkit.entity.Armadillo;
 import org.bukkit.entity.Entity;
 
 public class ArmadilloLoreWriter extends LoreWriter {
+	/** Loreに表示するMobの日本語名 */
+	private static String loreMobName = "アルマジロ";
 
+	/**
+	 * コンストラクタ
+	 * */
+	public ArmadilloLoreWriter(){
+		super(loreMobName);
+	}
+
+	/**
+	 * Lore情報の作成
+	 * @param entity Loreを作成するエンティティ情報
+	 * */
 	@Override
 	public List<String> generateLore(Entity entity) {
-		List<String> lore = new ArrayList<String>();
-		lore.add("アルマジロ");
-		lore.add(getHealthMeter(((Armadillo)entity).getHealth(), ((Armadillo)entity).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+		List<String> lore = generateCommonLore(entity);
 		return lore;
 	}
+
 }

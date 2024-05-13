@@ -4,16 +4,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Axolotl;
 import org.bukkit.entity.Donkey;
 import org.bukkit.entity.Entity;
 
 public class DonkeyLoreWriter extends LoreWriter {
+	/** Loreに表示するMobの日本語名 */
+	private static String loreMobName = "ロバ";
 
+	/**
+	 * コンストラクタ
+	 * */
+	public DonkeyLoreWriter(){
+		super(loreMobName);
+	}
+
+	/**
+	 * Lore情報の作成
+	 * @param entity Loreを作成するエンティティ情報
+	 * */
 	@Override
 	public List<String> generateLore(Entity entity) {
-		List<String> lore = new ArrayList<String>();
-		lore.add("ロバ");
-		lore.add(getHealthMeter(((Donkey)entity).getHealth(), ((Donkey)entity).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+		List<String> lore = generateCommonLore(entity);
 		return lore;
 	}
 }

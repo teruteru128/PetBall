@@ -8,12 +8,23 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Frog;
 
 public class FrogLoreWriter extends LoreWriter {
+	/** Loreに表示するMobの日本語名 */
+	private static String loreMobName = "カエル";
 
+	/**
+	 * コンストラクタ
+	 * */
+	public FrogLoreWriter(){
+		super(loreMobName);
+	}
+
+	/**
+	 * Lore情報の作成
+	 * @param entity Loreを作成するエンティティ情報
+	 * */
 	@Override
 	public List<String> generateLore(Entity entity) {
-		List<String> lore = new ArrayList<String>();
-		lore.add("カエル");
-		lore.add(getHealthMeter(((Frog)entity).getHealth(), ((Frog)entity).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+		List<String> lore = generateCommonLore(entity);
 		return lore;
 	}
 }
