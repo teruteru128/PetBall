@@ -33,17 +33,16 @@ public abstract class LoreWriter {
 	public List<String> generateCommonLore(Entity entity){
 		List<String> lore = new ArrayList<String>();
 		lore.add(this.mobName);
-		if(entity instanceof Damageable && entity instanceof Attributable){
-			lore.add(getHealthMeter(((Damageable)entity).getHealth(), ((Attributable)entity).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+		if (entity instanceof Damageable d && entity instanceof Attributable a) {
+			lore.add(getHealthMeter(d.getHealth(), a.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
 		}
-		if (entity instanceof Ageable){
-			String age =  ((Ageable)entity).isAdult() ? adultDisplayStr : childDisplayStr;
+		if (entity instanceof Ageable a) {
+			String age =  a.isAdult() ? adultDisplayStr : childDisplayStr;
 			lore.add(age);
 		}
 
-		if(entity instanceof Tameable){
-			Tameable tameable = (Tameable) entity;
-			String owner = tameable.getOwner() == null ? noOwnerDisplayStr : tameable.getOwner().getName();
+		if (entity instanceof Tameable tameable) {
+      String owner = tameable.getOwner() == null ? noOwnerDisplayStr : tameable.getOwner().getName();
 			lore.add(loreOwnerDisplayStr + owner);
 		}
 		return lore;
