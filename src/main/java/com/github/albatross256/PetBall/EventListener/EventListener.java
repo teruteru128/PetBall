@@ -70,6 +70,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static java.util.Map.entry;
 import static org.bukkit.Material.*;
 
 
@@ -80,6 +81,7 @@ public class EventListener implements Listener{
 
     private static final Set<Material> MATERIALS = Collections.unmodifiableSet(EnumSet.of(CRAFTING_TABLE, CHIPPED_ANVIL, DAMAGED_ANVIL, BEACON, BREWING_STAND, FURNACE_MINECART, HOPPER_MINECART, CAKE, CANDLE_CAKE, CHEST_MINECART, COMMAND_BLOCK, DAYLIGHT_DETECTOR, RESPAWN_ANCHOR, STONECUTTER, CARTOGRAPHY_TABLE, SMITHING_TABLE, LOOM, SHULKER_BOX, RED_SHULKER_BOX, ORANGE_SHULKER_BOX, YELLOW_SHULKER_BOX, LIME_SHULKER_BOX, GREEN_SHULKER_BOX, CYAN_SHULKER_BOX, BLUE_SHULKER_BOX, PURPLE_SHULKER_BOX, MAGENTA_SHULKER_BOX, LIGHT_BLUE_SHULKER_BOX, PINK_SHULKER_BOX, BROWN_SHULKER_BOX, WHITE_SHULKER_BOX, GRAY_SHULKER_BOX, LIGHT_GRAY_SHULKER_BOX, BLACK_SHULKER_BOX, ANVIL));
     private static final Set<Material> TYPES = Collections.unmodifiableSet(EnumSet.of(IRON_DOOR, IRON_TRAPDOOR));
+	private static final Map<String, String > OLD_ENTITY_TYPES = Map.ofEntries(entry("MUSHROOM_COW", EntityType.MOOSHROOM.toString()), entry("SNOWMAN", EntityType.SNOW_GOLEM.toString()));
 	private static final org.apache.logging.log4j.Logger log = LogManager.getLogger(
 			EventListener.class);
 	private BallManager ballManager;
@@ -241,6 +243,12 @@ public class EventListener implements Listener{
 		logger.trace("this.ballManager:" + this.ballManager);
 		logger.trace("allBallDatas:" + allBallDatas);
 		logger.trace("entityBallContentKey:" + entityBallContentKey);
+
+		// 1.20.5で内部エンティティデータキーが変更になったので、それを新しいキーに変換する
+		logger.trace("OLD_ENTITY_TYPES.containsKey(entityBallContentKey): " + OLD_ENTITY_TYPES.containsKey(entityBallContentKey));
+		if (OLD_ENTITY_TYPES.containsKey(entityBallContentKey)) {
+			entityBallContentKey = OLD_ENTITY_TYPES.get(entityBallContentKey);
+		}
 
 		for(EntityType key : allBallDatas.keySet()) {
 			BallData eachBallData = allBallDatas.get(key);

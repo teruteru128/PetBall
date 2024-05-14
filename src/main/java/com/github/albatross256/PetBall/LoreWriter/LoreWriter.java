@@ -1,5 +1,6 @@
 package com.github.albatross256.PetBall.LoreWriter;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import org.bukkit.entity.Tameable;
 
 public abstract class LoreWriter {
 
+	private static DecimalFormat hpFormat = new DecimalFormat("0.0#");
 	private static String adultDisplayStr = "大人";
 	private static String childDisplayStr = "子供";
 	private static String noOwnerDisplayStr = "なし";
@@ -35,7 +37,7 @@ public abstract class LoreWriter {
 			lore.add(getHealthMeter(((Damageable)entity).getHealth(), ((Attributable)entity).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
 		}
 		if (entity instanceof Ageable){
-			String age =  ((Axolotl)entity).isAdult() ? adultDisplayStr : childDisplayStr;
+			String age =  ((Ageable)entity).isAdult() ? adultDisplayStr : childDisplayStr;
 			lore.add(age);
 		}
 
@@ -52,8 +54,8 @@ public abstract class LoreWriter {
 
 		return "体力 : [" + ChatColor.GREEN
 				+ ":".repeat(rate) + ChatColor.GRAY + ":".repeat(20 - rate)
-				+ ChatColor.DARK_PURPLE + "]  (" + Math.round(currentHealth) + " / "
-				+ Math.round(maxHealth) + ")";
+				+ ChatColor.DARK_PURPLE + "]  (" + hpFormat.format(currentHealth) + " / "
+				+ hpFormat.format(maxHealth) + ")";
 	}
 
 
