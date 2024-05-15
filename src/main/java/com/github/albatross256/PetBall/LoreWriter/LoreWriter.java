@@ -4,12 +4,12 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.Objects;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Ageable;
-import org.bukkit.entity.Allay;
-import org.bukkit.entity.Axolotl;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Tameable;
@@ -34,7 +34,8 @@ public abstract class LoreWriter {
 		List<String> lore = new ArrayList<String>();
 		lore.add(this.mobName);
 		if (entity instanceof Damageable d && entity instanceof Attributable a) {
-			lore.add(getHealthMeter(d.getHealth(), a.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+      lore.add(getHealthMeter(d.getHealth(), Objects.requireNonNull(
+          a.getAttribute(Attribute.GENERIC_MAX_HEALTH), "MAX HEALTH is null").getValue()));
 		}
 		if (entity instanceof Ageable a) {
 			String age =  a.isAdult() ? adultDisplayStr : childDisplayStr;
@@ -42,7 +43,7 @@ public abstract class LoreWriter {
 		}
 
 		if (entity instanceof Tameable tameable) {
-      String owner = tameable.getOwner() == null ? noOwnerDisplayStr : tameable.getOwner().getName();
+      String owner = Objects.nonNull(tameable.getOwner()) ? noOwnerDisplayStr : tameable.getOwner().getName();
 			lore.add(loreOwnerDisplayStr + owner);
 		}
 		return lore;
