@@ -330,7 +330,7 @@ public class EventListener implements Listener {
           return;
         }
 
-        entity = location.getWorld().spawnEntity(newLocation, eachBallData.getEntityType());
+        entity = location.getWorld().spawnEntity(newLocation, eachBallData.getEntityType(), false);
         ballData = eachBallData;
         logger.trace("entity:" + entity);
         break;
@@ -351,6 +351,7 @@ public class EventListener implements Listener {
 
     RtagItem itemTag = new RtagItem(mainItem);
 
+    this.logger.trace("[TRACE]entityTag:" + entityTag.get());
     // 1.20.5以降のタグ保存用のデータ
     ItemStack equipedHorseArmor = null;
     if (tag.hasTag(BallData.ENTITYBALL_ISC_KEY)) {
@@ -788,6 +789,7 @@ public class EventListener implements Listener {
 //		CompoundTag tag = new CompoundTag();
 //		nmsEntity.saveAsPassenger(tag);
     RtagEntity entityTag = new RtagEntity(entity);
+    logger.trace("[TRACE]BeforeEntityTag:" + entityTag.get());
     entityTag.update();
     event.setCancelled(true);
 //		logger.trace("nmsEntity:" + nmsEntity);
@@ -825,6 +827,7 @@ public class EventListener implements Listener {
       return;
     }
 
+    logger.trace("[TRACE]AfterEntityTag:" + entityTag.get());
     itemTag.set(entityTag.get(), BallData.ENTITYBALL_ISC_KEY);
     itemTag.set(entity.getType().toString(), BallData.ENTITYBALL_CONTENT_KEY);
 //		nbttag.putByteArray(BallData.ENTITYBALL_NBT_KEY, byteNbt);
