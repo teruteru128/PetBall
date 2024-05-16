@@ -42,9 +42,11 @@ import org.bukkit.block.data.type.Switch;
 import org.bukkit.block.data.type.TrapDoor;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.ChestedHorse;
+import org.bukkit.entity.Donkey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
+import org.bukkit.entity.Mule;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -658,20 +660,44 @@ public class EventListener implements Listener{
 
 			Location entityLocation  = entity.getLocation();
 			Location dropItemLocation = new Location(entity.getWorld(), entityLocation.getX()+0.5, entityLocation.getY()+0.5, entityLocation.getZ()+0.5);
+			boolean hasSaddle = false;
+			AbstractHorse abHorse = null;
+			logger.trace("entity:" + entity);
 			logger.trace("entityLocation:" + entityLocation);
 			logger.trace("dropItemLocation:" + dropItemLocation);
 			logger.trace("entity.getWorld():" + entity.getWorld());
 			logger.trace("entityLocation.getX()+0.5:" + entityLocation.getX()+0.5);
 			logger.trace("entityLocation.getY()+0.5:" + entityLocation.getY()+0.5);
 			logger.trace("entityLocation.getZ()+0.5:" + entityLocation.getZ()+0.5);
-			for(ItemStack strageItem : horse.getInventory().getStorageContents()) {
-				if(strageItem != null) {
+
+			// ロバかラバの場合、外れないように先頭にある鞍をあらかじめ除外しておく
+			if(entity instanceof Donkey|| entity instanceof Mule) {
+				logger.trace("entity is Donkey or Mule.");
+				abHorse = (AbstractHorse)entity;
+
+				// サドルがついてる場合は、フラグを立てて一度外す
+				logger.trace("hasSaddle: " + Objects.nonNull(abHorse.getInventory().getSaddle()));
+				if(Objects.nonNull(abHorse.getInventory().getSaddle())){
+					logger.trace("this entity has Saddle.");
+					hasSaddle = true;
+					abHorse.getInventory().setSaddle(null);
+				}
+			}
+			for(ItemStack storageItem : horse.getInventory().getStorageContents()) {
+				if(storageItem != null) {
 					logger.debug("StrageItem is not null.Item drop!");
-					entity.getWorld().dropItem(dropItemLocation, strageItem);
+					entity.getWorld().dropItem(dropItemLocation, storageItem);
 				}
 			}
 			logger.debug("HorseInventory Clear.");
 			horse.getInventory().clear();
+
+			// サドルがある場合は、馬につけなおす
+			logger.trace("hasSaddle: " + hasSaddle);
+			if(hasSaddle){
+				logger.trace("setSaddle.");
+				abHorse.getInventory().setSaddle(new ItemStack(SADDLE));
+			}
 		}
 
 //		net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity) entity).getHandle();
@@ -693,7 +719,7 @@ public class EventListener implements Listener{
 //		logger.trace("itemCopy:" + itemCopy);
 //		logger.trace("nbttag:" + nbttag);
 
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 //		try {
 ////			NbtIo.writeCompressed(tag, baos);
 //			logger.debug("Write NBT");
