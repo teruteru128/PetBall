@@ -10,23 +10,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SnifferLoreWriter extends LoreWriter {
-	/** Loreに表示するMobの日本語名 */
-	private static String loreMobName = "スニッファー";
 
-	/**
-	 * コンストラクタ
-	 * */
-	public SnifferLoreWriter(){
-		super(loreMobName);
-	}
+  /**
+   * Loreに表示するMobの日本語名
+   */
+  private static String loreMobName = "スニッファー";
 
-	/**
-	 * Lore情報の作成
-	 * @param entity Loreを作成するエンティティ情報
-	 * */
-	@Override
-	public List<String> generateLore(Entity entity) {
-		List<String> lore = generateCommonLore(entity);
-		return lore;
-	}
+  /**
+   * コンストラクタ
+   */
+  public SnifferLoreWriter() {
+    super(loreMobName);
+  }
+
+  /**
+   * Lore情報の作成
+   *
+   * @param entity Loreを作成するエンティティ情報
+   */
+  @Override
+  public List<String> generateLore(Entity entity) {
+    List<String> lore = generateCommonLore(entity);
+    return lore;
+  }
 }

@@ -3,20 +3,20 @@ package com.github.albatross256.PetBall.BallData;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 
-public class HorseBallData extends BallData{
+public class HorseBallData extends BallData {
 
-	@Override
-	public EntityType getEntityType() {
-		return EntityType.HORSE;
-	}
+  @Override
+  public EntityType getEntityType() {
+    return EntityType.HORSE;
+  }
 
-	@Override
-	public Material getFilledBallMaterial() {
-		return Material.HORSE_SPAWN_EGG;
-	}
+  @Override
+  public Material getFilledBallMaterial() {
+    return Material.HORSE_SPAWN_EGG;
+  }
 
-	@Override
-	public EntityType getFilledBallEntityType() {
-		return EntityType.HORSE;
-	}
+  @Override
+  public EntityType getFilledBallEntityType() {
+    return EntityType.HORSE;
+  }
 }

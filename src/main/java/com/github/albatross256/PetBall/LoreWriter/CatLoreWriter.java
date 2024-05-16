@@ -9,23 +9,27 @@ import org.bukkit.entity.Cat;
 import org.bukkit.entity.Entity;
 
 public class CatLoreWriter extends LoreWriter {
-	/** Loreに表示するMobの日本語名 */
-	private static String loreMobName = "猫";
 
-	/**
-	 * コンストラクタ
-	 * */
-	public CatLoreWriter(){
-		super(loreMobName);
-	}
+  /**
+   * Loreに表示するMobの日本語名
+   */
+  private static String loreMobName = "猫";
 
-	/**
-	 * Lore情報の作成
-	 * @param entity Loreを作成するエンティティ情報
-	 * */
-	@Override
-	public List<String> generateLore(Entity entity) {
-		List<String> lore = generateCommonLore(entity);
-		return lore;
-	}
+  /**
+   * コンストラクタ
+   */
+  public CatLoreWriter() {
+    super(loreMobName);
+  }
+
+  /**
+   * Lore情報の作成
+   *
+   * @param entity Loreを作成するエンティティ情報
+   */
+  @Override
+  public List<String> generateLore(Entity entity) {
+    List<String> lore = generateCommonLore(entity);
+    return lore;
+  }
 }

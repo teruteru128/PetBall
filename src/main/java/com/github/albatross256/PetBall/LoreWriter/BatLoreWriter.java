@@ -8,23 +8,27 @@ import org.bukkit.entity.Entity;
 import org.bukkit.attribute.Attribute;
 
 public class BatLoreWriter extends LoreWriter {
-	/** Loreに表示するMobの日本語名 */
-	private static String loreMobName = "コウモリ";
 
-	/**
-	 * コンストラクタ
-	 * */
-	public BatLoreWriter(){
-		super(loreMobName);
-	}
+  /**
+   * Loreに表示するMobの日本語名
+   */
+  private static String loreMobName = "コウモリ";
 
-	/**
-	 * Lore情報の作成
-	 * @param entity Loreを作成するエンティティ情報
-	 * */
-	@Override
-	public List<String> generateLore(Entity entity) {
-		List<String> lore = generateCommonLore(entity);
-		return lore;
-	}
+  /**
+   * コンストラクタ
+   */
+  public BatLoreWriter() {
+    super(loreMobName);
+  }
+
+  /**
+   * Lore情報の作成
+   *
+   * @param entity Loreを作成するエンティティ情報
+   */
+  @Override
+  public List<String> generateLore(Entity entity) {
+    List<String> lore = generateCommonLore(entity);
+    return lore;
+  }
 }

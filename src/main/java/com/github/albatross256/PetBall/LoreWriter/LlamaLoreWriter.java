@@ -8,23 +8,27 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Llama;
 
 public class LlamaLoreWriter extends LoreWriter {
-	/** Loreに表示するMobの日本語名 */
-	private static String loreMobName = "ラマ";
 
-	/**
-	 * コンストラクタ
-	 * */
-	public LlamaLoreWriter(){
-		super(loreMobName);
-	}
+  /**
+   * Loreに表示するMobの日本語名
+   */
+  private static String loreMobName = "ラマ";
 
-	/**
-	 * Lore情報の作成
-	 * @param entity Loreを作成するエンティティ情報
-	 * */
-	@Override
-	public List<String> generateLore(Entity entity) {
-		List<String> lore = generateCommonLore(entity);
-		return lore;
-	}
+  /**
+   * コンストラクタ
+   */
+  public LlamaLoreWriter() {
+    super(loreMobName);
+  }
+
+  /**
+   * Lore情報の作成
+   *
+   * @param entity Loreを作成するエンティティ情報
+   */
+  @Override
+  public List<String> generateLore(Entity entity) {
+    List<String> lore = generateCommonLore(entity);
+    return lore;
+  }
 }
