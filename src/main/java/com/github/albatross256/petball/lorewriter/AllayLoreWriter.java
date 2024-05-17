@@ -5,7 +5,7 @@ import org.bukkit.entity.Entity;
 
 /**
  * <p>
- * PetBall の ItemStack {@link org.bukkit.inventory.ItemStack} の<br>
+ * {@link org.bukkit.entity.Allay} が入ってるPetBall の ItemStack {@link org.bukkit.inventory.ItemStack} の<br>
  * Lore へ書き込む文字列を構築する機能の実装クラス.
  * </p>
  */
