@@ -42,11 +42,11 @@ import static org.bukkit.Material.STONECUTTER;
 import static org.bukkit.Material.WHITE_SHULKER_BOX;
 import static org.bukkit.Material.YELLOW_SHULKER_BOX;
 
-import com.github.albatross256.petball.balldata.BallData;
 import com.github.albatross256.petball.BallManager;
-import com.github.albatross256.petball.lorewriter.factory.LoreWriterFactory;
 import com.github.albatross256.petball.Main;
 import com.github.albatross256.petball.WorldManager;
+import com.github.albatross256.petball.balldata.BallData;
+import com.github.albatross256.petball.lorewriter.factory.LoreWriterFactory;
 import com.github.teruteru128.logger.Logger;
 import com.saicone.rtag.RtagEditor;
 import com.saicone.rtag.RtagEntity;
@@ -144,7 +144,7 @@ public class EventListener implements Listener {
   }
 
   /**
-   * ブロック排出イベント処理
+   * ブロック排出イベント処理.
    *
    * @param event BlockDispenseEvent
    */
@@ -169,7 +169,7 @@ public class EventListener implements Listener {
   }
 
   /**
-   * 捕獲可能なエンティティか
+   * 捕獲可能なエンティティか.
    *
    * @param type エンティティのタイプ
    * @return チェック結果
@@ -181,7 +181,7 @@ public class EventListener implements Listener {
   }
 
   /**
-   * プレイヤーが右クリックした時のイベント。 PetBallの取り出し処理もここで実施。
+   * プレイヤーが右クリックした時のイベント.PetBallの取り出し処理もここで実施.
    *
    * @param event PlayerInteractEvent
    */
@@ -513,7 +513,7 @@ public class EventListener implements Listener {
   }
 
   /**
-   * アイテムの作成処理
+   * アイテムの作成処理.
    *
    * @param item  Item情報
    * @param key   NBTタグのキー
@@ -682,7 +682,6 @@ public class EventListener implements Listener {
         }
       }
     }
-    ItemStack entityEmptyBall = null;
     if (!isEntityBall(mainItem) && !isEntityBall(offItem)) {
       logger.debug("not entity ball");
       return;
@@ -692,10 +691,11 @@ public class EventListener implements Listener {
       return;
     }
 
-    boolean isMainHand = true;
     logger.trace("this.isEntityEmptyBall(mainItem):" + this.isEntityEmptyBall(mainItem));
     logger.trace("this.isEntityEmptyBall(offItem):" + this.isEntityEmptyBall(offItem));
     logger.trace("mainItem.getType().equals(AIR):" + mainItem.getType().equals(AIR));
+    ItemStack entityEmptyBall = null;
+    boolean isMainHand = true;
     if (this.isEntityEmptyBall(mainItem)) {
       logger.debug("mainItem is Empty Ball");
       entityEmptyBall = mainItem;
@@ -745,8 +745,6 @@ public class EventListener implements Listener {
       Location entityLocation = entity.getLocation();
       Location dropItemLocation = new Location(entity.getWorld(), entityLocation.getX() + 0.5,
           entityLocation.getY() + 0.5, entityLocation.getZ() + 0.5);
-      boolean hasSaddle = false;
-      AbstractHorse abHorse = null;
       logger.trace("entity:" + entity);
       logger.trace("entityLocation:" + entityLocation);
       logger.trace("dropItemLocation:" + dropItemLocation);
@@ -756,6 +754,8 @@ public class EventListener implements Listener {
       logger.trace("entityLocation.getZ()+0.5:" + entityLocation.getZ() + 0.5);
 
       // ロバかラバの場合、外れないように先頭にある鞍をあらかじめ除外しておく
+      boolean hasSaddle = false;
+      AbstractHorse abHorse = null;
       if (entity instanceof Donkey || entity instanceof Mule) {
         logger.trace("entity is Donkey or Mule.");
         abHorse = (AbstractHorse) entity;

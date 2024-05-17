@@ -1,22 +1,21 @@
 package com.github.albatross256.petball.lorewriter;
 
-import org.bukkit.entity.Entity;
-
 import java.util.List;
+import org.bukkit.entity.Entity;
 
 public class AllayLoreWriter extends LoreWriter {
 
   private static String loreMobName = "アレイ";
 
   /**
-   * コンストラクタ
+   * コンストラクタ.
    */
   public AllayLoreWriter() {
     super(loreMobName);
   }
 
   /**
-   * Lore情報の作成
+   * Lore情報の作成.
    *
    * @param entity Loreを作成するエンティティ情報
    */
