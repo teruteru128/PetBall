@@ -136,6 +136,9 @@ public class EventListener implements Listener {
   private Logger logger;
   private Plugin plugin;
 
+  /**
+   * コンストラクタ.
+   */
   public EventListener(BallManager ballManager, WorldManager worldManager, Main main) {
     plugin = main;
     logger = Logger.getInstance(plugin);
@@ -288,8 +291,6 @@ public class EventListener implements Listener {
 //		CompoundTag nbtTag =  CraftItemStack.asNMSCopy(entityBall).getTag();
 //		logger.trace("nbtTag:" + nbtTag);
 
-    Entity entity = null;
-    BallData ballData = null;
     // このへんでとまっている
     var allBallDatas = this.ballManager.getAllBallDatas();
 //		var entityBallContentKey = nbtTag.getString(BallData.ENTITYBALL_CONTENT_KEY);
@@ -306,6 +307,8 @@ public class EventListener implements Listener {
       entityBallContentKey = OLD_ENTITY_TYPES.get(entityBallContentKey);
     }
 
+    Entity entity = null;
+    BallData ballData = null;
     for (EntityType key : allBallDatas.keySet()) {
       BallData eachBallData = allBallDatas.get(key);
       logger.trace("key:" + key);
@@ -464,9 +467,9 @@ public class EventListener implements Listener {
 //		}
 
     /* 以下ボールの生成及びインベントリ転送*/
-    ItemStack dItemStack = new ItemStack(entityBall);
-    dItemStack.setAmount(1);
-    HashMap<Integer, ItemStack> leftItems = event.getPlayer().getInventory().removeItem(dItemStack);
+    ItemStack itemStack = new ItemStack(entityBall);
+    itemStack.setAmount(1);
+    HashMap<Integer, ItemStack> leftItems = event.getPlayer().getInventory().removeItem(itemStack);
     logger.trace("leftItems" + leftItems);
     for (Integer key : leftItems.keySet()) {
       offItem.setAmount(offItem.getAmount() - 1);
