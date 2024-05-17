@@ -1,12 +1,12 @@
 package com.github.albatross256.petball;
 
+import com.github.albatross256.petball.balldata.BallData;
+import com.github.teruteru128.logger.Logger;
 import com.saicone.rtag.RtagEditor;
 import com.saicone.rtag.RtagItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import com.github.teruteru128.logger.Logger;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.EntityType;
@@ -15,17 +15,15 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
-import com.github.albatross256.petball.balldata.BallData;
-
 /**
  * ボールレシピマネージャー
  */
 public class BallRecipeManager {
 
-  private Map<EntityType, BallData> ballDatas;
-  private Plugin plugin;
+  private final Map<EntityType, BallData> ballDatas;
+  private final Plugin plugin;
   private NamespacedKey key;
-  private Logger logger;
+  private final Logger logger;
 
 
   /**

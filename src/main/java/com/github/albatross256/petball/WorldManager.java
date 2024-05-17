@@ -1,11 +1,9 @@
 package com.github.albatross256.petball;
 
+import com.github.albatross256.petball.io.ConfigLoader;
+import com.github.teruteru128.logger.Logger;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.github.albatross256.petball.io.ConfigLoader;
-
-import com.github.teruteru128.logger.Logger;
 import org.bukkit.plugin.Plugin;
 
 /**
@@ -13,7 +11,7 @@ import org.bukkit.plugin.Plugin;
  */
 public class WorldManager {
 
-  private Logger logger;
+  private final Logger logger;
   List<String> unusableWorldNames;
 
   /**

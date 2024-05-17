@@ -1,9 +1,6 @@
-
-
 package com.github.albatross256.petball;
 
 import com.github.albatross256.petball.eventlistner.EventListener;
-
 import com.github.albatross256.petball.io.ConfigLoader;
 import com.github.teruteru128.logger.Logger;
 import org.bukkit.plugin.java.JavaPlugin;
