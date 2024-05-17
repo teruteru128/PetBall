@@ -45,7 +45,6 @@ import static org.bukkit.Material.YELLOW_SHULKER_BOX;
 import com.github.albatross256.petball.BallManager;
 import com.github.albatross256.petball.Main;
 import com.github.albatross256.petball.WorldManager;
-import com.github.albatross256.petball.balldata.AllayBallData;
 import com.github.albatross256.petball.balldata.BallData;
 import com.github.albatross256.petball.lorewriter.factory.LoreWriterFactory;
 import com.github.teruteru128.logger.Logger;
@@ -61,7 +60,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import org.apache.logging.log4j.LogManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -114,18 +112,16 @@ import org.bukkit.plugin.Plugin;
 
 /**
  * <p>
- * PetBallのイベントを実行するイベントリスナー.<br>
- * {@link org.bukkit.event.Listener} を継承する.
+ * PetBallのイベントを実行するイベントリスナー.<br> {@link org.bukkit.event.Listener} を継承する.
  * </p>
  */
 public class EventListener implements Listener {
 
   /**
    * <p>
-   * ボールを持っている状態で右クリックしたときに右クリック先のイベントを優先させるアイテム一覧.<br>
-   * {@link org.bukkit.Material}
+   * ボールを持っている状態で右クリックしたときに右クリック先のイベントを優先させるアイテム一覧.<br> {@link org.bukkit.Material}
    * </p>
-   * */
+   */
   private static final Set<Material> USABLEMATERIALS = Collections.unmodifiableSet(
       EnumSet.of(CRAFTING_TABLE, CHIPPED_ANVIL, DAMAGED_ANVIL, BEACON, BREWING_STAND,
           FURNACE_MINECART, HOPPER_MINECART, CAKE, CANDLE_CAKE, CHEST_MINECART, COMMAND_BLOCK,
@@ -138,53 +134,47 @@ public class EventListener implements Listener {
   /**
    * <p>
    * ボールを持っている状態で右クリックしたときに右クリックしても動作することのないアイテム一覧.<br>
-   * 鉄シリーズだけ、右クリックしても通常の扉の動作をすることがないため、除外する目的で書いている.<br>
-   * {@link org.bukkit.Material}
+   * 鉄シリーズだけ、右クリックしても通常の扉の動作をすることがないため、除外する目的で書いている.<br> {@link org.bukkit.Material}
    * </p>
-   * */
+   */
   private static final Set<Material> EXCLUSIONMATERIALS = Collections.unmodifiableSet(
       EnumSet.of(IRON_DOOR, IRON_TRAPDOOR));
 
   /**
    * <p>
-   * 1.20.4以前の旧式のEntityType名と新EntityType名のMap.<br>
-   * 20.5で該当EntityType名が完全に互換性がなくなってしまったため、ここで補っている.
+   * 1.20.4以前の旧式のEntityType名と新EntityType名のMap.<br> 20.5で該当EntityType名が完全に互換性がなくなってしまったため、ここで補っている.
    * </p>
-   * */
+   */
   private static final Map<String, String> OLD_ENTITY_TYPES = Map.ofEntries(
       entry("MUSHROOM_COW", EntityType.MOOSHROOM.toString()),
       entry("SNOWMAN", EntityType.SNOW_GOLEM.toString()));
 
   /**
    * <p>
-   * PetBallに関するデータを管理するManager.
-   * {@link com.github.albatross256.petball.BallManager}
+   * PetBallに関するデータを管理するManager. {@link com.github.albatross256.petball.BallManager}
    * </p>
-   * */
+   */
   private final BallManager ballManager;
 
   /**
    * <p>
-   * 読み込まれたサーバーのワールドに関するデータを管理するManager.
-   * {@link com.github.albatross256.petball.WorldManager}
+   * 読み込まれたサーバーのワールドに関するデータを管理するManager. {@link com.github.albatross256.petball.WorldManager}
    * </p>
-   * */
+   */
   private final WorldManager worldManager;
 
   /**
    * <p>
-   * クラス内のログを出力するロガー.<br>
-   * {@link com.github.teruteru128.logger.Logger}
+   * クラス内のログを出力するロガー.<br> {@link com.github.teruteru128.logger.Logger}
    * </p>
-   * */
+   */
   private final Logger logger;
 
   /**
    * <p>
-   * プラグインの本体.<br>
-   * {@link com.github.albatross256.petball.Main}
+   * プラグインの本体.<br> {@link com.github.albatross256.petball.Main}
    * </p>
-   * */
+   */
   private final Plugin plugin;
 
   /**
@@ -192,9 +182,9 @@ public class EventListener implements Listener {
    * コンストラクタ.
    * </p>
    *
-   * @param ballManager {@link BallManager} PetBallのマネージャー.
+   * @param ballManager  {@link BallManager} PetBallのマネージャー.
    * @param worldManager {@link WorldManager} ワールドのマネージャー.
-   * @param main {@link Main} プラグイン本体.
+   * @param main         {@link Main} プラグイン本体.
    */
   public EventListener(BallManager ballManager, WorldManager worldManager, Main main) {
     plugin = main;
@@ -351,12 +341,7 @@ public class EventListener implements Listener {
     }
 
     RtagItem tag = new RtagItem(entityBall);
-//    CompoundTag nbtTag =  CraftItemStack.asNMSCopy(entityBall).getTag();
-//    logger.trace("nbtTag:" + nbtTag);
-
-    // このへんでとまっている
     var allBallDatas = this.ballManager.getAllBallDatas();
-//    var entityBallContentKey = nbtTag.getString(BallData.ENTITYBALL_CONTENT_KEY);
     var entityBallContentKey = tag.get(BallData.ENTITYBALL_CONTENT_KEY);
     logger.trace("this.ballManager:" + this.ballManager);
     logger.trace("allBallDatas:" + allBallDatas);
@@ -384,7 +369,6 @@ public class EventListener implements Listener {
 
         //同時出し入れ対策2
         long currentTime = System.currentTimeMillis();
-//        var entityBallTimestamp = nbtTag.getLong(BallData.ENTITYBALL_TIMESTAMP_KEY);
         var entityBallTimestamp = tag.getOptional(BallData.ENTITYBALL_TIMESTAMP_KEY).asLong();
         var abs = Math.abs(currentTime - entityBallTimestamp);
         logger.trace(
@@ -410,7 +394,6 @@ public class EventListener implements Listener {
 
 
     /* 以下 NBTの解析及び埋め込み */
-//    byte[] byteNbt = nbtTag.getByteArray(BallData.ENTITYBALL_NBT_KEY);
     this.logger.trace("[TRACE] EventListener.EventListener.onTap Parse NBT START");
     RtagEntity entityTag = new RtagEntity(entity);
     this.logger.trace("[TRACE] RtagEntity entityTag <- new RtagEntity(entity)");
@@ -468,7 +451,7 @@ public class EventListener implements Listener {
                       if (isIdCount) {
                         count = Integer.valueOf(armorMap.get(armKey).toString());
                         this.logger.trace(
-                            "[TRACE] int count <- Integer.valueOf(armorMap.get(armKey).toString())");
+                            "[TRACE]int count <- Integer.valueOf(armorMap.get(armKey).toString())");
                         this.logger.trace("[TRACE] count=" + count);
                       }
 
@@ -502,10 +485,6 @@ public class EventListener implements Listener {
         }
       }
     }
-//    try (ByteArrayInputStream bais = new ByteArrayInputStream(byteIsc)) {
-//      CompoundTag nbt = NbtIo.readCompressed(bais, NbtAccounter.unlimitedHeap());
-//      ((CraftEntity) entity).getHandle().load(nbt);
-//      ((CraftEntity) entity).getHandle().absMoveTo(newLocation.getX(), newLocation.getY(), newLocation.getZ(), 0, 0);
     entityTag.load();
     this.logger.trace("[TRACE] entityTag.load()");
 
@@ -522,12 +501,7 @@ public class EventListener implements Listener {
     // タグ情報にエンティティの位置情報があるため、ここで今ボールを使った座標に移動させる
     entity.teleport(newLocation);
     this.logger.trace("[TRACE]EventListener.EventListener.onTap Parse NBT END");
-//      logger.trace("nbt:" + nbt);
     logger.debug("bais OK");
-//    } catch (IOException e) {
-//      logger.debug("bais Error");
-//      logger.getLogger().throwing("com.github.albatross256.PetBall.EventListener.EventListener", "onTap", e);
-//    }
 
     /* 以下ボールの生成及びインベントリ転送*/
     ItemStack itemStack = new ItemStack(entityBall);
@@ -583,28 +557,20 @@ public class EventListener implements Listener {
    * アイテムの作成処理.
    * </p>
    *
-   * @param item {@link ItemStack} Item情報.
-   * @param key {@link String} NBTタグのキー.
+   * @param item  {@link ItemStack} Item情報.
+   * @param key   {@link String} NBTタグのキー.
    * @param value {@link String} NBTタグの値.
    * @return {@link ItemStack} 作成したアイテム情報.
    */
   private ItemStack getMetaItem(ItemStack item, String key, String value) {
     logger.debug("getMetaItem:Start");
 
-//    CompoundTag nbttag = new CompoundTag();
-//    logger.trace("nbttag:" + nbttag);
     ItemStack entityBall = item.clone();
     RtagEditor tag = new RtagItem(entityBall);
 
     logger.trace("tag:" + tag);
-//    nbttag.putString(key, value);
-//    net.minecraft.world.item.ItemStack itemCopy = CraftItemStack.asNMSCopy(item);
-//    itemCopy.setTag(nbttag);
-//    ItemStack entityBall = CraftItemStack.asBukkitCopy(itemCopy);
     tag.set(value, key);
     tag.load();
-//    logger.trace("nbttag:" + nbttag);
-//    logger.trace("itemCopy:" + itemCopy);
     logger.trace("tag:" + tag);
     logger.trace("entityBall:" + entityBall);
 
@@ -632,18 +598,12 @@ public class EventListener implements Listener {
       return false;
     }
 
-//    net.minecraft.world.item.ItemStack handItemCopy = CraftItemStack.asNMSCopy(item);
-//    CompoundTag handItemNbtTag = handItemCopy.getTag();
     ItemStack handItemCopy = item.clone();
     RtagItem tag = new RtagItem(handItemCopy);
-//    RtagItem tag = new RtagItem(item);
-//    logger.trace("handItemNbtTag != null:" + (handItemNbtTag != null));
-//    if(handItemNbtTag != null && handItemNbtTag.contains(BallData.ENTITYBALL_CONTENT_KEY)) {
     if (tag.hasTag(BallData.ENTITYBALL_CONTENT_KEY)) {
       logger.debug("is Entity Ball");
       return true;
     }
-//    }
 
     logger.debug("itemMeta is not Exist");
     return false;
@@ -665,22 +625,13 @@ public class EventListener implements Listener {
       return false;
     }
 
-//    net.minecraft.world.item.ItemStack handItemCopy = CraftItemStack.asNMSCopy(item);
-//    CompoundTag handItemNbtTag = handItemCopy.getTag();
-//    logger.trace("itemMeta:" + itemMeta);
-//    logger.trace("handItemNbtTag:" + handItemNbtTag);
-//    logger.trace("handItemNbtTag != null :" + (handItemNbtTag != null ));
-//    logger.trace("handItemNbtTag.contains(BallData.ENTITYBALL_CONTENT_KEY):" + handItemNbtTag.contains(BallData.ENTITYBALL_CONTENT_KEY));
-//    logger.trace("handItemNbtTag.getString(BallData.ENTITYBALL_CONTENT_KEY).equals(BallData.ENTITYBALL_CONTENT_EMPTY):" + handItemNbtTag.getString(BallData.ENTITYBALL_CONTENT_KEY).equals(BallData.ENTITYBALL_CONTENT_EMPTY));
     ItemStack handItemCopy = item.clone();
     RtagItem tag = new RtagItem(handItemCopy);
-//    if(handItemNbtTag != null && handItemNbtTag.contains(BallData.ENTITYBALL_CONTENT_KEY) && handItemNbtTag.getString(BallData.ENTITYBALL_CONTENT_KEY).equals(BallData.ENTITYBALL_CONTENT_EMPTY)) {
     if (tag.hasTag(BallData.ENTITYBALL_CONTENT_KEY) && tag.get(BallData.ENTITYBALL_CONTENT_KEY)
         .toString().equals(BallData.ENTITYBALL_CONTENT_EMPTY)) {
       logger.debug("item is EntityEmptyBall");
       return true;
     }
-//    }
 
     logger.debug("item is not empty ball.");
     return false;
@@ -788,17 +739,10 @@ public class EventListener implements Listener {
     }
 
     RtagItem handTag = new RtagItem(mainItem);
-//    CompoundTag handItemNbttag = CraftItemStack.asNMSCopy(mainItem).getTag();
-//    logger.trace("handItemNbttag:" + handItemNbttag);
-//    logger.trace("!handItemNbttag.contains(BallData.ENTITYBALL_CONTENT_KEY):" + !handItemNbttag.contains(BallData.ENTITYBALL_CONTENT_KEY));
-//    logger.trace("!handItemNbttag.getString(BallData.ENTITYBALL_CONTENT_KEY).equals(BallData.ENTITYBALL_CONTENT_EMPTY):" + !handItemNbttag.getString(BallData.ENTITYBALL_CONTENT_KEY).equals(BallData.ENTITYBALL_CONTENT_EMPTY));
     if (!handTag.hasTag(BallData.ENTITYBALL_CONTENT_KEY) || !handTag.get(
         BallData.ENTITYBALL_CONTENT_KEY).toString().equals(BallData.ENTITYBALL_CONTENT_EMPTY)) {
-//    if(handItemNbttag == null || !handItemNbttag.contains(BallData.ENTITYBALL_CONTENT_KEY) ||
-//        !handItemNbttag.getString(BallData.ENTITYBALL_CONTENT_KEY).equals(BallData.ENTITYBALL_CONTENT_EMPTY)) {
       logger.debug("not entity ball");
       return;
-//    }
     }
 
     Entity entity = event.getRightClicked();
@@ -859,44 +803,22 @@ public class EventListener implements Listener {
       }
     }
 
-//    net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity) entity).getHandle();
-//    CompoundTag tag = new CompoundTag();
-//    nmsEntity.saveAsPassenger(tag);
     RtagEntity entityTag = new RtagEntity(entity);
     logger.trace("[TRACE]BeforeEntityTag:" + entityTag.get());
     entityTag.update();
     event.setCancelled(true);
-//    logger.trace("nmsEntity:" + nmsEntity);
-//    logger.trace("tag:" + tag);
 
     ItemStack item = new ItemStack(
         this.ballManager.getBallData(entity.getType()).getFilledBallMaterial(), 1);
-//    net.minecraft.world.item.ItemStack itemCopy = CraftItemStack.asNMSCopy(item);
-//    CompoundTag nbttag = new CompoundTag();
     ItemStack itemCopy = item.clone();
     RtagItem itemTag = new RtagItem(itemCopy);
     itemTag.update();
     logger.trace("item:" + item);
-//    logger.trace("itemCopy:" + itemCopy);
-//    logger.trace("nbttag:" + nbttag);
-
-//    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//    try {
-////      NbtIo.writeCompressed(tag, baos);
-//      logger.debug("Write NBT");
-//    } catch (IOException e) {
-//      logger.getLogger().throwing("EventListener", "onPlayerInteractEntityEvent", e);
-//    }
-
-//    byte[] byteNbt = baos.toByteArray();
 
     //空気対策
     Entity ent = entityTag.getEntity();
     logger.trace("ent: " + ent);
-//    logger.trace("tag.getString(\"id\") == null:" + (tag.getString("id") == null));
-//    logger.trace("tag.getString(\"id\").equals(\"\"):" + tag.getString("id").equals(""));
-//    if(tag.getString("id") == null || tag.getString("id").equals("")) {
-    if (Objects.isNull(ent) || ent.getType().equals("")) {
+    if (Objects.isNull(ent)) {
       logger.debug("tag is empty");
       return;
     }
@@ -904,21 +826,16 @@ public class EventListener implements Listener {
     logger.trace("[TRACE]AfterEntityTag:" + entityTag.get());
     itemTag.set(entityTag.get(), BallData.ENTITYBALL_ISC_KEY);
     itemTag.set(entity.getType().toString(), BallData.ENTITYBALL_CONTENT_KEY);
-//    nbttag.putByteArray(BallData.ENTITYBALL_NBT_KEY, byteNbt);
-//    nbttag.putString(BallData.ENTITYBALL_CONTENT_KEY, entity.getType().toString());
 
     /*
      * 出し入れ同時対策1
      */
     long time = System.currentTimeMillis();
     itemTag.set(time, BallData.ENTITYBALL_TIMESTAMP_KEY);
-//    nbttag.putLong(BallData.ENTITYBALL_TIMESTAMP_KEY, time);
     entity.getPersistentDataContainer()
         .set(new NamespacedKey(this.plugin, BallData.ENTITYBALL_TIMESTAMP_KEY),
             PersistentDataType.LONG, time);
 
-//    itemCopy.setTag(nbttag);
-//    ItemStack entityBall = CraftItemStack.asBukkitCopy(itemCopy);
     itemTag.load();
     ItemStack entityBall = itemCopy;
     logger.trace("entityBall:" + entityBall);
@@ -966,8 +883,7 @@ public class EventListener implements Listener {
 
   /**
    * <p>
-   * 渡されたブロックがPetBallを動かしていいブロックかの判定.<br>
-   * 主に右クリックしたときにインベントリや、動作があるブロックかをここでチェックする.
+   * 渡されたブロックがPetBallを動かしていいブロックかの判定.<br> 主に右クリックしたときにインベントリや、動作があるブロックかをここでチェックする.
    * </p>
    *
    * @param block {@link Block} 判定対象のブロック情報.
@@ -1000,29 +916,29 @@ public class EventListener implements Listener {
         // それ以外
         // ベルは触った場所が本体以外だとうまく動作しないが、場所を知る手立てがないため入れてない
         // コンポスターは最大状態以外だとうまく動作しないが、知る手立てがないため入れていない
-        return state instanceof Container ||
-            state instanceof EnderChest ||
-            state instanceof EnchantingTable ||
-            state instanceof CommandBlock ||
-            state instanceof DaylightDetector ||
-            state instanceof Jukebox ||
-            state instanceof ChiseledBookshelf ||
-            blockData instanceof Door ||
-            blockData instanceof TrapDoor ||
-            blockData instanceof Bed ||
-            blockData instanceof Gate ||
-            blockData instanceof Cake ||
-            blockData instanceof Switch ||
-            blockData instanceof Repeater ||
-            blockData instanceof Dispenser ||
-            blockData instanceof Comparator ||
-            blockData instanceof Hopper ||
-            blockData instanceof NoteBlock ||
-            blockData instanceof Chest ||
-            blockData instanceof Grindstone ||
-            blockData instanceof Furnace ||
-            blockData instanceof Barrel ||
-            USABLEMATERIALS.contains(material);
+        return state instanceof Container
+            || state instanceof EnderChest
+            || state instanceof EnchantingTable
+            || state instanceof CommandBlock
+            || state instanceof DaylightDetector
+            || state instanceof Jukebox
+            || state instanceof ChiseledBookshelf
+            || blockData instanceof Door
+            || blockData instanceof TrapDoor
+            || blockData instanceof Bed
+            || blockData instanceof Gate
+            || blockData instanceof Cake
+            || blockData instanceof Switch
+            || blockData instanceof Repeater
+            || blockData instanceof Dispenser
+            || blockData instanceof Comparator
+            || blockData instanceof Hopper
+            || blockData instanceof NoteBlock
+            || blockData instanceof Chest
+            || blockData instanceof Grindstone
+            || blockData instanceof Furnace
+            || blockData instanceof Barrel
+            || USABLEMATERIALS.contains(material);
       }
     }
   }
