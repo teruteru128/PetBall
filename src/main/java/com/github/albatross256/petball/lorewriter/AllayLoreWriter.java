@@ -11,7 +11,6 @@ import org.bukkit.entity.Entity;
  */
 public class AllayLoreWriter extends LoreWriter {
 
-
   /**
    * <p>
    * Loreに表示するMOBの日本語名.<br>
