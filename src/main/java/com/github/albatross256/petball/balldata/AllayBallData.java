@@ -5,18 +5,18 @@ import org.bukkit.entity.EntityType;
 
 /**
  * <p>
- * PetBall の BallData{@link com.github.albatross256.petball.balldata.BallData} の<br>
- * Allay{@link org.bukkit.entity.Allay} を捕獲するボールを構築する実装クラス.
+ * PetBall の {@link com.github.albatross256.petball.balldata.BallData} .<br>
+ * {@link org.bukkit.entity.Allay} を捕獲するボールを構築する実装クラス.
  * </p>
  * */
 public class AllayBallData extends BallData {
 
   /**
    * <p>
-   * ボールデータに格納可能なエンティティタイプ.
+   * このボールで召喚可能なエンティティタイプ.
    * </p>
    *
-   * @return EntityType {@link org.bukkit.entity.EntityType}
+   * @return {@link org.bukkit.entity.EntityType}
    * */
   @Override
   public EntityType getEntityType() {
@@ -28,7 +28,7 @@ public class AllayBallData extends BallData {
    * ボールデータに利用されるスポーンエッグ表示.
    * </p>
    *
-   * @return Material {@link org.bukkit.Material}
+   * @return {@link org.bukkit.Material}
    * */
   @Override
   public Material getFilledBallMaterial() {
@@ -37,10 +37,10 @@ public class AllayBallData extends BallData {
 
   /**
    * </p>
-   * ボールに格納可能なエンティティ.
+   * このボールに格納可能なエンティティタイプ.
    * </p>
    *
-   * @return EntityType {@link org.bukkit.entity.EntityType}
+   * @return {@link org.bukkit.entity.EntityType}
    * */
   @Override
   public EntityType getFilledBallEntityType() {

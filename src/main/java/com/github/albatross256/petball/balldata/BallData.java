@@ -46,18 +46,22 @@ public abstract class BallData {
   public abstract EntityType getEntityType();
 
   /**
-   * ボールデータに利用されるスポーンエッグ表示.
+   * <p>
+   * このボールで召喚可能なエンティティタイプ.
+   * </p>
    *
-   * @return Material 対象のスポーンエッグ表示.
+   * @return {@link org.bukkit.entity.EntityType}
    * */
   public Material getEmptyBallMaterial() {
     return Material.ENDERMAN_SPAWN_EGG;
   }
 
   /**
-   * ボールに格納可能なエンティティ.
+   * <p>
+   * ボールデータに利用されるスポーンエッグ表示.
+   * </p>
    *
-   * @return EntityType 対象のエンティティ.
+   * @return {@link org.bukkit.Material}
    * */
   public abstract Material getFilledBallMaterial();
 
@@ -71,9 +75,11 @@ public abstract class BallData {
   }
 
   /**
-   * ボールに格納可能なエンティティ.
+   * </p>
+   * このボールに格納可能なエンティティタイプ.
+   * </p>
    *
-   * @return EntityType 対象のエンティティ.
+   * @return {@link org.bukkit.entity.EntityType}
    * */
   public abstract EntityType getFilledBallEntityType();
 
