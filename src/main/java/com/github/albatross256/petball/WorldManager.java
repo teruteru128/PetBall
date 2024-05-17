@@ -1,6 +1,5 @@
 package com.github.albatross256.petball;
 
-import com.github.albatross256.petball.io.ConfigLoader;
 import com.github.teruteru128.logger.Logger;
 import java.util.ArrayList;
 import java.util.List;

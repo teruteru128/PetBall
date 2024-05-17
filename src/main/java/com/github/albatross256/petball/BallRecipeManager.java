@@ -16,31 +16,56 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
 /**
- * ボールレシピマネージャー
+ * <p>
+ * ボールレシピを管理するマネージャー.
+ * </p>
  */
 public class BallRecipeManager {
 
-  private final Map<EntityType, BallData> ballDatas;
+  /**
+   * <p>
+   * プラグイン本体.<br>
+   * {@link Plugin}
+   * </p>
+   * */
   private final Plugin plugin;
+
+  /**
+   * <p>
+   * プラグインで設定するレシピを管理するキー.<br>
+   * {@link NamespacedKey}
+   * </p>
+   * */
   private NamespacedKey key;
+
+  /**
+   * <p>
+   * クラス内のログを出力するロガー.<br>
+   * {@link com.github.teruteru128.logger.Logger}
+   * </p>
+   * */
   private final Logger logger;
 
 
   /**
-   * コンストラクタ
+   * <p>
+   * コンストラクタ.
+   * </p>
    *
-   * @param plugin プラグイン本体
-   * @param map    利用できるボールデータの一覧
-   * @param logger ロガー
+   * @param plugin  {@link Plugin} プラグイン本体.
+   * @param map  {@link Map} 利用できるボールデータの一覧.
+   * @param logger  {@link Logger} ロガー本体.
    */
   public BallRecipeManager(Plugin plugin, Map<EntityType, BallData> map, Logger logger) {
-    this.ballDatas = map;
     this.plugin = plugin;
     this.logger = logger;
   }
 
   /**
-   * 初期化。レシピの登録処理。
+   * <p>
+   * BallRecipeManager初期化.<br>
+   * レシピの登録処理を実施.
+   * </p>
    */
   public void init() {
     logger.debug("BallRecipeManager.init:Start");
@@ -50,11 +75,6 @@ public class BallRecipeManager {
     logger.trace("tag:" + tag);
     tag.set(BallData.ENTITYBALL_CONTENT_EMPTY, BallData.ENTITYBALL_CONTENT_KEY);
     tag.load();
-//		tag.update();
-//		CompoundTag nbttag = new CompoundTag();
-//		nbttag.putString(BallData.ENTITYBALL_CONTENT_KEY, BallData.ENTITYBALL_CONTENT_EMPTY);
-//		net.minecraft.world.item.ItemStack itemCopy = CraftItemStack.asNMSCopy(ball);
-//		itemCopy.setTag(nbttag);
 
     logger.trace("ball:" + ball);
     logger.trace("tag:" + tag);
@@ -81,7 +101,9 @@ public class BallRecipeManager {
   }
 
   /**
-   * レシピの無効化処理
+   * <p>
+   * レシピの無効化処理.<br>
+   * </p>
    */
   public void disable() {
     logger.debug("BallRecipeManager.disable:Start");

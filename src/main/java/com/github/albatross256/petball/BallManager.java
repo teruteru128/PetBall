@@ -52,7 +52,9 @@ import java.util.Map;
 import org.bukkit.entity.EntityType;
 
 /**
- * ボールマネージャー
+ * <p>
+ * ボールの情報を管理するマネージャー.
+ * </p>
  */
 public class BallManager {
 
@@ -60,9 +62,11 @@ public class BallManager {
   private final Logger logger;
 
   /**
-   * コンストラクタ
+   * <p>
+   * コンストラクタ.
+   * </p>
    *
-   * @param logger ロガー
+   * @param logger  {@link Logger} ログ出力用のロガー本体.
    */
   public BallManager(Logger logger) {
     logger.debug("BallManager:Start");
@@ -72,7 +76,10 @@ public class BallManager {
   }
 
   /**
-   * 初期化。PetBallのボール本体の一覧を作成。
+   * <p>
+   * 初期化処理.<br>
+   * PetBallのボール本体の一覧を作成.
+   * </p>
    */
   private void init() {
     logger.debug("BallManager.init:Start");
@@ -134,19 +141,23 @@ public class BallManager {
   }
 
   /**
-   * PetBallデータの登録
+   * <p>
+   * PetBallデータの登録.
+   * </p>
    *
-   * @param map      登録先のMAP
-   * @param ballData 登録したいボールデータ
+   * @param map  {@link EnumMap} 登録先のMAP.
+   * @param ballData  {@link BallData} 登録したいボールデータ.
    */
   private static void registerBall(EnumMap<EntityType, BallData> map, BallData ballData) {
     map.put(ballData.getEntityType(), ballData);
   }
 
   /**
-   * すべてのPetBallデータの取得
+   * <p>
+   * すべてのPetBallデータの取得.
+   * </p>
    *
-   * @return 全ボールデータ一覧
+   * @return {@link Map} 全ボールデータ一覧.
    */
   public Map<EntityType, BallData> getAllBallDatas() {
     logger.debug("BallManager.getAllBallDatas");
@@ -154,10 +165,12 @@ public class BallManager {
   }
 
   /**
-   * PetBallのボールデータ取得
+   * <p>
+   * 渡されたEntityTypeに該当するPetBallのボールデータ取得.
+   * </p>
    *
-   * @param entityType 取得したいエンティティタイプ
-   * @return 該当するボールデータ
+   * @param entityType  {@link EntityType} 取得したいエンティティタイプ.
+   * @return {@link BallData} 該当するボールデータ.
    */
   public BallData getBallData(EntityType entityType) {
     logger.debug("BallManager.getBallData");

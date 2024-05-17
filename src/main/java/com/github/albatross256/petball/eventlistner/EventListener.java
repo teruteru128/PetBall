@@ -119,7 +119,8 @@ public class EventListener implements Listener {
 
   /**
    * <p>
-   * ボールを持っている状態で右クリックしたときに右クリック先のイベントを優先させるアイテム一覧.<br> {@link org.bukkit.Material}
+   * ボールを持っている状態で右クリックしたときに右クリック先のイベントを優先させるアイテム一覧.<br>
+   * {@link org.bukkit.Material}
    * </p>
    */
   private static final Set<Material> USABLEMATERIALS = Collections.unmodifiableSet(
@@ -134,7 +135,8 @@ public class EventListener implements Listener {
   /**
    * <p>
    * ボールを持っている状態で右クリックしたときに右クリックしても動作することのないアイテム一覧.<br>
-   * 鉄シリーズだけ、右クリックしても通常の扉の動作をすることがないため、除外する目的で書いている.<br> {@link org.bukkit.Material}
+   * 鉄シリーズだけ、右クリックしても通常の扉の動作をすることがないため、除外する目的で書いている.<br>
+   * {@link org.bukkit.Material}
    * </p>
    */
   private static final Set<Material> EXCLUSIONMATERIALS = Collections.unmodifiableSet(
@@ -151,28 +153,32 @@ public class EventListener implements Listener {
 
   /**
    * <p>
-   * PetBallに関するデータを管理するManager. {@link com.github.albatross256.petball.BallManager}
+   * PetBallに関するデータを管理するManager. <br>
+   * {@link com.github.albatross256.petball.BallManager}
    * </p>
    */
   private final BallManager ballManager;
 
   /**
    * <p>
-   * 読み込まれたサーバーのワールドに関するデータを管理するManager. {@link com.github.albatross256.petball.WorldManager}
+   * 読み込まれたサーバーのワールドに関するデータを管理するManager. <br>
+   * {@link com.github.albatross256.petball.WorldManager}
    * </p>
    */
   private final WorldManager worldManager;
 
   /**
    * <p>
-   * クラス内のログを出力するロガー.<br> {@link com.github.teruteru128.logger.Logger}
+   * クラス内のログを出力するロガー.<br>
+   * {@link com.github.teruteru128.logger.Logger}
    * </p>
    */
   private final Logger logger;
 
   /**
    * <p>
-   * プラグインの本体.<br> {@link com.github.albatross256.petball.Main}
+   * プラグインの本体.<br>
+   * {@link com.github.albatross256.petball.Main}
    * </p>
    */
   private final Plugin plugin;
