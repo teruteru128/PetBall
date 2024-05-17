@@ -4,50 +4,72 @@ import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 
 /**
+ * <p>
  * ボールデータの基底クラス.
+ * </p>
  * */
 public abstract class BallData {
 
   /**
-   * ボールにコンテンツ内容を埋め込む際のキー.
+   * <p>
+   * ボールにコンテンツ内容を埋め込む際のキー
+   * {@value}.
+   * </p>
    * */
   public static final String ENTITYBALL_CONTENT_KEY = "EntityBall";
 
   /**
-   * ボールにコンテンツ内容を空と設定する際のキー.
+   * <p>
+   * ボールにコンテンツ内容を空と設定する際のキー
+   * {@value}.
+   * </p>
    * */
   public static final String ENTITYBALL_CONTENT_EMPTY = "Empty";
 
   /**
-   * ボールに付随するNBTデータを取得するためのキー(~1.20.4).
+   * <p>
+   * ボールに付随するNBTデータを取得するためのキー(~1.20.4)
+   * {@value}.
+   * </p>
    * */
   public static final String ENTITYBALL_NBT_KEY = "EntityBall_NBT";
 
   /**
-   * ボールに付随するISCデータを取得するためのキー(1.20.5~).
+   * <p>
+   * ボールに付随するISCデータを取得するためのキー(1.20.5~)
+   * {@value}.
+   * </p>
    * */
   public static final String ENTITYBALL_ISC_KEY = "EntityBall_ISC";
 
   /**
-   * 二重起動防止のために埋め込むタイムスタンプを取得するためのキー.
+   * <p>
+   * 二重起動防止のために埋め込むタイムスタンプを取得するためのキー
+   * {@value}.
+   * </p>
    * */
   public static final String ENTITYBALL_TIMESTAMP_KEY = "EntityBallTimeStump";
 
   /**
-   * アイテム名等に設定するボールの名称.
+   * <p>
+   * アイテム名等に設定するボールの名称
+   * {@value}.
+   * </p>
    * */
   public static final String BALL_NAME = "Pet_Ball";
 
   /**
-   * ボールデータに格納可能なエンティティタイプ.
+   * <p>
+   * このボールで召喚可能なエンティティタイプ.
+   * </p>
    *
-   * @return EntityType 対象のエンティティタイプ.
+   * @return {@link org.bukkit.entity.EntityType}
    * */
   public abstract EntityType getEntityType();
 
   /**
    * <p>
-   * このボールで召喚可能なエンティティタイプ.
+   * 空のボールとして扱うときに表示するマテリアルタイプ.
    * </p>
    *
    * @return {@link org.bukkit.entity.EntityType}
@@ -66,9 +88,11 @@ public abstract class BallData {
   public abstract Material getFilledBallMaterial();
 
   /**
+   * <p>
    * 空のボールとして利用しているエンティティタイプ.
+   * </p>
    *
-   * @return EntityType 対象のエンティティ.
+   * @return {@link org.bukkit.entity.EntityType}
    * */
   public EntityType getEmptyBallEntityType() {
     return EntityType.ENDERMAN;
@@ -84,9 +108,11 @@ public abstract class BallData {
   public abstract EntityType getFilledBallEntityType();
 
   /**
+   * <p>
    * ボールに表示する表示名を取得.
+   * </p>
    *
-   * @return String 表示名.
+   * @return {@value #BALL_NAME} .
    * */
   public String getDisplayName() {
     return BALL_NAME;
