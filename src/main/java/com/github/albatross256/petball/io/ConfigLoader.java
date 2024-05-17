@@ -1,21 +1,24 @@
 package com.github.albatross256.petball.io;
 
 import java.util.List;
-
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 
 /**
- * config.ymlのローダー
+ * <p>
+ * config.ymlのローダー.
+ * </p>
  */
 public class ConfigLoader {
 
   FileConfiguration config;
 
   /**
-   * コンストラクタ
+   * <p>
+   * コンストラクタ.
+   * </p>
    *
-   * @param plugin プラグイン本体
+   * @param plugin         {@link Plugin} プラグイン本体.
    */
   public ConfigLoader(Plugin plugin) {
     plugin.saveDefaultConfig();
@@ -23,18 +26,22 @@ public class ConfigLoader {
   }
 
   /**
-   * Configから無効化ワールド一覧の取得
+   * <p>
+   * Configから無効化ワールド一覧の取得.
+   * </p>
    *
-   * @return 無効化ワールド一覧
+   * @return {@link List} configに設定されたPetBall無効化ワールド一覧.
    */
   public List<String> getUnsableWorldNames() {
     return this.config.getStringList("UnusableWorldNames");
   }
 
   /**
-   * Configからログレベルを取得
+   * <p>
+   * Configからログレベルを取得.
+   * </p>
    *
-   * @return ログレベル
+   * @return {@link String} configに設定されたログレベル.
    */
   public String getLogLevel() {
     return this.config.getString("log-level");
