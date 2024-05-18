@@ -58,7 +58,7 @@ public class WorldManager {
    * @param worldName 確認するワールド名
    * @return チェック結果
    */
-  public boolean isUsableWorld(String worldName) {
-    return !this.unusableWorldNames.contains(worldName);
+  public boolean isUnusableWorld(String worldName) {
+    return this.unusableWorldNames.contains(worldName);
   }
 }

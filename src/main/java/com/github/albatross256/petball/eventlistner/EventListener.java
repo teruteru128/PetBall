@@ -391,9 +391,9 @@ public class EventListener implements Listener {
       return;
     }
 
-    logger.trace("!this.worldManager.isUsableWorld(event.getPlayer().getWorld().getName()):"
-        + !this.worldManager.isUsableWorld(event.getPlayer().getWorld().getName()));
-    if (!this.worldManager.isUsableWorld(event.getPlayer().getWorld().getName())) {
+    logger.trace("this.worldManager.isUnusableWorld(event.getPlayer().getWorld().getName()):"
+        + this.worldManager.isUnusableWorld(event.getPlayer().getWorld().getName()));
+    if (this.worldManager.isUnusableWorld(event.getPlayer().getWorld().getName())) {
       logger.debug("is not Usable World");
       return;
     }
@@ -784,9 +784,9 @@ public class EventListener implements Listener {
       isMainHand = false;
     }
 
-    logger.trace("!this.worldManager.isUsableWorld(event.getPlayer().getWorld().getName()):"
-        + !this.worldManager.isUsableWorld(event.getPlayer().getWorld().getName()));
-    if (!this.worldManager.isUsableWorld(event.getPlayer().getWorld().getName())) {
+    logger.trace("this.worldManager.isUnusableWorld(event.getPlayer().getWorld().getName()):"
+        + this.worldManager.isUnusableWorld(event.getPlayer().getWorld().getName()));
+    if (this.worldManager.isUnusableWorld(event.getPlayer().getWorld().getName())) {
       logger.debug("not usage world");
       return;
     }
