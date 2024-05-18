@@ -570,8 +570,7 @@ public class EventListener implements Listener {
     ItemStack addItem = new ItemStack(
         this.ballManager.getBallData(entity.getType()).getEmptyBallMaterial(), 1);
     logger.trace("addItem:" + addItem);
-    addItem = this.getMetaItem(addItem
-    );
+    addItem = this.getMetaItem(addItem);
     ItemMeta meta = addItem.getItemMeta();
     Objects.requireNonNull(meta)
         .setDisplayName(this.ballManager.getBallData(entity.getType()).getDisplayName());
