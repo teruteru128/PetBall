@@ -6,10 +6,8 @@ import com.saicone.rtag.RtagEditor;
 import com.saicone.rtag.RtagItem;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -53,10 +51,9 @@ public class BallRecipeManager {
    * </p>
    *
    * @param plugin  {@link Plugin} プラグイン本体.
-   * @param map  {@link Map} 利用できるボールデータの一覧.
    * @param logger  {@link Logger} ロガー本体.
    */
-  public BallRecipeManager(Plugin plugin, Map<EntityType, BallData> map, Logger logger) {
+  public BallRecipeManager(Plugin plugin, Logger logger) {
     this.plugin = plugin;
     this.logger = logger;
   }
