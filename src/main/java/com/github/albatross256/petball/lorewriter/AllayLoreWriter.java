@@ -39,7 +39,7 @@ public class AllayLoreWriter extends LoreWriter {
    * </p>
    *
    * @param entity         {@link Entity} 生成対象のエンティティ情報.
-   * @return {@link List} Loreを作成するエンティティ情報.
+   * @return {@link List} 作成したエンティティに関するLore情報.
    */
   @Override
   public List<String> generateLore(Entity entity) {
