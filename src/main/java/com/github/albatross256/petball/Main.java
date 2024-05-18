@@ -72,7 +72,7 @@ public class Main extends JavaPlugin {
     this.getServer().getPluginManager()
         .registerEvents(new EventListener(ballManager, worldManager, this), this);
 
-    ballRecipeManager = new BallRecipeManager(this, ballManager.getAllBallDatas(), logger);
+    ballRecipeManager = new BallRecipeManager(this, logger);
     ballRecipeManager.init();
     logger.debug("Main.onEnable:End");
   }
