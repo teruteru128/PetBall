@@ -191,6 +191,26 @@ public class EventListener implements Listener {
       ChiseledBookshelf.class
   };
   /**
+   *
+   */
+  private static final Class<?>[] BLOCK_DATA_CLASSES = new Class[]{
+      Door.class,
+      TrapDoor.class,
+      Bed.class,
+      Gate.class,
+      Cake.class,
+      Switch.class,
+      Repeater.class,
+      Dispenser.class,
+      Comparator.class,
+      Hopper.class,
+      NoteBlock.class,
+      Chest.class,
+      Grindstone.class,
+      Furnace.class,
+      Barrel.class
+  };
+  /**
    * <p>
    * PetBallに関するデータを管理するManager. <br> {@link com.github.albatross256.petball.BallManager}
    * </p>
@@ -214,26 +234,6 @@ public class EventListener implements Listener {
    * </p>
    */
   private final Plugin plugin;
-  /**
-   *
-   */
-  private final Class<?>[] BLOCK_DATA_CLASSES = new Class[]{
-      Door.class,
-      TrapDoor.class,
-      Bed.class,
-      Gate.class,
-      Cake.class,
-      Switch.class,
-      Repeater.class,
-      Dispenser.class,
-      Comparator.class,
-      Hopper.class,
-      NoteBlock.class,
-      Chest.class,
-      Grindstone.class,
-      Furnace.class,
-      Barrel.class
-  };
 
   /**
    * <p>
