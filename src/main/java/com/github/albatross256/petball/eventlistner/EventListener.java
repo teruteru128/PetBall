@@ -270,7 +270,7 @@ public class EventListener implements Listener {
       return;
     }
 
-    Location location = event.getClickedBlock().getLocation();
+    Location location = Objects.requireNonNull(event.getClickedBlock()).getLocation();
     logger.trace("event.getClickedBlock():" + event.getClickedBlock());
     logger.trace("location:" + location);
 
@@ -386,7 +386,8 @@ public class EventListener implements Listener {
           return;
         }
 
-        entity = location.getWorld().spawnEntity(newLocation, eachBallData.getEntityType(), false);
+        entity = Objects.requireNonNull(location.getWorld())
+            .spawnEntity(newLocation, eachBallData.getEntityType(), false);
         ballData = eachBallData;
         logger.trace("entity:" + entity);
         break;
@@ -524,7 +525,7 @@ public class EventListener implements Listener {
     addItem = this.getMetaItem(addItem, BallData.ENTITYBALL_CONTENT_KEY,
         BallData.ENTITYBALL_CONTENT_EMPTY);
     ItemMeta meta = addItem.getItemMeta();
-    meta.setDisplayName(this.ballManager.getBallData(entity.getType()).getDisplayName());
+    Objects.requireNonNull(meta).setDisplayName(this.ballManager.getBallData(entity.getType()).getDisplayName());
     logger.trace("afterAddItem:" + addItem);
     logger.trace("meta:" + meta);
     logger.trace("this.ballManager.getBallData(entity.getType()).getDisplayName()"
@@ -847,7 +848,7 @@ public class EventListener implements Listener {
     logger.trace("entityBall:" + entityBall);
 
     ItemMeta itemMeta2 = entityBall.getItemMeta();
-    itemMeta2.setDisplayName(
+    Objects.requireNonNull(itemMeta2).setDisplayName(
         entity.getCustomName() == null ? this.ballManager.getBallData(entity.getType())
             .getDisplayName() : entity.getCustomName());
     logger.trace("itemMeta2:" + itemMeta2);
@@ -860,7 +861,7 @@ public class EventListener implements Listener {
     entityBall.setItemMeta(itemMeta2);
 
     Player player = event.getPlayer();
-    logger.trace("entityEmptyBall.getAmount() == 1:" + (entityEmptyBall.getAmount() == 1));
+    logger.trace("entityEmptyBall.getAmount() == 1:" + (Objects.requireNonNull(entityEmptyBall).getAmount() == 1));
     if (entityEmptyBall.getAmount() == 1) {
       logger.debug("entityEmptyBall count is 1");
       logger.trace("isMainHand:" + isMainHand);
