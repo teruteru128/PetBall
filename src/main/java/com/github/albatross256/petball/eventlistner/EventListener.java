@@ -234,10 +234,10 @@ public class EventListener implements Listener {
    * @param type {@link EntityType} エンティティのタイプ.
    * @return {@link boolean} チェック結果.
    */
-  private boolean canCatch(EntityType type) {
-    logger.debug("canCatchCall");
+  private boolean isUncapturable(EntityType type) {
+    logger.debug("isUncapturableCall");
     logger.trace("type:" + type);
-    return this.ballManager.getAllBallDatas().containsKey(type);
+    return !this.ballManager.containsBall(type);
   }
 
   /**
@@ -717,7 +717,7 @@ public class EventListener implements Listener {
       logger.debug("not entity ball");
       return;
     }
-    if (!this.canCatch(event.getRightClicked().getType())) {
+    if (this.isUncapturable(event.getRightClicked().getType())) {
       logger.debug("can not catch RightClicked");
       return;
     }
@@ -753,8 +753,8 @@ public class EventListener implements Listener {
 
     Entity entity = event.getRightClicked();
     logger.trace("entity:" + entity);
-    logger.trace("!this.canCatch(entity.getType()):" + !this.canCatch(entity.getType()));
-    if (!this.canCatch(entity.getType())) {
+    logger.trace("this.isUncapturable(entity.getType()):" + this.isUncapturable(entity.getType()));
+    if (this.isUncapturable(entity.getType())) {
       logger.debug("can not catch");
       return;
     }
