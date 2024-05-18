@@ -1,5 +1,10 @@
 package com.github.albatross256.petball.eventlistner;
 
+import static com.github.albatross256.petball.balldata.BallData.ENTITYBALL_CONTENT_EMPTY;
+import static com.github.albatross256.petball.balldata.BallData.ENTITYBALL_CONTENT_KEY;
+import static com.github.albatross256.petball.balldata.BallData.ENTITYBALL_ISC_KEY;
+import static com.github.albatross256.petball.balldata.BallData.ENTITYBALL_NBT_KEY;
+import static com.github.albatross256.petball.balldata.BallData.ENTITYBALL_TIMESTAMP_KEY;
 import static java.util.Map.entry;
 import static org.bukkit.Material.AIR;
 import static org.bukkit.Material.ANVIL;
@@ -48,11 +53,11 @@ import com.github.albatross256.petball.WorldManager;
 import com.github.albatross256.petball.balldata.BallData;
 import com.github.albatross256.petball.lorewriter.factory.LoreWriterFactory;
 import com.github.teruteru128.logger.Logger;
-import com.saicone.rtag.RtagEditor;
 import com.saicone.rtag.RtagEntity;
 import com.saicone.rtag.RtagItem;
 import com.saicone.rtag.stream.TStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -119,27 +124,49 @@ public class EventListener implements Listener {
 
   /**
    * <p>
-   * ボールを持っている状態で右クリックしたときに右クリック先のイベントを優先させるアイテム一覧.<br>
-   * {@link org.bukkit.Material}
+   * ボールを持っている状態で右クリックしたときに右クリック先のイベントを優先させるアイテム一覧.<br> {@link org.bukkit.Material}
    * </p>
    */
-  private static final Set<Material> USABLEMATERIALS = Collections.unmodifiableSet(
-      EnumSet.of(CRAFTING_TABLE, CHIPPED_ANVIL, DAMAGED_ANVIL, BEACON, BREWING_STAND,
-          FURNACE_MINECART, HOPPER_MINECART, CAKE, CANDLE_CAKE, CHEST_MINECART, COMMAND_BLOCK,
-          DAYLIGHT_DETECTOR, RESPAWN_ANCHOR, STONECUTTER, CARTOGRAPHY_TABLE, SMITHING_TABLE, LOOM,
-          SHULKER_BOX, RED_SHULKER_BOX, ORANGE_SHULKER_BOX, YELLOW_SHULKER_BOX, LIME_SHULKER_BOX,
-          GREEN_SHULKER_BOX, CYAN_SHULKER_BOX, BLUE_SHULKER_BOX, PURPLE_SHULKER_BOX,
-          MAGENTA_SHULKER_BOX, LIGHT_BLUE_SHULKER_BOX, PINK_SHULKER_BOX, BROWN_SHULKER_BOX,
-          WHITE_SHULKER_BOX, GRAY_SHULKER_BOX, LIGHT_GRAY_SHULKER_BOX, BLACK_SHULKER_BOX, ANVIL));
+  private static final Set<Material> USABLE_MATERIALS = Collections.unmodifiableSet(EnumSet.of(
+      // 作業台
+      CRAFTING_TABLE
+      // 金床系
+      , ANVIL, CHIPPED_ANVIL, DAMAGED_ANVIL
+      // ビーコン
+      , BEACON
+      // 醸造台
+      , BREWING_STAND
+      // トロッコ類
+      , FURNACE_MINECART, HOPPER_MINECART, CHEST_MINECART
+      // ケーキ類
+      , CAKE, CANDLE_CAKE
+      // コマンドブロック
+      , COMMAND_BLOCK
+      // 日照センサー
+      , DAYLIGHT_DETECTOR
+      // リスポーンアンカー
+      , RESPAWN_ANCHOR
+      // 石切台
+      , STONECUTTER
+      // 製図台
+      , CARTOGRAPHY_TABLE
+      // 鍛冶台
+      , SMITHING_TABLE
+      // 機織り機
+      , LOOM
+      // シュルカーボックス類
+      , SHULKER_BOX, RED_SHULKER_BOX, ORANGE_SHULKER_BOX, YELLOW_SHULKER_BOX, LIME_SHULKER_BOX,
+      GREEN_SHULKER_BOX, CYAN_SHULKER_BOX, BLUE_SHULKER_BOX, PURPLE_SHULKER_BOX,
+      MAGENTA_SHULKER_BOX, LIGHT_BLUE_SHULKER_BOX, PINK_SHULKER_BOX, BROWN_SHULKER_BOX,
+      WHITE_SHULKER_BOX, GRAY_SHULKER_BOX, LIGHT_GRAY_SHULKER_BOX, BLACK_SHULKER_BOX));
 
   /**
    * <p>
    * ボールを持っている状態で右クリックしたときに右クリックしても動作することのないアイテム一覧.<br>
-   * 鉄シリーズだけ、右クリックしても通常の扉の動作をすることがないため、除外する目的で書いている.<br>
-   * {@link org.bukkit.Material}
+   * 鉄シリーズだけ、右クリックしても通常の扉の動作をすることがないため、除外する目的で書いている.<br> {@link org.bukkit.Material}
    * </p>
    */
-  private static final Set<Material> EXCLUSIONMATERIALS = Collections.unmodifiableSet(
+  private static final Set<Material> EXCLUSION_MATERIALS = Collections.unmodifiableSet(
       EnumSet.of(IRON_DOOR, IRON_TRAPDOOR));
 
   /**
@@ -150,35 +177,60 @@ public class EventListener implements Listener {
   private static final Map<String, String> OLD_ENTITY_TYPES = Map.ofEntries(
       entry("MUSHROOM_COW", EntityType.MOOSHROOM.toString()),
       entry("SNOWMAN", EntityType.SNOW_GOLEM.toString()));
-
+  /**
+   *
+   */
+  private static final Class<?>[] STATE_CLASSES = new Class[]{
+      Container.class,
+      EnderChest.class,
+      EnchantingTable.class,
+      EnchantingTable.class,
+      CommandBlock.class,
+      DaylightDetector.class,
+      Jukebox.class,
+      ChiseledBookshelf.class
+  };
+  /**
+   *
+   */
+  private static final Class<?>[] BLOCK_DATA_CLASSES = new Class[]{
+      Door.class,
+      TrapDoor.class,
+      Bed.class,
+      Gate.class,
+      Cake.class,
+      Switch.class,
+      Repeater.class,
+      Dispenser.class,
+      Comparator.class,
+      Hopper.class,
+      NoteBlock.class,
+      Chest.class,
+      Grindstone.class,
+      Furnace.class,
+      Barrel.class
+  };
   /**
    * <p>
-   * PetBallに関するデータを管理するManager. <br>
-   * {@link com.github.albatross256.petball.BallManager}
+   * PetBallに関するデータを管理するManager. <br> {@link com.github.albatross256.petball.BallManager}
    * </p>
    */
   private final BallManager ballManager;
-
   /**
    * <p>
-   * 読み込まれたサーバーのワールドに関するデータを管理するManager. <br>
-   * {@link com.github.albatross256.petball.WorldManager}
+   * 読み込まれたサーバーのワールドに関するデータを管理するManager. <br> {@link com.github.albatross256.petball.WorldManager}
    * </p>
    */
   private final WorldManager worldManager;
-
   /**
    * <p>
-   * クラス内のログを出力するロガー.<br>
-   * {@link com.github.teruteru128.logger.Logger}
+   * クラス内のログを出力するロガー.<br> {@link com.github.teruteru128.logger.Logger}
    * </p>
    */
   private final Logger logger;
-
   /**
    * <p>
-   * プラグインの本体.<br>
-   * {@link com.github.albatross256.petball.Main}
+   * プラグインの本体.<br> {@link com.github.albatross256.petball.Main}
    * </p>
    */
   private final Plugin plugin;
@@ -234,10 +286,10 @@ public class EventListener implements Listener {
    * @param type {@link EntityType} エンティティのタイプ.
    * @return {@link boolean} チェック結果.
    */
-  private boolean canCatch(EntityType type) {
-    logger.debug("canCatchCall");
+  private boolean isUncapturable(EntityType type) {
+    logger.debug("isUncapturableCall");
     logger.trace("type:" + type);
-    return this.ballManager.getAllBallDatas().containsKey(type);
+    return !this.ballManager.containsBall(type);
   }
 
   /**
@@ -270,7 +322,7 @@ public class EventListener implements Listener {
       return;
     }
 
-    Location location = event.getClickedBlock().getLocation();
+    Location location = Objects.requireNonNull(event.getClickedBlock()).getLocation();
     logger.trace("event.getClickedBlock():" + event.getClickedBlock());
     logger.trace("location:" + location);
 
@@ -347,10 +399,10 @@ public class EventListener implements Listener {
     }
 
     RtagItem tag = new RtagItem(entityBall);
-    var allBallDatas = this.ballManager.getAllBallDatas();
-    var entityBallContentKey = tag.get(BallData.ENTITYBALL_CONTENT_KEY);
+    var allBallData = this.ballManager.getAllBallDatas();
+    String entityBallContentKey = tag.get(ENTITYBALL_CONTENT_KEY);
     logger.trace("this.ballManager:" + this.ballManager);
-    logger.trace("allBallDatas:" + allBallDatas);
+    logger.trace("allBallData:" + allBallData);
     logger.trace("entityBallContentKey:" + entityBallContentKey);
 
     // 1.20.5で内部エンティティデータキーが変更になったので、それを新しいキーに変換する
@@ -362,9 +414,8 @@ public class EventListener implements Listener {
     }
 
     Entity entity = null;
-    BallData ballData = null;
-    for (EntityType key : allBallDatas.keySet()) {
-      BallData eachBallData = allBallDatas.get(key);
+    for (EntityType key : allBallData.keySet()) {
+      BallData eachBallData = allBallData.get(key);
       logger.trace("key:" + key);
       logger.trace("eachBallData:" + eachBallData);
       logger.trace("eachBallData.getEntityType().toString().equals(entityBallContentKey):"
@@ -375,7 +426,7 @@ public class EventListener implements Listener {
 
         //同時出し入れ対策2
         long currentTime = System.currentTimeMillis();
-        var entityBallTimestamp = tag.getOptional(BallData.ENTITYBALL_TIMESTAMP_KEY).asLong();
+        var entityBallTimestamp = tag.getOptional(ENTITYBALL_TIMESTAMP_KEY).asLong();
         var abs = Math.abs(currentTime - entityBallTimestamp);
         logger.trace(
             "currentTime = " + currentTime + ", entityBallTimestamp = " + entityBallTimestamp
@@ -386,8 +437,8 @@ public class EventListener implements Listener {
           return;
         }
 
-        entity = location.getWorld().spawnEntity(newLocation, eachBallData.getEntityType(), false);
-        ballData = eachBallData;
+        entity = Objects.requireNonNull(location.getWorld())
+            .spawnEntity(newLocation, eachBallData.getEntityType(), false);
         logger.trace("entity:" + entity);
         break;
       }
@@ -408,15 +459,13 @@ public class EventListener implements Listener {
 
     this.logger.trace("[TRACE]entityTag:" + entityTag.get());
     // 1.20.5以降のタグ保存用のデータ
-    ItemStack equipedHorseArmor = null;
-    if (tag.hasTag(BallData.ENTITYBALL_ISC_KEY)) {
-      Map tags = tag.get(BallData.ENTITYBALL_ISC_KEY);
-      tags.forEach((k, v) -> {
-        entityTag.set(v, k);
-      });
+    ItemStack equippedHorseArmor = null;
+    if (tag.hasTag(ENTITYBALL_ISC_KEY)) {
+      Map<?, ?> tags = tag.get(ENTITYBALL_ISC_KEY);
+      tags.forEach((k, v) -> entityTag.set(v, k));
     } else {
       // 1.20.4以前のNBTデータから馬鎧を取り出す
-      var nbtTag = itemTag.get().get(BallData.ENTITYBALL_NBT_KEY);
+      var nbtTag = itemTag.get().get(ENTITYBALL_NBT_KEY);
       boolean isInstanceOfBytes = nbtTag instanceof byte[];
 
       if (isInstanceOfBytes) {
@@ -433,51 +482,54 @@ public class EventListener implements Listener {
             this.logger.trace("[TRACE] boolean isArmorItems <- k.equals(\"ArmorItems\")");
             this.logger.trace("[TRACE] isArmorItems ? " + isArmorItems);
 
-            if (isArmorItems) {
-              List<Map<String, Object>> armorItemList = (List<Map<String, Object>>) v;
-              boolean isNotEmptyArmorItemList = !armorItemList.isEmpty();
+            if (isArmorItems && v instanceof List<?> l) {
+              boolean isNotEmptyArmorItemList = !l.isEmpty();
               this.logger.trace(
                   "[TRACE] boolean isNotEmptyArmorItemList <- !armorItemList.isEmpty()");
               this.logger.trace("[TRACE] isNotEmptyArmorItemList ? " + isNotEmptyArmorItemList);
 
               if (isNotEmptyArmorItemList) {
                 // Armorはプレイヤーと一緒で４部位に分かれて格納されているため、格納部分を探しに行く
-                for (Map<String, Object> armorMap : armorItemList) {
-                  boolean isNotEmptyArmorMap = !armorMap.keySet().isEmpty();
-                  this.logger.trace(
-                      "[TRACE] boolean isNotEmptyArmorMap <- !armorMap.keySet().isEmpty()");
-                  this.logger.trace("[TRACE] isNotEmptyArmorMap ? " + isNotEmptyArmorMap);
-                  if (isNotEmptyArmorMap) {
-                    Integer count = null;
-                    Material armorMaterial = null;
-                    for (String armKey : armorMap.keySet()) {
-                      boolean isIdCount = armKey.equals("Count");
-                      this.logger.trace("[TRACE] boolean isIdCount = armKey.equals(\"Count\")");
-                      this.logger.trace("[TRACE] isIdCount ? " + isIdCount);
-                      if (isIdCount) {
-                        count = Integer.valueOf(armorMap.get(armKey).toString());
-                        this.logger.trace(
-                            "[TRACE]int count <- Integer.valueOf(armorMap.get(armKey).toString())");
-                        this.logger.trace("[TRACE] count=" + count);
-                      }
+                for (var item : l) {
+                  if (item instanceof Map<?, ?> armorMap) {
+                    boolean isNotEmptyArmorMap = !armorMap.keySet().isEmpty();
+                    this.logger.trace(
+                        "[TRACE] boolean isNotEmptyArmorMap <- !armorMap.keySet().isEmpty()");
+                    this.logger.trace("[TRACE] isNotEmptyArmorMap ? " + isNotEmptyArmorMap);
+                    if (isNotEmptyArmorMap) {
+                      Integer count = null;
+                      Material armorMaterial = null;
+                      for (var key : armorMap.keySet()) {
+                        if (key instanceof String armKey) {
+                          boolean isIdCount = armKey.equals("Count");
+                          this.logger.trace("[TRACE] boolean isIdCount = armKey.equals(\"Count\")");
+                          this.logger.trace("[TRACE] isIdCount ? " + isIdCount);
+                          if (isIdCount) {
+                            count = Integer.valueOf(armorMap.get(armKey).toString());
+                            this.logger.trace(
+                                "[TRACE]int count <- Integer.valueOf(armorMap.get(armKey).toString())");
+                            this.logger.trace("[TRACE] count=" + count);
+                          }
 
-                      boolean isIdKey = armKey.equals("id");
-                      this.logger.trace("[TRACE] boolean isIdKey = armKey.equals(\"id\")");
-                      this.logger.trace("[TRACE] isIdKey ? " + isIdKey);
-                      if (isIdKey) {
-                        String namespaceKey = armorMap.get(armKey).toString();
-                        armorMaterial = Material.matchMaterial(namespaceKey);
-                        this.logger.trace(
-                            "[TRACE] Material armorMaterial <- Material.matchMaterial(armKey)");
-                        this.logger.trace("[TRACE] armorMaterial=" + armorMaterial);
-                      }
+                          boolean isIdKey = armKey.equals("id");
+                          this.logger.trace("[TRACE] boolean isIdKey = armKey.equals(\"id\")");
+                          this.logger.trace("[TRACE] isIdKey ? " + isIdKey);
+                          if (isIdKey) {
+                            String namespaceKey = armorMap.get(armKey).toString();
+                            armorMaterial = Material.matchMaterial(namespaceKey);
+                            this.logger.trace(
+                                "[TRACE] Material armorMaterial <- Material.matchMaterial(armKey)");
+                            this.logger.trace("[TRACE] armorMaterial=" + armorMaterial);
+                          }
 
-                      // アーマー名と数量が入ってたら、設定されているものと見て馬鎧を設定する
-                      if (Objects.nonNull(armorMaterial) && Objects.nonNull(count)) {
-                        equipedHorseArmor = new ItemStack(armorMaterial, count.intValue());
-                        this.logger.trace(
-                            "[TRACE] equipedHorseArmor <- new ItemStack(armorMaterial, count)");
-                        this.logger.trace("[TRACE] equipedHorseArmor=" + equipedHorseArmor);
+                          // アーマー名と数量が入ってたら、設定されているものと見て馬鎧を設定する
+                          if (Objects.nonNull(armorMaterial) && Objects.nonNull(count)) {
+                            equippedHorseArmor = new ItemStack(armorMaterial, count);
+                            this.logger.trace(
+                                "[TRACE] equippedHorseArmor <- new ItemStack(armorMaterial, count)");
+                            this.logger.trace("[TRACE] equippedHorseArmor=" + equippedHorseArmor);
+                          }
+                        }
                       }
                     }
                   }
@@ -495,43 +547,41 @@ public class EventListener implements Listener {
     this.logger.trace("[TRACE] entityTag.load()");
 
     // 旧式馬鎧の設定
-    if (Objects.nonNull(equipedHorseArmor) && entity instanceof Horse horse) {
+    if (Objects.nonNull(equippedHorseArmor) && entity instanceof Horse horse) {
       HorseInventory horseInv = horse.getInventory();
       this.logger.trace("[TRACE] HorseInventory horseInv <- horse.getInventory()");
       this.logger.trace("[TRACE] horseInv=" + horseInv);
       boolean isEmptyInventory = horseInv.isEmpty();
       this.logger.trace("boolean isEmptyInventory <- horseInv.isEmpty() ? ");
       this.logger.trace("[TRACE] isEmptyInventory ? " + isEmptyInventory);
-      horseInv.setArmor(equipedHorseArmor);
+      horseInv.setArmor(equippedHorseArmor);
     }
     // タグ情報にエンティティの位置情報があるため、ここで今ボールを使った座標に移動させる
     entity.teleport(newLocation);
     this.logger.trace("[TRACE]EventListener.EventListener.onTap Parse NBT END");
-    logger.debug("bais OK");
 
     /* 以下ボールの生成及びインベントリ転送*/
     ItemStack itemStack = new ItemStack(entityBall);
     itemStack.setAmount(1);
     HashMap<Integer, ItemStack> leftItems = event.getPlayer().getInventory().removeItem(itemStack);
     logger.trace("leftItems" + leftItems);
-    for (Integer key : leftItems.keySet()) {
-      offItem.setAmount(offItem.getAmount() - 1);
-    }
+    leftItems.keySet().forEach(ignored -> offItem.setAmount(offItem.getAmount() - 1));
 
     ItemStack addItem = new ItemStack(
         this.ballManager.getBallData(entity.getType()).getEmptyBallMaterial(), 1);
     logger.trace("addItem:" + addItem);
-    addItem = this.getMetaItem(addItem, BallData.ENTITYBALL_CONTENT_KEY,
-        BallData.ENTITYBALL_CONTENT_EMPTY);
+    addItem = this.getMetaItem(addItem
+    );
     ItemMeta meta = addItem.getItemMeta();
-    meta.setDisplayName(this.ballManager.getBallData(entity.getType()).getDisplayName());
+    Objects.requireNonNull(meta)
+        .setDisplayName(this.ballManager.getBallData(entity.getType()).getDisplayName());
     logger.trace("afterAddItem:" + addItem);
     logger.trace("meta:" + meta);
     logger.trace("this.ballManager.getBallData(entity.getType()).getDisplayName()"
         + this.ballManager.getBallData(entity.getType()).getDisplayName());
 
     // 空のボール作成
-    List<String> lore = new ArrayList<String>();
+    var lore = new ArrayList<String>();
     lore.add("Empty");
     meta.setLore(lore);
     addItem.setItemMeta(meta);
@@ -563,19 +613,17 @@ public class EventListener implements Listener {
    * アイテムの作成処理.
    * </p>
    *
-   * @param item  {@link ItemStack} Item情報.
-   * @param key   {@link String} NBTタグのキー.
-   * @param value {@link String} NBTタグの値.
+   * @param item {@link ItemStack} Item情報.
    * @return {@link ItemStack} 作成したアイテム情報.
    */
-  private ItemStack getMetaItem(ItemStack item, String key, String value) {
+  private ItemStack getMetaItem(ItemStack item) {
     logger.debug("getMetaItem:Start");
 
     ItemStack entityBall = item.clone();
-    RtagEditor tag = new RtagItem(entityBall);
+    var tag = new RtagItem(entityBall);
 
     logger.trace("tag:" + tag);
-    tag.set(value, key);
+    tag.set(ENTITYBALL_CONTENT_EMPTY, ENTITYBALL_CONTENT_KEY);
     tag.load();
     logger.trace("tag:" + tag);
     logger.trace("entityBall:" + entityBall);
@@ -606,7 +654,7 @@ public class EventListener implements Listener {
 
     ItemStack handItemCopy = item.clone();
     RtagItem tag = new RtagItem(handItemCopy);
-    if (tag.hasTag(BallData.ENTITYBALL_CONTENT_KEY)) {
+    if (tag.hasTag(ENTITYBALL_CONTENT_KEY)) {
       logger.debug("is Entity Ball");
       return true;
     }
@@ -633,8 +681,8 @@ public class EventListener implements Listener {
 
     ItemStack handItemCopy = item.clone();
     RtagItem tag = new RtagItem(handItemCopy);
-    if (tag.hasTag(BallData.ENTITYBALL_CONTENT_KEY) && tag.get(BallData.ENTITYBALL_CONTENT_KEY)
-        .toString().equals(BallData.ENTITYBALL_CONTENT_EMPTY)) {
+    if (tag.hasTag(ENTITYBALL_CONTENT_KEY) && tag.get(ENTITYBALL_CONTENT_KEY)
+        .toString().equals(ENTITYBALL_CONTENT_EMPTY)) {
       logger.debug("item is EntityEmptyBall");
       return true;
     }
@@ -657,12 +705,12 @@ public class EventListener implements Listener {
     ItemStack offItem = event.getPlayer().getInventory().getItemInOffHand();
 
     //子供生成対策
-    var allBallDatas = this.ballManager.getAllBallDatas();
+    var allBallData = this.ballManager.getAllBallDatas();
     logger.trace("mainItem:" + mainItem);
     logger.trace("offItem:" + offItem);
-    logger.trace("allBallDatas:" + allBallDatas);
-    for (EntityType key : allBallDatas.keySet()) {
-      BallData ballData = allBallDatas.get(key);
+    logger.trace("allBallData:" + allBallData);
+    for (EntityType key : allBallData.keySet()) {
+      BallData ballData = allBallData.get(key);
 
       logger.trace("key:" + key);
       logger.trace("ballData:" + ballData);
@@ -717,7 +765,7 @@ public class EventListener implements Listener {
       logger.debug("not entity ball");
       return;
     }
-    if (!this.canCatch(event.getRightClicked().getType())) {
+    if (this.isUncapturable(event.getRightClicked().getType())) {
       logger.debug("can not catch RightClicked");
       return;
     }
@@ -730,7 +778,7 @@ public class EventListener implements Listener {
     if (this.isEntityEmptyBall(mainItem)) {
       logger.debug("mainItem is Empty Ball");
       entityEmptyBall = mainItem;
-      isMainHand = true;
+      // isMainHand = true;
     } else if (this.isEntityEmptyBall(offItem) && mainItem.getType().equals(AIR)) {
       logger.debug("offItem is Empty Ball");
       entityEmptyBall = offItem;
@@ -745,16 +793,16 @@ public class EventListener implements Listener {
     }
 
     RtagItem handTag = new RtagItem(mainItem);
-    if (!handTag.hasTag(BallData.ENTITYBALL_CONTENT_KEY) || !handTag.get(
-        BallData.ENTITYBALL_CONTENT_KEY).toString().equals(BallData.ENTITYBALL_CONTENT_EMPTY)) {
+    if (!handTag.hasTag(ENTITYBALL_CONTENT_KEY) || !handTag.get(
+        ENTITYBALL_CONTENT_KEY).toString().equals(ENTITYBALL_CONTENT_EMPTY)) {
       logger.debug("not entity ball");
       return;
     }
 
     Entity entity = event.getRightClicked();
     logger.trace("entity:" + entity);
-    logger.trace("!this.canCatch(entity.getType()):" + !this.canCatch(entity.getType()));
-    if (!this.canCatch(entity.getType())) {
+    logger.trace("this.isUncapturable(entity.getType()):" + this.isUncapturable(entity.getType()));
+    if (this.isUncapturable(entity.getType())) {
       logger.debug("can not catch");
       return;
     }
@@ -794,7 +842,7 @@ public class EventListener implements Listener {
       }
       for (ItemStack storageItem : horse.getInventory().getStorageContents()) {
         if (storageItem != null) {
-          logger.debug("StrageItem is not null.Item drop!");
+          logger.debug("StorageItem is not null.Item drop!");
           entity.getWorld().dropItem(dropItemLocation, storageItem);
         }
       }
@@ -816,8 +864,8 @@ public class EventListener implements Listener {
 
     ItemStack item = new ItemStack(
         this.ballManager.getBallData(entity.getType()).getFilledBallMaterial(), 1);
-    ItemStack itemCopy = item.clone();
-    RtagItem itemTag = new RtagItem(itemCopy);
+    ItemStack clonedItem = item.clone();
+    RtagItem itemTag = new RtagItem(clonedItem);
     itemTag.update();
     logger.trace("item:" + item);
 
@@ -830,24 +878,23 @@ public class EventListener implements Listener {
     }
 
     logger.trace("[TRACE]AfterEntityTag:" + entityTag.get());
-    itemTag.set(entityTag.get(), BallData.ENTITYBALL_ISC_KEY);
-    itemTag.set(entity.getType().toString(), BallData.ENTITYBALL_CONTENT_KEY);
+    itemTag.set(entityTag.get(), ENTITYBALL_ISC_KEY);
+    itemTag.set(entity.getType().toString(), ENTITYBALL_CONTENT_KEY);
 
     /*
      * 出し入れ同時対策1
      */
     long time = System.currentTimeMillis();
-    itemTag.set(time, BallData.ENTITYBALL_TIMESTAMP_KEY);
+    itemTag.set(time, ENTITYBALL_TIMESTAMP_KEY);
     entity.getPersistentDataContainer()
-        .set(new NamespacedKey(this.plugin, BallData.ENTITYBALL_TIMESTAMP_KEY),
+        .set(new NamespacedKey(this.plugin, ENTITYBALL_TIMESTAMP_KEY),
             PersistentDataType.LONG, time);
 
     itemTag.load();
-    ItemStack entityBall = itemCopy;
-    logger.trace("entityBall:" + entityBall);
+    logger.trace("entityBall:" + clonedItem);
 
-    ItemMeta itemMeta2 = entityBall.getItemMeta();
-    itemMeta2.setDisplayName(
+    ItemMeta itemMeta2 = clonedItem.getItemMeta();
+    Objects.requireNonNull(itemMeta2).setDisplayName(
         entity.getCustomName() == null ? this.ballManager.getBallData(entity.getType())
             .getDisplayName() : entity.getCustomName());
     logger.trace("itemMeta2:" + itemMeta2);
@@ -857,25 +904,27 @@ public class EventListener implements Listener {
     logger.trace("lore:" + lore);
 
     itemMeta2.setLore(lore);
-    entityBall.setItemMeta(itemMeta2);
+    clonedItem.setItemMeta(itemMeta2);
 
     Player player = event.getPlayer();
-    logger.trace("entityEmptyBall.getAmount() == 1:" + (entityEmptyBall.getAmount() == 1));
+    logger.trace(
+        "entityEmptyBall.getAmount() == 1:" + (Objects.requireNonNull(entityEmptyBall).getAmount()
+            == 1));
     if (entityEmptyBall.getAmount() == 1) {
       logger.debug("entityEmptyBall count is 1");
       logger.trace("isMainHand:" + isMainHand);
       if (isMainHand) {
         logger.debug("isMainHand:True");
-        player.getInventory().setItem(player.getInventory().getHeldItemSlot(), entityBall);
+        player.getInventory().setItem(player.getInventory().getHeldItemSlot(), clonedItem);
       } else {
         logger.debug("isMainHand:False");
         player.getInventory().remove(entityEmptyBall);
-        player.getInventory().addItem(entityBall);
+        player.getInventory().addItem(clonedItem);
       }
     } else {
       logger.debug("entityEmptyBall count is not 1");
       entityEmptyBall.setAmount(entityEmptyBall.getAmount() - 1);
-      Map<Integer, ItemStack> left = player.getInventory().addItem(entityBall);
+      Map<Integer, ItemStack> left = player.getInventory().addItem(clonedItem);
       if (!left.isEmpty()) {
         player.getWorld().dropItem(player.getLocation(), left.get(0));
         player.sendMessage(ChatColor.GREEN + "[PetBall] " + ChatColor.RED
@@ -898,54 +947,37 @@ public class EventListener implements Listener {
   private boolean isTouchable(Block block) {
 
     logger.trace("isTouchable:Start");
+    var state = block.getState();
+    logger.trace("state:" + state);
     var type = block.getType();
     logger.trace("type:" + type);
-    logger.trace("EXCLUSIONMATERIALS.contains(type):" + EXCLUSIONMATERIALS.contains(type));
-    if (EXCLUSIONMATERIALS.contains(type)) {
+    logger.trace("EXCLUSION_MATERIALS.contains(type):" + EXCLUSION_MATERIALS.contains(type));
+    if (EXCLUSION_MATERIALS.contains(type)) {
       logger.debug("type is IRON series");
       // 鉄シリーズは問答無用でfalse
       return false;
+    } else if (state instanceof Sign sign) {
+      // 看板は編集可・不可の状態が変化するので、動的に取得する
+      logger.debug("type is Sign series");
+      logger.trace("!sign.isWaxed():" + !sign.isWaxed());
+      return !sign.isWaxed();
     } else {
-      var state = block.getState();
-      logger.trace("state:" + state);
-      if (state instanceof Sign sign) {
-        // 看板は編集可・不可の状態が変化するので、動的に取得する
-        logger.debug("type is Sign series");
-        logger.trace("!sign.isWaxed():" + !sign.isWaxed());
-        return !sign.isWaxed();
-      } else {
-        var blockData = block.getBlockData();
-        var material = blockData.getMaterial();
-        logger.trace("stateClass:" + state.getClass());
-        logger.trace(
-            "checkMaterial.blockData:" + blockData + ".material:" + material + "isTouchable:End");
-        // それ以外
-        // ベルは触った場所が本体以外だとうまく動作しないが、場所を知る手立てがないため入れてない
-        // コンポスターは最大状態以外だとうまく動作しないが、知る手立てがないため入れていない
-        return state instanceof Container
-            || state instanceof EnderChest
-            || state instanceof EnchantingTable
-            || state instanceof CommandBlock
-            || state instanceof DaylightDetector
-            || state instanceof Jukebox
-            || state instanceof ChiseledBookshelf
-            || blockData instanceof Door
-            || blockData instanceof TrapDoor
-            || blockData instanceof Bed
-            || blockData instanceof Gate
-            || blockData instanceof Cake
-            || blockData instanceof Switch
-            || blockData instanceof Repeater
-            || blockData instanceof Dispenser
-            || blockData instanceof Comparator
-            || blockData instanceof Hopper
-            || blockData instanceof NoteBlock
-            || blockData instanceof Chest
-            || blockData instanceof Grindstone
-            || blockData instanceof Furnace
-            || blockData instanceof Barrel
-            || USABLEMATERIALS.contains(material);
-      }
+      var blockData = block.getBlockData();
+      var material = blockData.getMaterial();
+      logger.trace("stateClass:" + state.getClass());
+      logger.trace(
+          "checkMaterial.blockData:" + blockData + ".material:" + material + "isTouchable:End");
+      // それ以外
+      // ベルは触った場所が本体以外だとうまく動作しないが、場所を知る手立てがないため入れてない
+      // コンポスターは最大状態以外だとうまく動作しないが、知る手立てがないため入れていない
+
+      boolean b = false;
+
+      b |= Arrays.stream(STATE_CLASSES).anyMatch(c -> c.isInstance(state));
+      b |= Arrays.stream(BLOCK_DATA_CLASSES).anyMatch(c -> c.isInstance(blockData));
+      b |= USABLE_MATERIALS.contains(material);
+
+      return b;
     }
   }
 }

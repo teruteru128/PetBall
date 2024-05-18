@@ -166,6 +166,19 @@ public class BallManager {
 
   /**
    * <p>
+   *   エンティティタイプに対応するPetBallデータが存在するかを返す.
+   * </p>
+   *
+   * @param e エンティティタイプ
+   * @return 対応するボールデータの存在可否
+   */
+  public boolean containsBall(EntityType e) {
+    logger.debug("BallManager.containsBall");
+    return this.ballData.containsKey(e);
+  }
+
+  /**
+   * <p>
    * 渡されたEntityTypeに該当するPetBallのボールデータ取得.
    * </p>
    *
