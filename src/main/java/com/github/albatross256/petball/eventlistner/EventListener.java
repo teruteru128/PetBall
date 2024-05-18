@@ -123,7 +123,7 @@ public class EventListener implements Listener {
    * {@link org.bukkit.Material}
    * </p>
    */
-  private static final Set<Material> USABLEMATERIALS = Collections.unmodifiableSet(
+  private static final Set<Material> USABLE_MATERIALS = Collections.unmodifiableSet(
       EnumSet.of(CRAFTING_TABLE, CHIPPED_ANVIL, DAMAGED_ANVIL, BEACON, BREWING_STAND,
           FURNACE_MINECART, HOPPER_MINECART, CAKE, CANDLE_CAKE, CHEST_MINECART, COMMAND_BLOCK,
           DAYLIGHT_DETECTOR, RESPAWN_ANCHOR, STONECUTTER, CARTOGRAPHY_TABLE, SMITHING_TABLE, LOOM,
@@ -139,7 +139,7 @@ public class EventListener implements Listener {
    * {@link org.bukkit.Material}
    * </p>
    */
-  private static final Set<Material> EXCLUSIONMATERIALS = Collections.unmodifiableSet(
+  private static final Set<Material> EXCLUSION_MATERIALS = Collections.unmodifiableSet(
       EnumSet.of(IRON_DOOR, IRON_TRAPDOOR));
 
   /**
@@ -900,8 +900,8 @@ public class EventListener implements Listener {
     logger.trace("isTouchable:Start");
     var type = block.getType();
     logger.trace("type:" + type);
-    logger.trace("EXCLUSIONMATERIALS.contains(type):" + EXCLUSIONMATERIALS.contains(type));
-    if (EXCLUSIONMATERIALS.contains(type)) {
+    logger.trace("EXCLUSIONMATERIALS.contains(type):" + EXCLUSION_MATERIALS.contains(type));
+    if (EXCLUSION_MATERIALS.contains(type)) {
       logger.debug("type is IRON series");
       // 鉄シリーズは問答無用でfalse
       return false;
@@ -944,7 +944,7 @@ public class EventListener implements Listener {
             || blockData instanceof Grindstone
             || blockData instanceof Furnace
             || blockData instanceof Barrel
-            || USABLEMATERIALS.contains(material);
+            || USABLE_MATERIALS.contains(material);
       }
     }
   }
