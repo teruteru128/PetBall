@@ -9,7 +9,7 @@ public class CatLoreWriter extends LoreWriter {
   /**
    * Loreに表示するMobの日本語名
    */
-  private static String loreMobName = "猫";
+  private static String loreMobName = "ネコ";
 
   /**
    * コンストラクタ

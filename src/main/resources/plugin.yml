@@ -2,6 +2,6 @@ name: PetBall
 version: ${version}
 description: you can catch mob in the egg.
 author: albatross256
-main: com.github.albatross256.PetBall.Main
+main: com.github.albatross256.petball.Main
 api-version: 1.20
 depend: [Logger, Rtag]

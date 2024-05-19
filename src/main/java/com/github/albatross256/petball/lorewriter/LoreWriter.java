@@ -111,7 +111,7 @@ public abstract class LoreWriter {
 
     if (entity instanceof Tameable tameable) {
       String owner =
-          Objects.nonNull(tameable.getOwner()) ? noOwnerDisplayStr : tameable.getOwner().getName();
+          Objects.isNull(tameable.getOwner()) ? noOwnerDisplayStr : tameable.getOwner().getName();
       lore.add(loreOwnerDisplayStr + owner);
     }
     return lore;

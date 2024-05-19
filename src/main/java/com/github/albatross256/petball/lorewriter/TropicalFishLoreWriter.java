@@ -13,7 +13,7 @@ public class TropicalFishLoreWriter extends LoreWriter {
   /**
    * Loreに表示するMobの日本語名
    */
-  private static String loreMobName = "行商人のラマ";
+  private static String loreMobName = "熱帯魚";
 
   /**
    * コンストラクタ
