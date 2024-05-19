@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 public class VillagerLoreWriterBundleTest {
 
-  private static String BASE_NAME = "com.github.albatross256.PetBall.LoreWriter.VillagerLoreWriter";
+  private static String BASE_NAME = "com.github.albatross256.petball.lorewriter.VillagerLoreWriter";
   private ResourceBundle bundle = ResourceBundle.getBundle(BASE_NAME, Locale.JAPANESE);
 
   @Test

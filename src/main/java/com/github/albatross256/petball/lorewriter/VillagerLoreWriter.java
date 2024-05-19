@@ -16,7 +16,7 @@ public class VillagerLoreWriter extends LoreWriter {
    * Loreに表示する村人の日本語名
    */
   private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(
-      "com.github.albatross256.PetBall.LoreWriter.VillagerLoreWriter", Locale.JAPANESE);
+      "com.github.albatross256.petball.lorewriter.VillagerLoreWriter", Locale.JAPANESE);
 
   /**
    * Loreに表示するMobの日本語名
