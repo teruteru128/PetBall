@@ -17,7 +17,7 @@ public class VillagerLoreWriterBundleTest {
 
   @Test
   void noneTest() {
-    assertEquals(bundle.getString(Villager.Profession.NONE.name()), "None");
+    assertEquals(bundle.getString(Villager.Profession.NONE.name()), "ニート");
   }
 
   @Test
@@ -72,7 +72,7 @@ public class VillagerLoreWriterBundleTest {
 
   @Test
   void nitwitTest() {
-    assertEquals(bundle.getString(Villager.Profession.NITWIT.name()), "無職");
+    assertEquals(bundle.getString(Villager.Profession.NITWIT.name()), "ニート");
   }
 
   @Test
