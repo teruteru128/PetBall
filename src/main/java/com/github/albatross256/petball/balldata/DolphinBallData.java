@@ -4,14 +4,19 @@ import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 
 /**
- * DOLPHIN　を格納するボールデータ.
+ * <p>
+ * PetBall の {@link com.github.albatross256.petball.balldata.BallData} .<br>
+ * {@link org.bukkit.entity.Allay} を捕獲するボールを構築する実装クラス.
+ * </p>
  * */
 public class DolphinBallData extends BallData {
 
   /**
-   * ボールデータに格納可能なエンティティタイプ.
+   * <p>
+   * このボールで召喚可能なエンティティタイプ.
+   * </p>
    *
-   * @return EntityType 対象のエンティティタイプ.
+   * @return {@link org.bukkit.entity.EntityType}
    * */
   @Override
   public EntityType getEntityType() {
@@ -19,9 +24,11 @@ public class DolphinBallData extends BallData {
   }
 
   /**
+   * <p>
    * ボールデータに利用されるスポーンエッグ表示.
+   * </p>
    *
-   * @return Material 対象のスポーンエッグ表示.
+   * @return {@link org.bukkit.Material}
    * */
   @Override
   public Material getFilledBallMaterial() {
@@ -29,9 +36,11 @@ public class DolphinBallData extends BallData {
   }
 
   /**
-   * ボールに格納可能なエンティティ.
+   * </p>
+   * このボールに格納可能なエンティティタイプ.
+   * </p>
    *
-   * @return EntityType 対象のエンティティ.
+   * @return {@link org.bukkit.entity.EntityType}
    * */
   @Override
   public EntityType getFilledBallEntityType() {
