@@ -5,7 +5,7 @@ import org.bukkit.entity.EntityType;
 /**
  * <p>
  * PetBall の {@link com.github.albatross256.petball.balldata.BallData} .<br>
- * {@link org.bukkit.entity.Allay} を捕獲するボールを構築する実装クラス.
+ * {@link org.bukkit.entity.Sniffer} を捕獲するボールを構築する実装クラス.
  * </p>
  * */
 public class SnifferBallData extends BallData {
