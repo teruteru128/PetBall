@@ -31,7 +31,6 @@ public class TropicalFishLoreWriter extends LoreWriter {
   public List<String> generateLore(Entity entity) {
     List<String> lore = generateCommonLore(entity);
 
-    lore.add("熱帯魚" + ((TropicalFish) entity).getName().toString());
     lore.add("肌の色 : " + translateColorName(((TropicalFish) entity).getBodyColor()));
     lore.add("模様の色 : " + translateColorName(((TropicalFish) entity).getPatternColor()));
     lore.add("形・模様の種類 : " + translatePatternName(((TropicalFish) entity).getPattern()));
